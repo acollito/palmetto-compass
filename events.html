@@ -2791,6 +2791,40 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
 
+      // Parse stay dates or category from URL query parameters (Revinate Integration)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const checkin = urlParams.get('checkin') || urlParams.get('start');
+        const checkout = urlParams.get('checkout') || urlParams.get('end');
+        const cat = urlParams.get('category');
+        const q = urlParams.get('search') || urlParams.get('q');
+
+        if (checkin) {
+          startDateInput.value = checkin;
+          filterStartDate = parseIsoDate(checkin);
+        }
+        if (checkout) {
+          endDateInput.value = checkout;
+          filterEndDate = parseIsoDate(checkout);
+        }
+        if (cat) {
+          currentCategory = cat;
+          document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.category.toLowerCase() === cat.toLowerCase());
+          });
+        }
+        if (q) {
+          searchQuery = q;
+          searchInput.value = q;
+          searchClearBtn.style.display = 'block';
+        }
+      } catch (e) {
+        console.warn('URL param parse note:', e);
+      }
+
+      // Initial synchronous render of default events on page load (Never leave user stuck on 'Loading...')
+      render();
+
       // Live Google Sheets Sync (Using Google GViz JSONP callback to bypass browser CORS completely)
       window.handleLiveSheetData = function(json) {
         try {
