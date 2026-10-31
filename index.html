@@ -932,9 +932,8 @@
                       cleanName.includes('beach') || 
                       cleanName.includes('island'));
 
-      const isLandmark = !isKeys && ((data.isLandmark === true) || 
+      const isLandmark = !isKeys && !isBeach && ((data.isLandmark === true) || 
                          (data.sheetType === 'landmarks') || 
-                         isBeach ||
                          catLower.includes('points of interest') || 
                          catLower.includes('landmark') || 
                          catLower.includes('museum') || 
@@ -954,9 +953,10 @@
         categoryTags.add('keys');
         if (isDining) categoryTags.add('dining');
         if (isShop) categoryTags.add('shopping');
+      } else if (isBeach) {
+        categoryTags.add('beaches');
       } else if (isLandmark) {
         categoryTags.add('landmarks');
-        if (isBeach) categoryTags.add('beaches');
       } else if (isGuest) {
         categoryTags.add('guests');
         if (isDining) categoryTags.add('dining');
@@ -976,16 +976,14 @@
         pinType = 'keys';
         categoryTag = 'keys';
         catDisplay = 'Keys to Charleston Partner';
+      } else if (isBeach) {
+        pinType = 'beaches';
+        categoryTag = 'beaches';
+        catDisplay = 'Beach & Coastal Landmark';
       } else if (isLandmark) {
-        if (isBeach) {
-          pinType = 'beaches';
-          categoryTag = 'beaches';
-          catDisplay = 'Beach & Coastal Landmark';
-        } else {
-          pinType = 'landmarks';
-          categoryTag = 'landmarks';
-          catDisplay = 'Landmark & History';
-        }
+        pinType = 'landmarks';
+        categoryTag = 'landmarks';
+        catDisplay = 'Landmark & History';
       } else if (isGuest) {
         pinType = 'guests';
         categoryTag = 'guests';
@@ -1040,6 +1038,14 @@
           if (!existing.categoryTags.includes('keys')) existing.categoryTags.push('keys');
           if (isDining && !existing.categoryTags.includes('dining')) existing.categoryTags.push('dining');
           if (isShop && !existing.categoryTags.includes('shopping')) existing.categoryTags.push('shopping');
+        } else if (isBeach) {
+          existing.categoryTag = 'beaches';
+          existing.catDisplay = 'Beach & Coastal Landmark';
+          existing.element.innerHTML = getPinSvg('beaches');
+          existing.isBeach = true;
+          existing.isLandmark = false;
+          existing.categoryTags = existing.categoryTags.filter(t => t !== 'landmarks');
+          if (!existing.categoryTags.includes('beaches')) existing.categoryTags.push('beaches');
         }
         categoryTags.forEach(t => {
           if (!existing.categoryTags.includes(t)) existing.categoryTags.push(t);
@@ -1470,7 +1476,7 @@
     "lng": -79.83625,
     "isGuest": false,
     "isKeys": false,
-    "isLandmark": true,
+    "isLandmark": false,
     "isBeach": true,
     "isDefault": true
   },
@@ -1485,7 +1491,7 @@
     "lng": -79.79154,
     "isGuest": false,
     "isKeys": false,
-    "isLandmark": true,
+    "isLandmark": false,
     "isBeach": true,
     "isDefault": true
   },
@@ -1500,7 +1506,7 @@
     "lng": -79.94052,
     "isGuest": false,
     "isKeys": false,
-    "isLandmark": true,
+    "isLandmark": false,
     "isBeach": true,
     "isDefault": true
   },
@@ -1515,7 +1521,7 @@
     "lng": -80.06451,
     "isGuest": false,
     "isKeys": false,
-    "isLandmark": true,
+    "isLandmark": false,
     "isBeach": true,
     "isDefault": true
   },
