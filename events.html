@@ -784,6 +784,9 @@
           <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
           Palmetto Compass Map
         </a>
+        <a href="submit-event.html" class="nav-btn" style="background:var(--p-gold); color:#232A25; font-weight:700; border-color:var(--p-gold);" title="Submit an event for The Palmetto Hotel concierge calendar">
+          + Submit Event
+        </a>
       </div>
     </div>
   </header>
@@ -909,6 +912,8 @@
       <a href="tel:+18438233604">Call Concierge (843) 823-3604</a>
       <a href="mailto:anthony.collito@palmettohotelcharleston.com">Email Concierge</a>
       <a href="guest.html">Guest Discoveries Form</a>
+      <span class="footer-sep">&bull;</span>
+      <a href="submit-event.html">Partner Event Portal</a>
       <a href="https://docs.google.com/spreadsheets/d/1S-k9hNJMkusyw0WF81AvKDE1inbiaDe6foEdM0zdQdU/edit" target="_blank">Live Events Sheet</a>
     </div>
     <div class="footer-copyright">&copy; 2026 The Palmetto Hotel. All rights reserved. Curated for hotel guests.</div>
@@ -2790,98 +2795,91 @@
 
       // Background Live Sync from Google Sheet CSV export
       async function syncLiveSheet() {
-        // Fetch fresh CSV with timestamp cache-buster so deletions reflect immediately
-        const LIVE_CSV_URL = 'https://docs.google.com/spreadsheets/d/1S-k9hNJMkusyw0WF81AvKDE1inbiaDe6foEdM0zdQdU/export?format=csv&gid=0&_t=' + Date.now();
+              // Live Google Sheets Sync (Using Google GViz JSONP callback to bypass browser CORS completely)
+      window.handleLiveSheetData = function(json) {
         try {
-          const resp = await fetch(LIVE_CSV_URL, { cache: 'no-store' });
-          if (!resp.ok) return;
-          const csvText = await resp.text();
-          const rows = parseCSV(csvText);
-          if (rows && rows.length > 5) {
-            // Block commercial daily tour operators that clutter all stay dates
-            const blockedTourCompanies = ['bulldog', 'palmetto carriage works', 'schooner pride'];
-            allEvents = rows.filter(r => {
-              const active = (r['Active / Live?'] || '').toLowerCase() === 'yes';
-              const name = (r['Event Name'] || '').toLowerCase();
-              const isCommercialTour = blockedTourCompanies.some(term => name.includes(term));
-              return active && !isCommercialTour;
-            }).map(r => ({
-              name: r['Event Name'] || '',
-              category: r['Category'] || '',
-              startDate: r['Start Date'] || '',
-              endDate: r['End Date'] || '',
-              venue: r['Venue / Neighborhood'] || '',
-              tip: r['Insider Concierge Tip'] || '',
-              ticket: r['Ticket Requirements'] || '',
-              link: r['Event Link'] || '',
-              active: r['Active / Live?'] || 'Yes'
-            }));
+          if (!json || !json.table || !json.table.rows) return;
+          const rows = json.table.rows;
+          const parsed = [];
+          const blocked = ['bulldog', 'palmetto carriage works', 'schooner pride'];
+
+          for (let i = 0; i < rows.length; i++) {
+            const c = rows[i].c;
+            if (!c) continue;
+            
+            const getVal = (idx) => {
+              if (!c[idx]) return '';
+              if (c[idx].f !== undefined && c[idx].f !== null) return String(c[idx].f).trim();
+              if (c[idx].v !== undefined && c[idx].v !== null) return String(c[idx].v).trim();
+              return '';
+            };
+
+            const name = getVal(0);
+            if (!name || name.toLowerCase() === 'event name') continue; // Skip header
+
+            const active = getVal(8).toLowerCase(); // Column I: Active / Live?
+            // Only include if Active is explicitly 'yes'. Excludes 'off', 'no', blank, or inactive.
+            if (active !== 'yes') continue;
+
+            // Block commercial daily tour companies
+            if (blocked.some(b => name.toLowerCase().includes(b))) continue;
+
+            const category = getVal(1);
+            let startDate = getVal(2);
+            let endDate = getVal(3);
+            const venue = getVal(4);
+            const tip = getVal(5);
+            const ticket = getVal(6);
+            const link = getVal(7);
+
+            // Format dates if in Date(YYYY, M, D) format
+            const parseDateObj = (val) => {
+              if (val.startsWith('Date(')) {
+                const parts = val.replace('Date(', '').replace(')', '').split(',');
+                if (parts.length >= 3) {
+                  const y = parts[0].trim();
+                  const m = String(parseInt(parts[1].trim()) + 1).padStart(2, '0');
+                  const d = String(parseInt(parts[2].trim())).padStart(2, '0');
+                  return `${y}-${m}-${d}`;
+                }
+              }
+              return val;
+            };
+
+            startDate = parseDateObj(startDate);
+            endDate = parseDateObj(endDate);
+
+            parsed.push({
+              name: name,
+              category: category,
+              startDate: startDate,
+              endDate: endDate,
+              venue: venue,
+              tip: tip,
+              ticket: ticket,
+              link: link,
+              active: 'Yes'
+            });
+          }
+
+          if (parsed.length > 5) {
+            allEvents = parsed;
             render();
-            console.log('Successfully synced live events from Google Sheet. Count: ' + allEvents.length);
+            console.log('Successfully synced live events from Google Sheet. Active count: ' + allEvents.length);
           }
         } catch (err) {
-          console.log('Using offline embedded events calendar:', err.message);
+          console.log('Live sync note:', err.message);
         }
+      };
+
+      function syncLiveSheet() {
+        // GViz JSONP request is not subject to CORS
+        const script = document.createElement('script');
+        script.src = 'https://docs.google.com/spreadsheets/d/1S-k9hNJMkusyw0WF81AvKDE1inbiaDe6foEdM0zdQdU/gviz/tq?tqx=responseHandler:handleLiveSheetData&headers=1&_t=' + Date.now();
+        document.body.appendChild(script);
       }
 
-      function parseCSV(text) {
-        const lines = text.split(/\r?\n/);
-        if (lines.length < 2) return [];
-        const headers = parseCSVLine(lines[0]);
-        const results = [];
-        for (let i = 1; i < lines.length; i++) {
-          if (!lines[i].trim()) continue;
-          const vals = parseCSVLine(lines[i]);
-          const obj = {};
-          headers.forEach((h, idx) => {
-            obj[h.trim()] = vals[idx] !== undefined ? vals[idx].trim() : '';
-          });
-          results.push(obj);
-        }
-        return results;
-      }
-
-      function parseCSVLine(line) {
-        const result = [];
-        let curr = '';
-        let inQuotes = false;
-        for (let i = 0; i < line.length; i++) {
-          const c = line[i];
-          if (c === '"') {
-            if (inQuotes && line[i+1] === '"') {
-              curr += '"';
-              i++;
-            } else {
-              inQuotes = !inQuotes;
-            }
-          } else if (c === ',' && !inQuotes) {
-            result.push(curr);
-            curr = '';
-          } else {
-            curr += c;
-          }
-        }
-        result.push(curr);
-        return result;
-      }
-
-      // Auto-populate stay dates from Revinate email merge tags (e.g. ?checkin=YYYY-MM-DD&checkout=YYYY-MM-DD)
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlCheckin = urlParams.get('checkin') || urlParams.get('startDate') || urlParams.get('arrival');
-      const urlCheckout = urlParams.get('checkout') || urlParams.get('endDate') || urlParams.get('departure');
-
-      if (urlCheckin) {
-        filterStartDate = parseIsoDate(urlCheckin);
-        startDateInput.value = urlCheckin;
-      }
-      if (urlCheckout) {
-        filterEndDate = parseIsoDate(urlCheckout);
-        endDateInput.value = urlCheckout;
-      }
-
-      // Initial Render & Sync
-      render();
-      setTimeout(syncLiveSheet, 100);
+      setTimeout(syncLiveSheet, 150);
     })();
   </script>
 </body>
