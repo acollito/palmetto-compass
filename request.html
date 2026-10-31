@@ -940,6 +940,33 @@
     let activeService = 'walking-tour';
 
     // Parse URL Query Parameters on Load
+    function parseDateToYMD(str) {
+      if (!str || typeof str !== 'string') return '';
+      const trimmed = str.trim();
+      if (trimmed.startsWith('[') || trimmed.startsWith('{') || trimmed.toLowerCase() === 'undefined' || trimmed.toLowerCase() === 'null') {
+        return '';
+      }
+      let d = null;
+      const dashParts = trimmed.split('-');
+      if (dashParts.length === 3 && dashParts[0].length === 4) {
+        d = new Date(parseInt(dashParts[0], 10), parseInt(dashParts[1], 10) - 1, parseInt(dashParts[2], 10));
+      } else {
+        const slashParts = trimmed.split('/');
+        if (slashParts.length === 3) {
+          d = new Date(parseInt(slashParts[2], 10), parseInt(slashParts[0], 10) - 1, parseInt(slashParts[1], 10));
+        } else {
+          d = new Date(trimmed);
+        }
+      }
+      if (d instanceof Date && !isNaN(d.getTime())) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return year + '-' + month + '-' + day;
+      }
+      return '';
+    }
+
     function initFromUrl() {
       const params = new URLSearchParams(window.location.search);
 
@@ -956,12 +983,14 @@
       if (phone) document.getElementById('guestPhone').value = phone;
       if (conf) document.getElementById('guestConf').value = conf;
       if (checkin) {
-        document.getElementById('guestCheckin').value = checkin;
-        // Also pre-seed the tour and spa dates to check-in by default
-        const tourDateEl = document.getElementById('tourDate');
-        const spaDateEl = document.getElementById('spaDate');
-        if (tourDateEl && !tourDateEl.value) tourDateEl.value = checkin;
-        if (spaDateEl && !spaDateEl.value) spaDateEl.value = checkin;
+        const ymd = parseDateToYMD(checkin);
+        if (ymd) {
+          document.getElementById('guestCheckin').value = ymd;
+          const tourDateEl = document.getElementById('tourDate');
+          const spaDateEl = document.getElementById('spaDate');
+          if (tourDateEl && !tourDateEl.value) tourDateEl.value = ymd;
+          if (spaDateEl && !spaDateEl.value) spaDateEl.value = ymd;
+        }
       }
       if (room) document.getElementById('guestRoom').value = room;
 
