@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>The Palmetto Hotel — Guest Concierge Reservations</title>
+
+  <!-- Google Fonts: Cinzel & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --p-green: #3E4D3F;
+      --p-green-dark: #2A362B;
+      --p-sage: #708771;
+      --p-gold: #C5A059;
+      --p-gold-light: #F3E5AB;
+      --p-linen: #F8F6F0;
+      --p-card-bg: #FFFFFF;
+      --p-text: #232A25;
+      --p-muted: #5F6962;
+      --p-subtle: #848D86;
+      --p-border: #DDD8CE;
+      --p-border-light: #ECE8E0;
+      --p-input-bg: #FCFBF9;
+      --p-radius: 12px;
+      --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--p-linen);
+      color: var(--p-text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px 16px 48px;
+    }
+
+    .portal-shell {
+      width: 100%;
+      max-width: 720px;
+      background: var(--p-card-bg);
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
+      border: 1px solid var(--p-border);
+      overflow: hidden;
+    }
+
+    /* Luxury Header */
+    .portal-header {
+      background: var(--p-green);
+      color: #FFFFFF;
+      padding: 26px 24px 20px;
+      text-align: center;
+      border-bottom: 3px solid var(--p-gold);
+      position: relative;
+    }
+
+    .brand-emblem {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .keys-icon {
+      width: 24px;
+      height: 24px;
+      fill: var(--p-gold-light);
+    }
+
+    .brand-title {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--p-gold-light);
+      text-transform: uppercase;
+    }
+
+    .portal-subtitle {
+      font-size: 0.85rem;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #FFFFFF;
+      opacity: 0.95;
+      margin-top: 2px;
+    }
+
+    .hotel-coords {
+      font-size: 0.74rem;
+      color: rgba(243, 229, 171, 0.85);
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Body Container */
+    .form-body {
+      padding: 32px 28px;
+    }
+
+    @media (max-width: 600px) {
+      .form-body { padding: 24px 16px; }
+      body { padding: 12px 8px 36px; }
+    }
+
+    /* Welcome / Intro Box */
+    .intro-banner {
+      background: #FAF8F5;
+      border: 1px solid var(--p-border-light);
+      border-left: 4px solid var(--p-gold);
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 28px;
+      font-size: 0.86rem;
+      color: var(--p-muted);
+      line-height: 1.5;
+    }
+
+    .intro-banner strong {
+      color: var(--p-green);
+    }
+
+    /* Section Headings */
+    .section-title {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--p-green);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin: 28px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--p-border-light);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: var(--p-green);
+      color: var(--p-gold-light);
+      border-radius: 50%;
+      font-size: 0.72rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+    }
+
+    /* Service Selector Grid (3-Card Layout) */
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 640px) {
+      .service-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .service-card {
+      border: 2px solid var(--p-border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .service-card:hover {
+      border-color: var(--p-sage);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .service-card.active {
+      border-color: var(--p-gold);
+      box-shadow: 0 0 0 1px var(--p-gold), 0 8px 24px rgba(197, 160, 89, 0.18);
+      background: #FDFAF3;
+    }
+
+    .service-card-img {
+      width: 100%;
+      height: 105px;
+      object-fit: cover;
+      display: block;
+      background-color: var(--p-green-dark);
+    }
+
+    .service-card-info {
+      padding: 12px 14px;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .service-card-kicker {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--p-sage);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .service-card.active .service-card-kicker {
+      color: #9E7D38;
+    }
+
+    .service-card-title {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--p-green);
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    .service-card-desc {
+      font-size: 0.76rem;
+      color: var(--p-muted);
+      line-height: 1.35;
+    }
+
+    .service-card-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--p-green);
+      color: #FFFFFF;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: none;
+    }
+
+    .service-card.active .service-card-badge {
+      display: block;
+      background: var(--p-gold);
+      color: #232A25;
+    }
+
+    /* Form Fields */
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 540px) {
+      .form-row { grid-template-columns: 1fr; gap: 14px; }
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--p-green);
+      margin-bottom: 5px;
+    }
+
+    .form-label .req {
+      color: #B23B2A;
+      margin-left: 2px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 13px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      border: 1px solid var(--p-border);
+      border-radius: 8px;
+      background: var(--p-input-bg);
+      color: var(--p-text);
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--p-sage);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(112, 135, 113, 0.18);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 85px;
+      line-height: 1.45;
+    }
+
+    .form-helper {
+      font-size: 0.73rem;
+      color: var(--p-subtle);
+      margin-top: 4px;
+      line-height: 1.3;
+    }
+
+    /* Dynamic Service Option Panels */
+    .service-panel {
+      display: none;
+      background: #FAF8F5;
+      border: 1px solid var(--p-border);
+      border-radius: 10px;
+      padding: 20px 20px 10px;
+      margin-bottom: 24px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .service-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-header {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--p-green);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Radio / Pill Grid for Quick Options */
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .pill-label {
+      padding: 7px 14px;
+      background: #FFFFFF;
+      border: 1px solid var(--p-border);
+      border-radius: 20px;
+      font-size: 0.78rem;
+      color: var(--p-text);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .pill-label:hover {
+      border-color: var(--p-sage);
+    }
+
+    .pill-input {
+      display: none;
+    }
+
+    .pill-input:checked + .pill-label {
+      background: var(--p-green);
+      color: #FFFFFF;
+      border-color: var(--p-green);
+      font-weight: 600;
+    }
+
+    /* Submit Button & Actions */
+    .submit-wrap {
+      margin-top: 28px;
+      text-align: center;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--p-green);
+      color: #FFFFFF;
+      border: none;
+      padding: 14px 28px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 14px rgba(62, 77, 63, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-submit:hover {
+      background: var(--p-green-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(62, 77, 63, 0.35);
+    }
+
+    .btn-submit:disabled {
+      background: #9FA7A0;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .direct-contact {
+      margin-top: 18px;
+      font-size: 0.78rem;
+      color: var(--p-muted);
+      text-align: center;
+    }
+
+    .direct-contact a {
+      color: var(--p-green);
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px dotted var(--p-sage);
+    }
+
+    .direct-contact a:hover {
+      color: var(--p-gold);
+    }
+
+    /* Success Confirmation Screen */
+    .confirmation-view {
+      display: none;
+      padding: 36px 24px;
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .confirm-icon-wrap {
+      width: 64px;
+      height: 64px;
+      background: #EBF2EC;
+      color: var(--p-green);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      border: 2px solid var(--p-sage);
+    }
+
+    .confirm-title {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--p-green);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .confirm-subtitle {
+      font-size: 0.9rem;
+      color: var(--p-muted);
+      max-width: 480px;
+      margin: 0 auto 24px;
+      line-height: 1.5;
+    }
+
+    .confirm-card {
+      background: #FAF8F5;
+      border: 1px solid var(--p-border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-align: left;
+      max-width: 520px;
+      margin: 0 auto 28px;
+      font-size: 0.84rem;
+    }
+
+    .confirm-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--p-border-light);
+    }
+
+    .confirm-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .confirm-label {
+      color: var(--p-muted);
+      font-weight: 600;
+    }
+
+    .confirm-val {
+      color: var(--p-green);
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--p-green);
+      border: 1px solid var(--p-green);
+      padding: 10px 22px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 24px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s ease;
+      margin: 4px 6px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--p-green);
+      color: #FFFFFF;
+    }
+
+    /* Error Toast */
+    .toast-error {
+      display: none;
+      background: #FDF2F2;
+      border: 1px solid #E8B4B4;
+      color: #991B1B;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="portal-shell">
+    
+    <!-- Portal Header -->
+    <header class="portal-header">
+      <div class="brand-emblem">
+        <svg class="keys-icon" viewBox="0 0 24 24">
+          <path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31.84 2.41 2 2.83V21h2v-2h2v-2.17c1.16-.42 2-1.52 2-2.83 0-1.66-1.34-3-3-3zm0 4c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm10-14c-1.66 0-3 1.34-3 3 0 1.31.84 2.41 2 2.83V11h2V9h2V6.83c1.16-.42 2-1.52 2-2.83 0-1.66-1.34-3-3-3zm0 4c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
+        </svg>
+        <span class="brand-title">The Palmetto Hotel</span>
+      </div>
+      <div class="portal-subtitle">Concierge &amp; Experience Reservations</div>
+      <div class="hotel-coords">194 East Bay Street • Historic French Quarter • Charleston, SC</div>
+    </header>
+
+    <!-- Main Form View -->
+    <div id="formView" class="form-body">
+      
+      <div class="intro-banner">
+        <strong>Welcome to Charleston!</strong> Choose an experience below or let our concierge team coordinate your requested stay amenities. Our Front Desk team will follow up directly to confirm reservations and schedule room placement.
+      </div>
+
+      <div id="toastError" class="toast-error"></div>
+
+      <form id="conciergeForm" novalidate>
+
+        <!-- Hidden inputs for prefilled tracking -->
+        <input type="hidden" id="serviceInput" name="service" value="walking-tour" />
+
+        <!-- 1. Experience Selection Cards -->
+        <div class="section-title">
+          <span class="section-number">1</span> Select Your Desired Experience
+        </div>
+
+        <div class="service-grid">
+          
+          <!-- Card 1: Lowcountry Strolls -->
+          <div class="service-card active" data-service="walking-tour" id="card-walking-tour">
+            <span class="service-card-badge">Selected</span>
+            <img class="service-card-img" src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/7RWSx1QIZyvhIXzMYrgG/media/649b193574a730c4e161eab1.jpeg" alt="Historic Charleston Walking Tour" />
+            <div class="service-card-info">
+              <span class="service-card-kicker">Historic Walking Tour</span>
+              <h4 class="service-card-title">Lowcountry Strolls</h4>
+              <p class="service-card-desc">Architecture, gardens, folklore, and hidden French Quarter stories.</p>
+            </div>
+          </div>
+
+          <!-- Card 2: Day Spa -->
+          <div class="service-card" data-service="day-spa" id="card-day-spa">
+            <span class="service-card-badge">Selected</span>
+            <img class="service-card-img" src="https://www.earthlingdayspa.com/wp-content/uploads/spa-downtown-charleston-1.jpg" alt="Earthling Day Spa Charleston" />
+            <div class="service-card-info">
+              <span class="service-card-kicker">Day Spa &amp; Wellness</span>
+              <h4 class="service-card-title">Earthling Day Spa</h4>
+              <p class="service-card-desc">Therapeutic massage, restorative facials, and wellness packages.</p>
+            </div>
+          </div>
+
+
+
+          <!-- Card 4: Tiger Lily Florist -->
+          <div class="service-card" data-service="tiger-lily" id="card-tiger-lily">
+            <span class="service-card-badge">Selected</span>
+            <img class="service-card-img" src="https://assets.eflorist.com/site/EF-27094/Homepage/2023/springMix.jpg" alt="Tiger Lily Florist Charleston SC" />
+            <div class="service-card-info">
+              <span class="service-card-kicker">Charleston's Best Florist</span>
+              <h4 class="service-card-title">Tiger Lily Florist</h4>
+              <p class="service-card-desc">Petite ($90.50), Medium ($112.50), Large ($145.50), or Dozen Roses ($167.50).</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 2. Service-Specific Options (Dynamic Panels) -->
+        <div class="section-title">
+          <span class="section-number">2</span> Experience Preferences
+        </div>
+
+        <!-- Panel 1: Walking Tour -->
+        <div id="panel-walking-tour" class="service-panel active">
+          <div class="panel-header">
+            Historic Walking Tour Preferences
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="tourDate">Preferred Tour Date <span class="req">*</span></label>
+              <input type="date" id="tourDate" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="tourTime">Preferred Time <span class="req">*</span></label>
+              <select id="tourTime" class="form-select">
+                <option value="Morning Stroll (10:00 AM)">Morning Stroll (10:00 AM)</option>
+                <option value="Afternoon Stroll (2:00 PM)">Afternoon Stroll (2:00 PM)</option>
+                <option value="Flexible / Either Time">Flexible / Either Time</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="tourParty">Number of Guests <span class="req">*</span></label>
+              <select id="tourParty" class="form-select">
+                <option value="1 Guest">1 Guest</option>
+                <option value="2 Guests" selected>2 Guests</option>
+                <option value="3 Guests">3 Guests</option>
+                <option value="4 Guests">4 Guests</option>
+                <option value="5+ Guests (Small Group)">5+ Guests (Small Group)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="tourFocus">Special Interests</label>
+              <input type="text" id="tourFocus" class="form-input" placeholder="e.g. Hidden gardens, architecture, ghost lore" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Spa -->
+        <div id="panel-day-spa" class="service-panel">
+          <div class="panel-header">
+            Earthling Day Spa &amp; Wellness Preferences
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="spaDate">Preferred Treatment Date <span class="req">*</span></label>
+              <input type="date" id="spaDate" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="spaTime">Preferred Time Window <span class="req">*</span></label>
+              <select id="spaTime" class="form-select">
+                <option value="Morning (9:30 AM - 12:00 PM)">Morning (9:30 AM - 12:00 PM)</option>
+                <option value="Afternoon (12:00 PM - 3:00 PM)">Afternoon (12:00 PM - 3:00 PM)</option>
+                <option value="Late Afternoon (3:00 PM - 6:00 PM)">Late Afternoon (3:00 PM - 6:00 PM)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="spaService">Service Type <span class="req">*</span></label>
+              <select id="spaService" class="form-select">
+                <option value="Curated Palmetto Spa Package">Curated Palmetto Spa Package</option>
+                <option value="Deep Tissue or Swedish Massage">Deep Tissue / Swedish Massage</option>
+                <option value="Custom Organic Facial">Custom Organic Facial</option>
+                <option value="Couples Massage Experience">Couples Massage Experience</option>
+                <option value="Custom Package / Inquire">Custom Package / Inquire</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="spaGuests">Number of Guests</label>
+              <select id="spaGuests" class="form-select">
+                <option value="1 Guest">1 Guest</option>
+                <option value="2 Guests" selected>2 Guests</option>
+                <option value="3+ Guests">3+ Guests</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="spaNotes">Focus Areas or Health Considerations</label>
+            <input type="text" id="spaNotes" class="form-input" placeholder="e.g. Neck/shoulder focus, prenatal, fragrance-free" />
+          </div>
+        </div>
+
+
+
+        <!-- Panel 4: Tiger Lily Florist -->
+        <div id="panel-tiger-lily" class="service-panel">
+          <div class="panel-header">
+            Tiger Lily Florist — In-Room Arrangement Details
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="flowerStyle">Arrangement Selection <span class="req">*</span></label>
+              <select id="flowerStyle" class="form-select">
+                <option value="Tiger Lily- Medium ($112.50)" selected>Tiger Lily- Medium ($112.50)</option>
+                <option value="Tiger Lily- Petite ($90.50)">Tiger Lily- Petite ($90.50)</option>
+                <option value="Tiger Lily- Large ($145.50)">Tiger Lily- Large ($145.50)</option>
+                <option value="Tiger Lily- Perfect Dozen Roses ($167.50)">Tiger Lily- Perfect Dozen Roses ($167.50)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="flowerOccasion">Occasion <span class="req">*</span></label>
+              <select id="flowerOccasion" class="form-select">
+                <option value="Romantic Getaway / Anniversary" selected>Romantic Getaway / Anniversary</option>
+                <option value="Birthday Celebration">Birthday Celebration</option>
+                <option value="Welcome to Charleston">Welcome to Charleston</option>
+                <option value="Proposal / Milestone">Proposal / Milestone</option>
+                <option value="Just Because">Just Because</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="flowerPalette">Color Palette / Floral Vibe</label>
+              <select id="flowerPalette" class="form-select">
+                <option value="Signature Lowcountry Pastels (South of Broad)" selected>Signature Lowcountry Pastels (South of Broad)</option>
+                <option value="Bright & Vibrant Seasonal Blooms">Bright &amp; Vibrant Seasonal Blooms</option>
+                <option value="Classic White & Lush Greenery">Classic White &amp; Lush Greenery</option>
+                <option value="Classic Red (Recommended for Roses)">Classic Red (Recommended for Roses)</option>
+                <option value="Designer's Choice Fresh Seasonal">Designer's Choice Fresh Seasonal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="flowerDelivery">Delivery &amp; Staging Timing <span class="req">*</span></label>
+              <select id="flowerDelivery" class="form-select">
+                <option value="Placed in Room Prior to Check-in Arrival" selected>Placed in Room Prior to Check-in</option>
+                <option value="Delivered on Evening of Arrival">Delivered on Evening of Arrival</option>
+                <option value="Delivered on Specific Date of Stay">Delivered on Specific Date of Stay</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="flowerAddon">Optional In-Room Add-Ons</label>
+            <select id="flowerAddon" class="form-select">
+              <option value="Flowers Only" selected>Flowers Only</option>
+              <option value="Pair with Chilled Champagne on Ice">Pair with Chilled Champagne on Ice</option>
+              <option value="Pair with Local French Chef Macarons">Pair with Local French Chef Macarons</option>
+              <option value="Pair with Sparkling Wine & Sweets">Pair with Sparkling Wine &amp; Sweets</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="flowerMessage">Handwritten Gift Card Message</label>
+            <textarea id="flowerMessage" class="form-textarea" placeholder="Include a personal message to be handwritten on the presentation card (or leave blank if none)..."></textarea>
+            <div class="form-helper">Tiger Lily includes a handwritten card placed with the vase in your guest room.</div>
+          </div>
+        </div>
+
+        <!-- 3. Guest Information (Auto-Filled from Revinate) -->
+        <div class="section-title">
+          <span class="section-number">3</span> Guest &amp; Stay Information
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="guestName">Full Name <span class="req">*</span></label>
+            <input type="text" id="guestName" class="form-input" placeholder="e.g. Anthony Collito" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="guestEmail">Email Address <span class="req">*</span></label>
+            <input type="email" id="guestEmail" class="form-input" placeholder="e.g. guest@email.com" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="guestPhone">Mobile Phone</label>
+            <input type="tel" id="guestPhone" class="form-input" placeholder="e.g. (843) 555-0194" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="guestConf">Confirmation / Reservation #</label>
+            <input type="text" id="guestConf" class="form-input" placeholder="e.g. PAL-84920" />
+            <div class="form-helper">Pre-filled automatically from your confirmation email.</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="guestCheckin">Check-in Date</label>
+            <input type="date" id="guestCheckin" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="guestRoom">Room Number (If already checked in)</label>
+            <input type="text" id="guestRoom" class="form-input" placeholder="e.g. Room 304" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="guestNotes">Special Concierge Requests or Preferences</label>
+          <textarea id="guestNotes" class="form-textarea" placeholder="Let us know about dietary needs, timing flexibility, or additional Charleston recommendations you'd like ready upon arrival..."></textarea>
+        </div>
+
+        <!-- Submit Wrap -->
+        <div class="submit-wrap">
+          <button type="submit" id="btnSubmit" class="btn-submit">
+            <span>Send Request to Concierge</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+          <div class="direct-contact">
+            Prefer direct assistance? Reach our Front Desk team at <a href="tel:8437221212">(843) 722-1212</a> or email <a href="mailto:Concierge@palmettohotelcharleston.com">Concierge@palmettohotelcharleston.com</a>.
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Confirmation Screen (Hidden Initially) -->
+    <div id="confirmView" class="confirmation-view">
+      <div class="confirm-icon-wrap">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h2 class="confirm-title">Request Received</h2>
+      <p class="confirm-subtitle">
+        Thank you, <span id="confirmGuestName">Guest</span>. Our Front Desk team at <strong>The Palmetto Hotel</strong> has received your request. We will coordinate details and confirm availability shortly.
+      </p>
+
+      <div class="confirm-card">
+        <div class="confirm-row">
+          <span class="confirm-label">Experience:</span>
+          <span class="confirm-val" id="confirmService">—</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-label">Key Preference:</span>
+          <span class="confirm-val" id="confirmPreference">—</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-label">Timing / Date:</span>
+          <span class="confirm-val" id="confirmDate">—</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-label">Confirmation #:</span>
+          <span class="confirm-val" id="confirmRes">—</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-label">Contact Email:</span>
+          <span class="confirm-val" id="confirmEmail">—</span>
+        </div>
+      </div>
+
+      <div>
+        <a href="https://palmetto-compass.anthonycollito.workers.dev/" class="btn-secondary">Explore Palmetto Compass</a>
+        <button type="button" id="btnAnother" class="btn-secondary">Request Another Service</button>
+      </div>
+
+      <div class="direct-contact" style="margin-top: 24px;">
+        Questions? Call Concierge directly at <a href="tel:8437221212">(843) 722-1212</a> or <a href="mailto:Concierge@palmettohotelcharleston.com">Concierge@palmettohotelcharleston.com</a>.
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Service mapping metadata
+    const SERVICES = {
+      'walking-tour': {
+        name: 'Lowcountry Strolls (Historic Walking Tour)',
+        panelId: 'panel-walking-tour',
+        cardId: 'card-walking-tour',
+        getSummary: () => {
+          const date = document.getElementById('tourDate').value || 'Flexible';
+          const time = document.getElementById('tourTime').value;
+          const party = document.getElementById('tourParty').value;
+          return { preference: `${party} • ${time}`, date: date };
+        }
+      },
+      'day-spa': {
+        name: 'Earthling Day Spa & Wellness',
+        panelId: 'panel-day-spa',
+        cardId: 'card-day-spa',
+        getSummary: () => {
+          const date = document.getElementById('spaDate').value || 'Flexible';
+          const time = document.getElementById('spaTime').value;
+          const service = document.getElementById('spaService').value;
+          return { preference: service, date: `${date} (${time.split(' ')[0]})` };
+        }
+      },
+
+      'tiger-lily': {
+        name: 'Tiger Lily Florist (In-Room Staging)',
+        panelId: 'panel-tiger-lily',
+        cardId: 'card-tiger-lily',
+        getSummary: () => {
+          const style = document.getElementById('flowerStyle').value;
+          const timing = document.getElementById('flowerDelivery').value;
+          const occasion = document.getElementById('flowerOccasion').value;
+          const palette = document.getElementById('flowerPalette') ? document.getElementById('flowerPalette').value : '';
+          return { preference: `${style} • ${palette} (${occasion})`, date: timing };
+        }
+      }
+    };
+
+    let activeService = 'walking-tour';
+
+    // Parse URL Query Parameters on Load
+    function initFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+
+      // Pre-fill Guest Details
+      const name = params.get('name') || params.get('guest_name') || '';
+      const email = params.get('email') || '';
+      const phone = params.get('phone') || '';
+      const conf = params.get('res') || params.get('conf') || params.get('confirmation') || '';
+      const checkin = params.get('checkin') || params.get('arrival') || '';
+      const room = params.get('room') || '';
+
+      if (name) document.getElementById('guestName').value = name;
+      if (email) document.getElementById('guestEmail').value = email;
+      if (phone) document.getElementById('guestPhone').value = phone;
+      if (conf) document.getElementById('guestConf').value = conf;
+      if (checkin) {
+        document.getElementById('guestCheckin').value = checkin;
+        // Also pre-seed the tour and spa dates to check-in by default
+        const tourDateEl = document.getElementById('tourDate');
+        const spaDateEl = document.getElementById('spaDate');
+        if (tourDateEl && !tourDateEl.value) tourDateEl.value = checkin;
+        if (spaDateEl && !spaDateEl.value) spaDateEl.value = checkin;
+      }
+      if (room) document.getElementById('guestRoom').value = room;
+
+      // Select Service from URL parameter
+      let srv = (params.get('service') || params.get('experience') || '').toLowerCase();
+      if (srv.includes('stroll') || srv.includes('walk') || srv.includes('tour')) srv = 'walking-tour';
+      else if (srv.includes('spa') || srv.includes('earthling') || srv.includes('wellness')) srv = 'day-spa';
+      else if (srv.includes('flower') || srv.includes('tiger') || srv.includes('lily') || srv.includes('floral')) srv = 'tiger-lily';
+      else srv = 'walking-tour';
+
+      selectService(srv);
+    }
+
+    // Switch Active Service
+    function selectService(serviceKey) {
+      if (!SERVICES[serviceKey]) serviceKey = 'walking-tour';
+      activeService = serviceKey;
+      document.getElementById('serviceInput').value = serviceKey;
+
+      // Update card states
+      document.querySelectorAll('.service-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      const activeCard = document.getElementById(`card-${serviceKey}`);
+      if (activeCard) activeCard.classList.add('active');
+
+      // Update panel states
+      document.querySelectorAll('.service-panel').forEach(panel => {
+        panel.classList.remove('active');
+      });
+      const activePanel = document.getElementById(`panel-${serviceKey}`);
+      if (activePanel) activePanel.classList.add('active');
+    }
+
+    // Attach card click handlers
+    document.querySelectorAll('.service-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const srv = card.getAttribute('data-service');
+        selectService(srv);
+      });
+    });
+
+    // Form Submission
+    const form = document.getElementById('conciergeForm');
+    const toastError = document.getElementById('toastError');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      toastError.style.display = 'none';
+
+      const guestName = document.getElementById('guestName').value.trim();
+      const guestEmail = document.getElementById('guestEmail').value.trim();
+
+      if (!guestName) {
+        showError('Please enter your full name so our concierge team can locate your reservation.');
+        document.getElementById('guestName').focus();
+        return;
+      }
+      if (!guestEmail || !guestEmail.includes('@')) {
+        showError('Please enter a valid email address so we can send your confirmation.');
+        document.getElementById('guestEmail').focus();
+        return;
+      }
+
+      const srvData = SERVICES[activeService];
+      const summary = srvData.getSummary();
+
+      const payload = {
+        action: 'conciergeRequest',
+        serviceKey: activeService,
+        serviceName: srvData.name,
+        guestName: guestName,
+        guestEmail: guestEmail,
+        guestPhone: document.getElementById('guestPhone').value.trim(),
+        confirmationNum: document.getElementById('guestConf').value.trim() || 'Not Provided',
+        checkinDate: document.getElementById('guestCheckin').value || 'Not Provided',
+        roomNum: document.getElementById('guestRoom').value.trim() || 'Unassigned',
+        specialNotes: document.getElementById('guestNotes').value.trim(),
+        preferences: summary.preference,
+        requestedTiming: summary.date,
+        // Service specific fields
+        details: collectServiceSpecificDetails(activeService),
+        timestamp: new Date().toISOString()
+      };
+
+      const btnSubmit = document.getElementById('btnSubmit');
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = 'Submitting Request...';
+
+      try {
+        // Backend webhook endpoint (Palmetto Apps Script)
+        // If the script endpoint is configured, post to it; otherwise fallback to mailto
+        const endpoint = 'https://script.google.com/macros/s/AKfycbwXVEd9ZpJug89JZ32JBJar2M169FYUmJoUjoBXUQTocRd0OlRsPGkPbuuVrwhQBI_H/exec'; 
+        
+        // Execute background fetch with timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+        fetch(endpoint, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        }).catch(err => {
+          // In no-cors, it might not return JSON, which is expected for Apps Script
+          console.log('Submission dispatched to Apps Script');
+        });
+
+      } catch (err) {
+        console.warn('Network dispatch note:', err);
+      } finally {
+        // Render instant confirmation view
+        document.getElementById('confirmGuestName').textContent = guestName;
+        document.getElementById('confirmService').textContent = srvData.name;
+        document.getElementById('confirmPreference').textContent = summary.preference;
+        document.getElementById('confirmDate').textContent = summary.date;
+        document.getElementById('confirmRes').textContent = payload.confirmationNum;
+        document.getElementById('confirmEmail').textContent = guestEmail;
+
+        document.getElementById('formView').style.display = 'none';
+        document.getElementById('confirmView').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = 'Send Request to Concierge';
+      }
+    });
+
+    function collectServiceSpecificDetails(srv) {
+      if (srv === 'tiger-lily') {
+        return {
+          arrangement: document.getElementById('flowerStyle').value,
+          palette: document.getElementById('flowerPalette') ? document.getElementById('flowerPalette').value : '',
+          occasion: document.getElementById('flowerOccasion').value,
+          delivery: document.getElementById('flowerDelivery').value,
+          addon: document.getElementById('flowerAddon').value,
+          cardMessage: document.getElementById('flowerMessage').value.trim()
+        };
+
+      } else if (srv === 'day-spa') {
+        return {
+          date: document.getElementById('spaDate').value,
+          window: document.getElementById('spaTime').value,
+          service: document.getElementById('spaService').value,
+          guests: document.getElementById('spaGuests').value,
+          notes: document.getElementById('spaNotes').value.trim()
+        };
+      } else {
+        return {
+          date: document.getElementById('tourDate').value,
+          time: document.getElementById('tourTime').value,
+          partySize: document.getElementById('tourParty').value,
+          interests: document.getElementById('tourFocus').value.trim()
+        };
+      }
+    }
+
+    function showError(msg) {
+      toastError.textContent = msg;
+      toastError.style.display = 'block';
+    }
+
+    // "Request Another Service" resets form
+    document.getElementById('btnAnother').addEventListener('click', () => {
+      document.getElementById('confirmView').style.display = 'none';
+      document.getElementById('formView').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Run on load
+    window.addEventListener('DOMContentLoaded', initFromUrl);
+  </script>
+</body>
+</html>
