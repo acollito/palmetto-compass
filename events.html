@@ -929,17 +929,6 @@
     "active": "Yes"
   },
   {
-    "name": "Bulldog Tours: Ghost & Dungeon Walking Tour",
-    "category": "Festivals & Traditions",
-    "startDate": "2026-10-01",
-    "endDate": "2027-06-30",
-    "venue": "18 Anson St (Historic District - 5 min walk)",
-    "tip": "Charleston's only tour with exclusive night access inside the pre-revolutionary Provost Dungeon inside the Old Exchange Building. Spooky, historically rich, and highly entertaining.",
-    "ticket": "Advance Booking Strongly Recommended ($35\u2013$40)",
-    "link": "https://bulldogtours.com",
-    "active": "Yes"
-  },
-  {
     "name": "Fort Sumter Twilight & Harbor History Cruise",
     "category": "Festivals & Traditions",
     "startDate": "2026-10-01",
@@ -970,28 +959,6 @@
     "tip": "Keys to Charleston Partner. Present your Palmetto room key for a complimentary dessert with entr\u00e9e. Live jazz ensemble plays Tuesday - Sunday evenings.",
     "ticket": "Dinner Reservations Recommended (Resy / OpenTable)",
     "link": "https://www.highcottoncharleston.com",
-    "active": "Yes"
-  },
-  {
-    "name": "Palmetto Carriage Works Historic Residential Carriage Tour",
-    "category": "Festivals & Traditions",
-    "startDate": "2026-10-01",
-    "endDate": "2027-06-30",
-    "venue": "8 Guignard St (Historic Downtown - 3 min walk)",
-    "tip": "The oldest carriage company in Charleston. 1-hour narrated tour covering 2.5\u20133 miles of historic antebellum architecture, cobblestone alleys, and gardens. Departing daily 9:00 AM - 4:00 PM.",
-    "ticket": "Advance Reservation Recommended ($45\u2013$50)",
-    "link": "https://palmettocarriage.com",
-    "active": "Yes"
-  },
-  {
-    "name": "Schooner Pride Acoustic Harbor Sunset Sail",
-    "category": "Festivals & Traditions",
-    "startDate": "2026-10-01",
-    "endDate": "2027-06-30",
-    "venue": "Aquarium Wharf (360 Concord St - 10 min walk)",
-    "tip": "An authentic 84-foot tall ship sailing under wind power alone across Charleston Harbor. Two-hour sunset sails feature local acoustic musicians, dolphin spotting, and craft beer/wine service on deck.",
-    "ticket": "Advance Booking Recommended ($55\u2013$68)",
-    "link": "https://charlestonharbortours.com",
     "active": "Yes"
   },
   {
@@ -2823,14 +2790,22 @@
 
       // Background Live Sync from Google Sheet CSV export
       async function syncLiveSheet() {
-        const LIVE_CSV_URL = 'https://docs.google.com/spreadsheets/d/1S-k9hNJMkusyw0WF81AvKDE1inbiaDe6foEdM0zdQdU/export?format=csv&gid=0';
+        // Fetch fresh CSV with timestamp cache-buster so deletions reflect immediately
+        const LIVE_CSV_URL = 'https://docs.google.com/spreadsheets/d/1S-k9hNJMkusyw0WF81AvKDE1inbiaDe6foEdM0zdQdU/export?format=csv&gid=0&_t=' + Date.now();
         try {
-          const resp = await fetch(LIVE_CSV_URL);
+          const resp = await fetch(LIVE_CSV_URL, { cache: 'no-store' });
           if (!resp.ok) return;
           const csvText = await resp.text();
           const rows = parseCSV(csvText);
           if (rows && rows.length > 5) {
-            allEvents = rows.filter(r => (r['Active / Live?'] || '').toLowerCase() === 'yes').map(r => ({
+            // Block commercial daily tour operators that clutter all stay dates
+            const blockedTourCompanies = ['bulldog', 'palmetto carriage works', 'schooner pride'];
+            allEvents = rows.filter(r => {
+              const active = (r['Active / Live?'] || '').toLowerCase() === 'yes';
+              const name = (r['Event Name'] || '').toLowerCase();
+              const isCommercialTour = blockedTourCompanies.some(term => name.includes(term));
+              return active && !isCommercialTour;
+            }).map(r => ({
               name: r['Event Name'] || '',
               category: r['Category'] || '',
               startDate: r['Start Date'] || '',
