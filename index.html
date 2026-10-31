@@ -610,6 +610,7 @@
         <span>Keys to Charleston Partners</span>
       </button>
       <button class="filter-btn" data-category="landmarks">Landmarks & History</button>
+      <button class="filter-btn" data-category="beaches">🏖️ Beaches & Islands</button>
       <button class="filter-btn" data-category="dining">Sip and Savor</button>
       <button class="filter-btn" data-category="shopping">Boutiques & Shopping</button>
       <button class="filter-btn" data-category="staff">Staff Picks</button>
@@ -740,6 +741,14 @@
           <path d="M16 38 C16 38 2 24 2 15 A14 14 0 1 1 30 15 C30 24 16 38 16 38 Z" fill="#7A4B7D" stroke="#F3E5AB" stroke-width="2"/>
           <circle cx="16" cy="15" r="8" fill="#FFFFFF"/>
           <path d="M16 18 S12 15.5 12 13.5 A2 2 0 0 1 16 12.5 A2 2 0 0 1 20 13.5 C20 15.5 16 18 16 18 Z" fill="#7A4B7D"/>
+        </svg>`;
+      }
+      if (type === 'beaches') {
+        return `<svg viewBox="0 0 34 42" width="32" height="40" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 40 C17 40 2 26 2 16 A15 15 0 1 1 32 16 C32 26 17 40 17 40 Z" fill="#2E8694" stroke="#F3E5AB" stroke-width="2.2"/>
+          <circle cx="17" cy="16" r="8.5" fill="#FFFFFF"/>
+          <path d="M11 17 C13 15 15 15 17 17 C19 19 21 19 23 17" stroke="#2E8694" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M11 14 C13 12 15 12 17 14 C19 16 21 16 23 14" stroke="#2E8694" stroke-width="1.8" fill="none" stroke-linecap="round"/>
         </svg>`;
       }
       return `<svg viewBox="0 0 32 40" width="30" height="38" xmlns="http://www.w3.org/2000/svg">
@@ -917,19 +926,26 @@
                      (rawBooking && rawBooking.toLowerCase().includes('room key'));
 
       // Strict determination of Landmark
+      const isBeach = !isKeys && ((data.isBeach === true) || 
+                      catLower.includes('beach') || 
+                      catLower.includes('coastal') || 
+                      cleanName.includes('beach') || 
+                      cleanName.includes('island'));
+
       const isLandmark = !isKeys && ((data.isLandmark === true) || 
                          (data.sheetType === 'landmarks') || 
+                         isBeach ||
                          catLower.includes('points of interest') || 
                          catLower.includes('landmark') || 
                          catLower.includes('museum') || 
-                         catLower.includes('historic house') ||
+                         catLower.includes('historic house') || 
                          catLower.includes('monument'));
 
       // Subcategories for cross-filtering
       function hasTerm(txt, terms) {
         return terms.some(t => txt.includes(t));
       }
-      const isDining = hasTerm(combinedText, ['dining', 'seafood', 'bistro', 'bakery', 'coffee', 'pub', 'cocktail', 'ice cream', 'bbq', 'cantina', 'tavern', 'cafe', 'bar', 'foodie', 'restaurant', 'eatery']);
+      const isDining = hasTerm(combinedText, ['dining', 'seafood', 'bistro', 'bakery', 'coffee', 'pub', 'cocktail', 'ice cream', 'bbq', 'cantina', 'tavern', 'cafe', 'bar', 'foodie', 'restaurant', 'eatery', 'sip', 'savor', 'drink', 'wine']);
       const isShop = hasTerm(combinedText, ['shopping', 'boutique', 'curated retail', 'jewelry', 'clothing', 'art gallery', 'antique shop', 'souvenir', 'gift shop', 'keepsake']);
 
       // Build Category Tags
@@ -940,6 +956,7 @@
         if (isShop) categoryTags.add('shopping');
       } else if (isLandmark) {
         categoryTags.add('landmarks');
+        if (isBeach) categoryTags.add('beaches');
       } else if (isGuest) {
         categoryTags.add('guests');
         if (isDining) categoryTags.add('dining');
@@ -960,9 +977,15 @@
         categoryTag = 'keys';
         catDisplay = 'Keys to Charleston Partner';
       } else if (isLandmark) {
-        pinType = 'landmarks';
-        categoryTag = 'landmarks';
-        catDisplay = 'Landmark & History';
+        if (isBeach) {
+          pinType = 'beaches';
+          categoryTag = 'beaches';
+          catDisplay = 'Beach & Coastal Landmark';
+        } else {
+          pinType = 'landmarks';
+          categoryTag = 'landmarks';
+          catDisplay = 'Landmark & History';
+        }
       } else if (isGuest) {
         pinType = 'guests';
         categoryTag = 'guests';
@@ -1211,7 +1234,7 @@
   },
   {
     "name": "Rainbow Row",
-    "category": "Points of Interest & Landmarks",
+    "category": "Landmarks & History",
     "address": "83-107 E Bay St, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
     "tip": "Best lighting is morning around 8:30-10:00 AM before street parking blocks facades and tourist foot traffic picks up. 13 pastel Georgian rowhouses.",
@@ -1225,7 +1248,7 @@
   },
   {
     "name": "Pineapple Fountain (Joe Riley Waterfront Park)",
-    "category": "Points of Interest & Landmarks",
+    "category": "Landmarks & History",
     "address": "1 Vendue Range, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
     "tip": "Just two blocks east of The Palmetto. Walk past the fountain out onto the pier for harbor breeze, swing benches, and views of Fort Sumter and Ravenel Bridge.",
@@ -1239,7 +1262,7 @@
   },
   {
     "name": "The Battery & White Point Garden",
-    "category": "Points of Interest & Landmarks",
+    "category": "Landmarks & History",
     "address": "E Battery & Murray Blvd, Charleston, SC 29401",
     "proximity": "Moderate Walk (10\u201320 minutes)",
     "tip": "Walk south down East Bay St past Rainbow Row all the way to the tip of the peninsula. Live oaks, Civil War cannons, and antebellum mansions. Great at sunset.",
@@ -1253,7 +1276,7 @@
   },
   {
     "name": "International African American Museum (IAAM)",
-    "category": "Cultural & Art Museums",
+    "category": "Landmarks & History",
     "address": "14 Wharfside St, Charleston, SC 29401",
     "proximity": "Short Uber / Taxi (5\u201310 minutes)",
     "tip": "Built on Gadsden's Wharf where tens of thousands of enslaved Africans first entered America. Outstanding interactive exhibits and the African Ancestors Memorial Garden.",
@@ -1267,7 +1290,7 @@
   },
   {
     "name": "Nathaniel Russell House",
-    "category": "Historic House Museums & Tours",
+    "category": "Landmarks & History",
     "address": "51 Meeting St, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
     "tip": "Features the world-famous freestanding cantilevered flying spiral staircase. Self-guided audio tour via smartphone is exceptionally well done.",
@@ -1281,7 +1304,7 @@
   },
   {
     "name": "Fort Sumter National Monument Ferry",
-    "category": "Boat & Harbor Tours",
+    "category": "Landmarks & History",
     "address": "340 Concord St, Charleston, SC 29401",
     "proximity": "Short Uber / Taxi (5\u201310 minutes)",
     "tip": "30-minute narrated harbor ferry ride out to the island fort where the Civil War began, followed by 1 hour on the island. Dolphins frequently swim alongside the boat.",
@@ -1295,7 +1318,7 @@
   },
   {
     "name": "167 Raw",
-    "category": "Dining: Seafood & Raw Bar",
+    "category": "Sip and Savor",
     "address": "193 King St, Charleston, SC 29401",
     "proximity": "Moderate Walk (10\u201320 minutes)",
     "tip": "No reservations accepted. Put your name in at the door 45-60 minutes before you want to eat and grab a drink nearby. The lobster roll and pastrami swordfish slider are essentials.",
@@ -1309,7 +1332,7 @@
   },
   {
     "name": "High Cotton",
-    "category": "Dining: Upscale / Date Night",
+    "category": "Sip and Savor",
     "address": "199 E Bay St, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
     "tip": "Directly across the street from The Palmetto. Live jazz music nightly, refined Lowcountry classics (shrimp & grits, steaks), and an exceptional bar team. Great fallback for hotel guests.",
@@ -1323,7 +1346,7 @@
   },
   {
     "name": "Vern's",
-    "category": "Dining: Upscale / Date Night",
+    "category": "Sip and Savor",
     "address": "41 Bogard St, Charleston, SC 29403",
     "proximity": "Short Uber / Taxi (5\u201310 minutes)",
     "tip": "One of Charleston's most celebrated neighborhood bistros. House-baked sourdough, homemade pastas, and natural wine list. Books 30 days out on Resy at midnight.",
@@ -1337,7 +1360,7 @@
   },
   {
     "name": "The Griffon",
-    "category": "Historic Pubs & Neighborhood Bars",
+    "category": "Sip and Savor",
     "address": "18 Vendue Range, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
     "tip": "Historic neighborhood English tavern covered floor-to-ceiling in signed dollar bills. Located 1 block from The Palmetto. Great craft beers, fish and chips, and casual late-night refuge.",
@@ -1351,7 +1374,7 @@
   },
   {
     "name": "Citrus Club (at The Dewberry)",
-    "category": "Craft Cocktails & Rooftops",
+    "category": "Sip and Savor",
     "address": "334 Meeting St, Charleston, SC 29403",
     "proximity": "Moderate Walk (10\u201320 minutes)",
     "tip": "The highest public rooftop in downtown Charleston with 360-degree views of the harbor and steeple skyline. Ideal for sunset cocktails; book a table via Resy or arrive right at opening.",
@@ -1365,7 +1388,7 @@
   },
   {
     "name": "Sightsee Coffee",
-    "category": "Coffee, Breakfast & Bakeries",
+    "category": "Sip and Savor",
     "address": "125 1/2 Line St, Charleston, SC 29403",
     "proximity": "Short Uber / Taxi (5\u201310 minutes)",
     "tip": "Micro-coffee shop and retail outfit celebrating travel and local artists. Try the signature salted caramel cold brew. Great neighborhood vibe away from the commercial strip.",
@@ -1379,7 +1402,7 @@
   },
   {
     "name": "Chez Nous",
-    "category": "Dining: Upscale / Date Night",
+    "category": "Sip and Savor",
     "address": "6 Payne Ct, Charleston, SC 29403",
     "proximity": "Moderate Walk (10\u201320 minutes)",
     "tip": "Hidden down a secluded alleyway in a historic 1835 home. Handwritten daily changing French menu on index cards. Best romantic dinner of our Charleston trip!",
@@ -1394,7 +1417,7 @@
   },
   {
     "name": "Off Track Ice Cream",
-    "category": "Coffee, Breakfast & Bakeries",
+    "category": "Sip and Savor",
     "address": "6 Beaufain St, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
     "tip": "All-natural and vegan craft ice cream made 100% from scratch with local ingredients. The bourbon caramel and brown butter pecan were incredible!",
@@ -1409,7 +1432,7 @@
   },
   {
     "name": "Vintage Lounge",
-    "category": "Craft Cocktails & Rooftops",
+    "category": "Sip and Savor",
     "address": "545 King St, Charleston, SC 29403",
     "proximity": "Short Uber / Taxi (5\u201310 minutes)",
     "tip": "Stunner of a wine and cocktail parlor with a 1920s gold-leaf barrel-vaulted ceiling. Exceptional cheese charcuterie boards and vintage champagne flights.",
@@ -1424,7 +1447,7 @@
   },
   {
     "name": "Tommy Condon's Irish Pub",
-    "category": "Historic Pubs & Neighborhood Bars",
+    "category": "Sip and Savor",
     "address": "160 Church St, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
     "tip": "Authentic Irish pub with live Celtic music and great shepherd pie.",
@@ -1434,6 +1457,178 @@
     "isGuest": true,
     "isKeys": false,
     "isLandmark": false,
+    "isDefault": true
+  },
+  {
+    "name": "Sullivan's Island Beach",
+    "category": "Beaches & Coastal",
+    "address": "Station 22nd St & Middle St, Sullivan's Island, SC 29482",
+    "proximity": "Scenic Drive (15\u201320 minutes from The Palmetto)",
+    "tip": "Pristine wide-sand beach free from commercial boardwalks. The unique triangular Sullivan's Island Lighthouse marks the entrance. Perfect afternoon trip paired with dinner at The Obstinate Daughter or burgers at Poe's Tavern along Middle Street.",
+    "booking": "Free Public Beach Access",
+    "lat": 32.76342,
+    "lng": -79.83625,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "isBeach": true,
+    "isDefault": true
+  },
+  {
+    "name": "Isle of Palms Beach & County Park",
+    "category": "Beaches & Coastal",
+    "address": "1-14th Ave & Ocean Blvd, Isle of Palms, SC 29451",
+    "proximity": "Scenic Drive (20\u201325 minutes from The Palmetto)",
+    "tip": "Family-friendly shoreline featuring lifeguards, beach umbrella rentals, boardwalks, and outdoor sand volleyball courts. Oceanfront dining and live music at The Windjammer and Coconut Joe's are steps away.",
+    "booking": "Free Beach Access / $10\u2013$15 Daily County Park Parking",
+    "lat": 32.78651,
+    "lng": -79.79154,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "isBeach": true,
+    "isDefault": true
+  },
+  {
+    "name": "Folly Beach & Fishing Pier",
+    "category": "Beaches & Coastal",
+    "address": "101 E Arctic Ave, Folly Beach, SC 29439",
+    "proximity": "Scenic Drive (20\u201325 minutes from The Palmetto)",
+    "tip": "Charleston's vibrant surf town known as the 'Edge of America'. Walk out on the newly rebuilt 1,049-foot ocean fishing pier for panoramic Atlantic views, or head east to The Washout for South Carolina's premier surf break.",
+    "booking": "Free Beach Access / Public Pier & Street Parking",
+    "lat": 32.65449,
+    "lng": -79.94052,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "isBeach": true,
+    "isDefault": true
+  },
+  {
+    "name": "Kiawah Island \u2014 Beachwalker County Park",
+    "category": "Beaches & Coastal",
+    "address": "8 Beachwalker Dr, Kiawah Island, SC 29455",
+    "proximity": "Scenic Day Trip (40\u201345 minutes from The Palmetto)",
+    "tip": "The only public beach access point on private, world-renowned Kiawah Island. 10 miles of pristine undeveloped maritime forest coastline bordering the Kiawah River. Walk south toward Captain Sam's Spit for frequent Atlantic bottlenose dolphin strand-feeding sightings.",
+    "booking": "Public Beach Access ($15\u2013$20 Vehicle Day Pass)",
+    "lat": 32.58782,
+    "lng": -80.06451,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "isBeach": true,
+    "isDefault": true
+  },
+  {
+    "name": "Historic Charleston City Market",
+    "category": "Landmarks & History",
+    "address": "188 Meeting St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5 minutes from The Palmetto)",
+    "tip": "Continuous historic market in operation since 1788 spanning four full city blocks from Meeting to East Bay Street. Meet generations of Gullah basket weavers crafting authentic sweetgrass baskets by hand. Night Market runs Friday & Saturday evenings.",
+    "booking": "Free & Open to the Public (Daily 9:30 AM \u2013 5:00 PM)",
+    "lat": 32.78062,
+    "lng": -79.93121,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "isDefault": true
+  },
+  {
+    "name": "Old Exchange & Provost Dungeon",
+    "category": "Landmarks & History",
+    "address": "122 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (3 minutes south of The Palmetto)",
+    "tip": "One of America's four remaining Constitution-ratifying buildings (completed 1771). George Washington was feted in the Great Hall, and colonial rebels and pirates were imprisoned in the half-buried dungeon below. Guided tours depart every 30 minutes.",
+    "booking": "Guided Tours Daily ($15 Adult / $5 Youth)",
+    "lat": 32.77661,
+    "lng": -79.92742,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "isDefault": true
+  },
+  {
+    "name": "Historic Dock Street Theatre",
+    "category": "Landmarks & History",
+    "address": "135 Church St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (4 minutes from The Palmetto)",
+    "tip": "America's first building erected exclusively for theatrical performances (opened 1736 in the French Quarter). Features rich black cypress woodwork, historic box seating, and a lovely cast-iron second-story balcony. Home to Charleston Stage productions.",
+    "booking": "Free to View Lobby / Performance Tickets Required for Shows",
+    "lat": 32.77884,
+    "lng": -79.92982,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "isDefault": true
+  },
+  {
+    "name": "St. Michael's Church (Four Corners of Law)",
+    "category": "Landmarks & History",
+    "address": "71 Broad St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (5 minutes from The Palmetto)",
+    "tip": "Charleston's oldest surviving church edifice (built 1761). George Washington worshipped in Pew 43 during his 1791 Southern Tour. Its iconic 186-foot white steeple houses eight London bells cast in 1764 that have crossed the Atlantic five times.",
+    "booking": "Free & Open to Public for Reflection & Historic Walk-in",
+    "lat": 32.77689,
+    "lng": -79.93168,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "isDefault": true
+  },
+  {
+    "name": "Aiken-Rhett House Museum",
+    "category": "Landmarks & History",
+    "address": "48 Elizabeth St, Charleston, SC 29403",
+    "proximity": "Short Uber / Taxi (5\u20137 minutes from The Palmetto)",
+    "tip": "One of the most authentic antebellum townhouse complexes in America (built 1820). Preserved 'as-found' rather than renovated, showcasing original furnishings, finishes, carriage house, and enslaved quarters virtually unchanged since the 1850s.",
+    "booking": "Self-Guided Audio Tour ($15 Adult / Historic Charleston Foundation)",
+    "lat": 32.79032,
+    "lng": -79.93514,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "isDefault": true
+  },
+  {
+    "name": "Patriots Point Naval & Maritime Museum",
+    "category": "Landmarks & History",
+    "address": "40 Patriots Point Rd, Mount Pleasant, SC 29464",
+    "proximity": "Short Drive or Water Taxi (10\u201312 minutes from The Palmetto)",
+    "tip": "Walk the flight deck of the historic aircraft carrier USS Yorktown (CV-10), tour the submarine USS Clamagore/destroyer USS Laffey, and visit the only immersive Vietnam Experience Exhibit in the nation. The Charleston Water Taxi runs directly from Waterfront Park pier!",
+    "booking": "Ticket Required ($27\u2013$32 Adult / Active Military Discounts)",
+    "lat": 32.79031,
+    "lng": -79.90772,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "isDefault": true
+  },
+  {
+    "name": "Boone Hall Plantation (Avenue of Oaks)",
+    "category": "Landmarks & History",
+    "address": "1235 Long Point Rd, Mount Pleasant, SC 29464",
+    "proximity": "Scenic Drive (20\u201325 minutes from The Palmetto)",
+    "tip": "Features the world-famous three-quarter-mile Avenue of Oaks planted in 1743. Includes powerful live Gullah Geechee theater presentations, original 1790-1810 brick slave cabins with educational exhibits, historic garden tours, and open farmland.",
+    "booking": "Advance Ticket Required ($28 Adult / Includes All Shows & House Tours)",
+    "lat": 32.85501,
+    "lng": -79.82249,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "isDefault": true
+  },
+  {
+    "name": "Drayton Hall (1738 Palladian Plantation)",
+    "category": "Landmarks & History",
+    "address": "3380 Ashley River Rd, Charleston, SC 29414",
+    "proximity": "Scenic Drive (25 minutes from The Palmetto)",
+    "tip": "The only Ashley River plantation mansion that survived both the Revolutionary and Civil Wars intact. Maintained in raw preservation without modern electric wiring or plumbing\u2014considered one of the finest early examples of Palladian architecture in the Americas.",
+    "booking": "Advance Booking Recommended ($26\u2013$36 per ticket)",
+    "lat": 32.87102,
+    "lng": -80.07503,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
     "isDefault": true
   }
 ];
