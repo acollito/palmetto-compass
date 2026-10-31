@@ -351,47 +351,7 @@
       border-color: var(--p-green);
     }
 
-    /* Quick Date Chips */
-    .quick-date-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--p-border-light);
-    }
-    .quick-date-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      color: var(--p-sage);
-      margin-right: 4px;
-      white-space: nowrap;
-    }
-    .quick-chip {
-      background: #FAF8F5;
-      border: 1px solid var(--p-border);
-      color: var(--p-text);
-      padding: 5px 12px;
-      border-radius: 16px;
-      font-size: 0.76rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      user-select: none;
-    }
-    .quick-chip:hover {
-      background: #EFECE6;
-      border-color: var(--p-gold);
-    }
-    .quick-chip.active {
-      background: var(--p-green);
-      color: #FFFFFF;
-      border-color: var(--p-green);
-      box-shadow: 0 2px 6px rgba(62, 77, 63, 0.3);
-    }
+    
 
     /* Category Filter Pills */
     .category-pills-row {
@@ -878,29 +838,16 @@
         </div>
       </div>
 
-      <!-- Quick Date Range Chips -->
-      <div class="quick-date-row">
-        <span class="quick-date-label">Quick Windows:</span>
-        <button type="button" class="quick-chip active" data-range="all">All Upcoming</button>
-        <button type="button" class="quick-chip" data-range="week">This Week</button>
-        <button type="button" class="quick-chip" data-range="weekend">This Weekend</button>
-        <button type="button" class="quick-chip" data-range="november">November 2026</button>
-        <button type="button" class="quick-chip" data-range="holidays">December & Holidays</button>
-        <button type="button" class="quick-chip" data-range="spring">Spring 2027</button>
-        <button type="button" class="quick-chip" data-range="archive">All Past & Future</button>
-      </div>
 
-      <!-- Category Filter Pills -->
+
+      <!-- Category Filter Pills (5 Streamlined Guest Buckets) -->
       <div class="category-pills-row" id="categoryPillsContainer">
         <button type="button" class="cat-btn active" data-category="all">All Categories</button>
-        <button type="button" class="cat-btn" data-category="concerts">Concerts & Live Music</button>
-        <button type="button" class="cat-btn" data-category="theatre">Performing Arts & Theatre</button>
-        <button type="button" class="cat-btn" data-category="history">History & Tours</button>
-        <button type="button" class="cat-btn" data-category="festivals">Festivals & Seasonal</button>
-        <button type="button" class="cat-btn" data-category="food">Food, Beverage & Markets</button>
-        <button type="button" class="cat-btn" data-category="arts">Arts & Culture</button>
+        <button type="button" class="cat-btn" data-category="music">Live Music</button>
+        <button type="button" class="cat-btn" data-category="theater">Arts & Theater</button>
+        <button type="button" class="cat-btn" data-category="festivals">Festivals & Traditions</button>
+        <button type="button" class="cat-btn" data-category="food">Food, Wine & Markets</button>
         <button type="button" class="cat-btn" data-category="sports">Sports & Outdoors</button>
-        <button type="button" class="cat-btn" data-category="comedy">Comedy & Entertainment</button>
       </div>
 
       <!-- Secondary Filters: Venue & Sort -->
@@ -972,7 +919,7 @@
     const DEFAULT_EVENTS = [
   {
     "name": "MOJA Arts Festival",
-    "category": "Festivals & Music",
+    "category": "Festivals & Traditions",
     "startDate": "2026-09-24",
     "endDate": "2026-10-04",
     "venue": "Various Peninsular Venues & Waterfront Park",
@@ -983,7 +930,7 @@
   },
   {
     "name": "Bulldog Tours: Ghost & Dungeon Walking Tour",
-    "category": "History & Tours",
+    "category": "Festivals & Traditions",
     "startDate": "2026-10-01",
     "endDate": "2027-06-30",
     "venue": "18 Anson St (Historic District - 5 min walk)",
@@ -994,7 +941,7 @@
   },
   {
     "name": "Fort Sumter Twilight & Harbor History Cruise",
-    "category": "History & Tours",
+    "category": "Festivals & Traditions",
     "startDate": "2026-10-01",
     "endDate": "2026-10-31",
     "venue": "Departure from Aquarium Wharf (340 Concord St)",
@@ -1005,7 +952,7 @@
   },
   {
     "name": "High Wire Distilling: Heritage Grain & Rum Tasting",
-    "category": "Food & Beverage",
+    "category": "Food, Wine & Markets",
     "startDate": "2026-10-01",
     "endDate": "2026-10-31",
     "venue": "565 King Street",
@@ -1016,7 +963,7 @@
   },
   {
     "name": "Live Jazz Nightly at High Cotton",
-    "category": "Live Music & Nightlife",
+    "category": "Live Music",
     "startDate": "2026-10-01",
     "endDate": "2026-10-31",
     "venue": "199 East Bay Street (Directly across from The Palmetto)",
@@ -1027,7 +974,7 @@
   },
   {
     "name": "Palmetto Carriage Works Historic Residential Carriage Tour",
-    "category": "History & Tours",
+    "category": "Festivals & Traditions",
     "startDate": "2026-10-01",
     "endDate": "2027-06-30",
     "venue": "8 Guignard St (Historic Downtown - 3 min walk)",
@@ -1038,7 +985,7 @@
   },
   {
     "name": "Schooner Pride Acoustic Harbor Sunset Sail",
-    "category": "Boat & Harbor Tours",
+    "category": "Festivals & Traditions",
     "startDate": "2026-10-01",
     "endDate": "2027-06-30",
     "venue": "Aquarium Wharf (360 Concord St - 10 min walk)",
@@ -1049,7 +996,7 @@
   },
   {
     "name": "The Commodore Late-Night Funk & Soul Revue",
-    "category": "Live Music & Nightlife",
+    "category": "Live Music",
     "startDate": "2026-10-01",
     "endDate": "2026-10-31",
     "venue": "504 Meeting Street",
@@ -1060,7 +1007,7 @@
   },
   {
     "name": "Boone Hall Fright Nights & Autumn Festival",
-    "category": "Festivals & Seasonal",
+    "category": "Festivals & Traditions",
     "startDate": "2026-10-02",
     "endDate": "2026-10-31",
     "venue": "Boone Hall Plantation (Mount Pleasant)",
@@ -1071,7 +1018,7 @@
   },
   {
     "name": "Charleston Gallery Association First Friday Artwalk",
-    "category": "Arts & Culture",
+    "category": "Arts & Theater",
     "startDate": "2026-10-02",
     "endDate": "2026-10-02",
     "venue": "French Quarter Historic District (2 blocks from The Palmetto)",
@@ -1082,7 +1029,7 @@
   },
   {
     "name": "Charleston Farmers Market",
-    "category": "Markets & Local Food",
+    "category": "Food, Wine & Markets",
     "startDate": "2026-10-03",
     "endDate": "2026-10-03",
     "venue": "Marion Square (Meeting & Calhoun St)",
@@ -1093,7 +1040,7 @@
   },
   {
     "name": "Pour House Sunday Brunch Farmers Market",
-    "category": "Markets & Local Food",
+    "category": "Food, Wine & Markets",
     "startDate": "2026-10-04",
     "endDate": "2026-10-04",
     "venue": "1977 Maybank Hwy, James Island",
@@ -1104,7 +1051,7 @@
   },
   {
     "name": "Best of Broadway: MRS. DOUBTFIRE",
-    "category": "Performing Arts & Theatre",
+    "category": "Arts & Theater",
     "startDate": "2026-10-06",
     "endDate": "2026-10-11",
     "venue": "North Charleston Performing Arts Center",
@@ -1115,7 +1062,7 @@
   },
   {
     "name": "Willow Avalon with Clover County",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-07",
     "endDate": "2026-10-07",
     "venue": "Music Farm (32 Ann St)",
@@ -1126,7 +1073,7 @@
   },
   {
     "name": "On the Border: The Ultimate Eagles Tribute",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-08",
     "endDate": "2026-10-08",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1137,7 +1084,7 @@
   },
   {
     "name": "Preservation Society Fall Tours of Homes & Gardens",
-    "category": "History & Architecture",
+    "category": "Festivals & Traditions",
     "startDate": "2026-10-08",
     "endDate": "2026-11-01",
     "venue": "South of Broad & Historic Downtown",
@@ -1148,7 +1095,7 @@
   },
   {
     "name": "Russian Circles with Pelican",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-08",
     "endDate": "2026-10-08",
     "venue": "Music Farm (32 Ann St)",
@@ -1159,7 +1106,7 @@
   },
   {
     "name": "Charleston City Market Night Market",
-    "category": "Arts, Crafts & Local Markets",
+    "category": "Food, Wine & Markets",
     "startDate": "2026-10-09",
     "endDate": "2026-10-10",
     "venue": "Historic Charleston City Market (Church to East Bay St)",
@@ -1181,7 +1128,7 @@
   },
   {
     "name": "Jordan Klepper: Live Stand-Up",
-    "category": "Comedy & Entertainment",
+    "category": "Arts & Theater",
     "startDate": "2026-10-09",
     "endDate": "2026-10-09",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1192,7 +1139,7 @@
   },
   {
     "name": "MercyMe with Jeremy Camp & Tim Timmons",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-09",
     "endDate": "2026-10-09",
     "venue": "North Charleston Coliseum",
@@ -1203,7 +1150,7 @@
   },
   {
     "name": "The Windjammer Sunset Deck Concerts",
-    "category": "Live Music & Nightlife",
+    "category": "Live Music",
     "startDate": "2026-10-09",
     "endDate": "2026-10-10",
     "venue": "1008 Ocean Blvd (Isle of Palms - 20 min drive)",
@@ -1214,7 +1161,7 @@
   },
   {
     "name": "BALTHVS with DJ Zevyman",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-10",
     "endDate": "2026-10-10",
     "venue": "Music Farm (32 Ann St)",
@@ -1236,7 +1183,7 @@
   },
   {
     "name": "The Black Jacket Symphony: Def Leppard's Hysteria",
-    "category": "Concerts & Live Music",
+    "category": "Arts & Theater",
     "startDate": "2026-10-10",
     "endDate": "2026-10-10",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1247,7 +1194,7 @@
   },
   {
     "name": "Second Sunday on King Street",
-    "category": "Street Fair & Shopping",
+    "category": "Festivals & Traditions",
     "startDate": "2026-10-11",
     "endDate": "2026-10-11",
     "venue": "Lower King Street (Queen St to Calhoun St)",
@@ -1258,7 +1205,7 @@
   },
   {
     "name": "Thundercat with special guest TiaCorine",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-11",
     "endDate": "2026-10-11",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1269,7 +1216,7 @@
   },
   {
     "name": "Cannons with Caroline Kingsbury",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-12",
     "endDate": "2026-10-12",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1280,7 +1227,7 @@
   },
   {
     "name": "All Them Witches with Emma Ruth Rundle",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-13",
     "endDate": "2026-10-13",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1291,7 +1238,7 @@
   },
   {
     "name": "Dock Street Theatre: Fall Repertory Drama",
-    "category": "Performing Arts & Theatre",
+    "category": "Arts & Theater",
     "startDate": "2026-10-14",
     "endDate": "2026-10-25",
     "venue": "Historic Dock Street Theatre (135 Church St - 3 min walk)",
@@ -1302,7 +1249,7 @@
   },
   {
     "name": "Nevertel with Rivals & Ocean Sleeper",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-14",
     "endDate": "2026-10-14",
     "venue": "Music Farm (32 Ann St)",
@@ -1313,7 +1260,7 @@
   },
   {
     "name": "Scott Bradlee's Postmodern Jukebox",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-14",
     "endDate": "2026-10-14",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1324,7 +1271,7 @@
   },
   {
     "name": "Black Violin: The Be Free Tour",
-    "category": "Performing Arts & Music",
+    "category": "Live Music",
     "startDate": "2026-10-15",
     "endDate": "2026-10-15",
     "venue": "Charleston Gaillard Center (95 Calhoun St)",
@@ -1335,7 +1282,7 @@
   },
   {
     "name": "Mark Normand: Ya Don't Say Tour",
-    "category": "Comedy & Entertainment",
+    "category": "Arts & Theater",
     "startDate": "2026-10-15",
     "endDate": "2026-10-15",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1346,7 +1293,7 @@
   },
   {
     "name": "sunn O))) with special guest Shane Parish",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-15",
     "endDate": "2026-10-15",
     "venue": "Music Farm (32 Ann St)",
@@ -1357,7 +1304,7 @@
   },
   {
     "name": "Charleston Symphony Orchestra: Masterworks Opening",
-    "category": "Performing Arts & Music",
+    "category": "Arts & Theater",
     "startDate": "2026-10-16",
     "endDate": "2026-10-17",
     "venue": "Charleston Gaillard Center (Calhoun St)",
@@ -1368,7 +1315,7 @@
   },
   {
     "name": "Eddie 9V with Eddie Bush",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-16",
     "endDate": "2026-10-16",
     "venue": "Music Farm (32 Ann St)",
@@ -1379,7 +1326,7 @@
   },
   {
     "name": "Gabriel Iglesias: The 1976 Tour",
-    "category": "Comedy & Entertainment",
+    "category": "Arts & Theater",
     "startDate": "2026-10-16",
     "endDate": "2026-10-16",
     "venue": "North Charleston Coliseum",
@@ -1390,7 +1337,7 @@
   },
   {
     "name": "The Marshall Tucker Band Live in Concert",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-16",
     "endDate": "2026-10-16",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1401,7 +1348,7 @@
   },
   {
     "name": "Trampled by Turtles with The Last Revel",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-16",
     "endDate": "2026-10-16",
     "venue": "The Refinery (1640 Meeting Street Rd)",
@@ -1412,7 +1359,7 @@
   },
   {
     "name": "Charleston Jazz: What a Wonderful World (Bruce Harris)",
-    "category": "Performing Arts & Music",
+    "category": "Live Music",
     "startDate": "2026-10-17",
     "endDate": "2026-10-17",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1423,7 +1370,7 @@
   },
   {
     "name": "Drayton Hall Candlelight & Landscape Tour",
-    "category": "History & Architecture",
+    "category": "Live Music",
     "startDate": "2026-10-17",
     "endDate": "2026-10-24",
     "venue": "Drayton Hall (Ashley River Road / Hwy 61)",
@@ -1434,7 +1381,7 @@
   },
   {
     "name": "Firefly Distillery: Live Music on the Field",
-    "category": "Live Music & Food",
+    "category": "Food, Wine & Markets",
     "startDate": "2026-10-17",
     "endDate": "2026-10-17",
     "venue": "4201 Spruill Ave (Park Circle)",
@@ -1445,7 +1392,7 @@
   },
   {
     "name": "North Charleston POPS! Rocket Man: The Music of Elton",
-    "category": "Performing Arts & Music",
+    "category": "Arts & Theater",
     "startDate": "2026-10-17",
     "endDate": "2026-10-17",
     "venue": "North Charleston Performing Arts Center",
@@ -1467,7 +1414,7 @@
   },
   {
     "name": "The Red Clay Strays: Grateful Tour",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-17",
     "endDate": "2026-10-17",
     "venue": "Credit One Stadium (Daniel Island)",
@@ -1478,7 +1425,7 @@
   },
   {
     "name": "Holy City Farmers Market at Holy City Brewing",
-    "category": "Markets & Local Food",
+    "category": "Food, Wine & Markets",
     "startDate": "2026-10-18",
     "endDate": "2026-10-18",
     "venue": "1021 Aragon Ave (Park Circle / NoMo)",
@@ -1489,7 +1436,7 @@
   },
   {
     "name": "Town of Mount Pleasant Children's Day Festival",
-    "category": "Family Events & Spectacle",
+    "category": "Live Music",
     "startDate": "2026-10-18",
     "endDate": "2026-10-18",
     "venue": "Park West Recreation Complex (Mount Pleasant)",
@@ -1500,7 +1447,7 @@
   },
   {
     "name": "Alana Springsteen with Kyle Schuesler",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-21",
     "endDate": "2026-10-21",
     "venue": "Music Farm (32 Ann St)",
@@ -1511,7 +1458,7 @@
   },
   {
     "name": "Charleston Music Hall: Acoustic Masters Series",
-    "category": "Live Music & Nightlife",
+    "category": "Live Music",
     "startDate": "2026-10-22",
     "endDate": "2026-10-22",
     "venue": "37 John Street (Near Upper King)",
@@ -1522,7 +1469,7 @@
   },
   {
     "name": "Disney On Ice Presents Magic of Family",
-    "category": "Family Events & Spectacle",
+    "category": "Live Music",
     "startDate": "2026-10-22",
     "endDate": "2026-10-25",
     "venue": "North Charleston Coliseum",
@@ -1533,7 +1480,7 @@
   },
   {
     "name": "Watch What Happens Live with Andy Cohen (Bravo Fan Fest)",
-    "category": "Comedy & Entertainment",
+    "category": "Arts & Theater",
     "startDate": "2026-10-22",
     "endDate": "2026-10-23",
     "venue": "North Charleston Performing Arts Center",
@@ -1544,7 +1491,7 @@
   },
   {
     "name": "Charleston Beer Week",
-    "category": "Food & Beverage",
+    "category": "Food, Wine & Markets",
     "startDate": "2026-10-23",
     "endDate": "2026-11-01",
     "venue": "Breweries across Downtown & Upper King",
@@ -1555,7 +1502,7 @@
   },
   {
     "name": "Johnny Blue Skies & the Dark Clouds: Mutiny for the Masses Tour",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-23",
     "endDate": "2026-10-23",
     "venue": "Credit One Stadium (Daniel Island)",
@@ -1566,7 +1513,7 @@
   },
   {
     "name": "The Hip Abduction with Sensamotion",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-23",
     "endDate": "2026-10-23",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1577,7 +1524,7 @@
   },
   {
     "name": "Bravo Fan Fest 2026",
-    "category": "Festivals & Entertainment",
+    "category": "Festivals & Traditions",
     "startDate": "2026-10-24",
     "endDate": "2026-10-24",
     "venue": "North Charleston Performing Arts Center",
@@ -1588,7 +1535,7 @@
   },
   {
     "name": "Emo Night Brooklyn: Halloween Edition",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-24",
     "endDate": "2026-10-24",
     "venue": "Music Farm (32 Ann St)",
@@ -1599,7 +1546,7 @@
   },
   {
     "name": "The Rocky Horror Picture Show with Live Shadowcast",
-    "category": "Performing Arts & Theatre",
+    "category": "Arts & Theater",
     "startDate": "2026-10-25",
     "endDate": "2026-10-25",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1610,7 +1557,7 @@
   },
   {
     "name": "Rumours of Fleetwood Mac (Official Tribute Tour)",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-27",
     "endDate": "2026-10-27",
     "venue": "North Charleston Performing Arts Center",
@@ -1621,7 +1568,7 @@
   },
   {
     "name": "CeCe Winans: COME WORSHIP! Tour",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-10-28",
     "endDate": "2026-10-28",
     "venue": "North Charleston Coliseum",
@@ -1632,7 +1579,7 @@
   },
   {
     "name": "Sonic Live in Concert",
-    "category": "Performing Arts & Music",
+    "category": "Arts & Theater",
     "startDate": "2026-10-28",
     "endDate": "2026-10-28",
     "venue": "North Charleston Performing Arts Center",
@@ -1643,7 +1590,7 @@
   },
   {
     "name": "South Carolina Ballet: Dracula",
-    "category": "Performing Arts & Dance",
+    "category": "Arts & Theater",
     "startDate": "2026-10-29",
     "endDate": "2026-10-30",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1665,7 +1612,7 @@
   },
   {
     "name": "Hawthorne Heights with letlive. & Creeper",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-11-01",
     "endDate": "2026-11-01",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1676,7 +1623,7 @@
   },
   {
     "name": "Jake Shimabukuro Live in Concert",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-11-02",
     "endDate": "2026-11-02",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1687,7 +1634,7 @@
   },
   {
     "name": "Charleston City Market Night Market (Fall & Holiday Series)",
-    "category": "Arts, Crafts & Local Markets",
+    "category": "Food, Wine & Markets",
     "startDate": "2026-11-06",
     "endDate": "2026-12-19",
     "venue": "Historic Charleston City Market (Church to East Bay St)",
@@ -1698,7 +1645,7 @@
   },
   {
     "name": "Charleston Gallery Association First Friday Artwalk (November)",
-    "category": "Arts & Culture",
+    "category": "Arts & Theater",
     "startDate": "2026-11-06",
     "endDate": "2026-11-06",
     "venue": "French Quarter Historic District (2 blocks from The Palmetto)",
@@ -1709,7 +1656,7 @@
   },
   {
     "name": "Charleston Literary Festival",
-    "category": "Arts & Culture",
+    "category": "Arts & Theater",
     "startDate": "2026-11-06",
     "endDate": "2026-11-15",
     "venue": "Dock Street Theatre & Circular Congregational Church",
@@ -1720,7 +1667,7 @@
   },
   {
     "name": "Charleston County Parks Harvest Festival",
-    "category": "Festivals & Seasonal",
+    "category": "Festivals & Traditions",
     "startDate": "2026-11-07",
     "endDate": "2026-11-07",
     "venue": "Johns Island County Park (2662 Mullet Hall Rd)",
@@ -1731,7 +1678,7 @@
   },
   {
     "name": "Charleston Scottish Games & Highland Gathering",
-    "category": "Festivals & Heritage",
+    "category": "Festivals & Traditions",
     "startDate": "2026-11-07",
     "endDate": "2026-11-07",
     "venue": "Riverfront Park (North Charleston)",
@@ -1742,7 +1689,7 @@
   },
   {
     "name": "Second Sunday on King Street (November Edition)",
-    "category": "Street Fair & Shopping",
+    "category": "Festivals & Traditions",
     "startDate": "2026-11-08",
     "endDate": "2026-11-08",
     "venue": "Lower King Street (Queen St to Calhoun St)",
@@ -1753,7 +1700,7 @@
   },
   {
     "name": "Tab Benoit with Jesse Dayton",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-11-08",
     "endDate": "2026-11-08",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1764,7 +1711,7 @@
   },
   {
     "name": "UB40: Red Red Wine Tour",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-11-10",
     "endDate": "2026-11-10",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1775,7 +1722,7 @@
   },
   {
     "name": "Spyro Gyra Live in Concert",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-11-12",
     "endDate": "2026-11-12",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1786,7 +1733,7 @@
   },
   {
     "name": "Holiday Festival of Lights",
-    "category": "Festivals & Seasonal",
+    "category": "Festivals & Traditions",
     "startDate": "2026-11-13",
     "endDate": "2026-12-31",
     "venue": "James Island County Park (15-min drive)",
@@ -1797,7 +1744,7 @@
   },
   {
     "name": "Paula Cole with special guest Rett Madison",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-11-13",
     "endDate": "2026-11-13",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1808,7 +1755,7 @@
   },
   {
     "name": "The Wrecks with Worry Club & Kid Sistr",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-11-13",
     "endDate": "2026-11-13",
     "venue": "Music Farm (32 Ann St)",
@@ -1819,7 +1766,7 @@
   },
   {
     "name": "Middleton Place Autumn Heritage Gathering",
-    "category": "History & Architecture",
+    "category": "Live Music",
     "startDate": "2026-11-14",
     "endDate": "2026-11-15",
     "venue": "Middleton Place (Ashley River)",
@@ -1830,7 +1777,7 @@
   },
   {
     "name": "Pecos & The Rooftops with Jaxon Malone",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-11-14",
     "endDate": "2026-11-14",
     "venue": "Music Farm (32 Ann St)",
@@ -1841,7 +1788,7 @@
   },
   {
     "name": "Big Head Todd & the Monsters (Two-Night Run)",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-11-19",
     "endDate": "2026-11-20",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1852,7 +1799,7 @@
   },
   {
     "name": "Grand Kyiv Ballet: Swan Lake (Symphony of Lights)",
-    "category": "Performing Arts & Dance",
+    "category": "Arts & Theater",
     "startDate": "2026-11-21",
     "endDate": "2026-11-21",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1863,7 +1810,7 @@
   },
   {
     "name": "Kurt Vile & the Violators with Twisted Teens",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-11-21",
     "endDate": "2026-11-21",
     "venue": "Music Farm (32 Ann St)",
@@ -1874,7 +1821,7 @@
   },
   {
     "name": "An Evening with Band of Horses (Two-Night Hometown Stand)",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-11-25",
     "endDate": "2026-11-27",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1896,7 +1843,7 @@
   },
   {
     "name": "Charlton Singleton's Holiday Spectacular feat. Quiana Parler",
-    "category": "Performing Arts & Music",
+    "category": "Live Music",
     "startDate": "2026-11-28",
     "endDate": "2026-11-28",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1907,7 +1854,7 @@
   },
   {
     "name": "South Carolina Ballet: The Nutcracker",
-    "category": "Performing Arts & Dance",
+    "category": "Arts & Theater",
     "startDate": "2026-11-30",
     "endDate": "2026-12-02",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1918,7 +1865,7 @@
   },
   {
     "name": "Charleston Stage: A Christmas Carol at Dock Street Theatre",
-    "category": "Performing Arts & Theatre",
+    "category": "Arts & Theater",
     "startDate": "2026-12-02",
     "endDate": "2026-12-20",
     "venue": "Historic Dock Street Theatre (135 Church St - 3 min walk)",
@@ -1929,7 +1876,7 @@
   },
   {
     "name": "Tommy Emmanuel, CGP Live in Concert",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-12-03",
     "endDate": "2026-12-03",
     "venue": "Charleston Music Hall (37 John St)",
@@ -1940,7 +1887,7 @@
   },
   {
     "name": "Charleston Gallery Association First Friday Artwalk (December)",
-    "category": "Arts & Culture",
+    "category": "Arts & Theater",
     "startDate": "2026-12-04",
     "endDate": "2026-12-04",
     "venue": "French Quarter Historic District (2 blocks from The Palmetto)",
@@ -1951,7 +1898,7 @@
   },
   {
     "name": "Charleston Holiday Boat Parade on the Harbor",
-    "category": "Festivals & Seasonal",
+    "category": "Festivals & Traditions",
     "startDate": "2026-12-05",
     "endDate": "2026-12-05",
     "venue": "Charleston Harbor (Joe Riley Waterfront Park Pier)",
@@ -1962,7 +1909,7 @@
   },
   {
     "name": "Holiday Market at Marion Square",
-    "category": "Markets & Local Food",
+    "category": "Food, Wine & Markets",
     "startDate": "2026-12-05",
     "endDate": "2026-12-20",
     "venue": "Marion Square (Meeting & Calhoun St)",
@@ -1973,7 +1920,7 @@
   },
   {
     "name": "City of Charleston Holiday Parade & Marion Square Tree Lighting",
-    "category": "Festivals & Seasonal",
+    "category": "Festivals & Traditions",
     "startDate": "2026-12-06",
     "endDate": "2026-12-06",
     "venue": "Broad St to Meeting St & Marion Square",
@@ -1984,7 +1931,7 @@
   },
   {
     "name": "North Charleston POPS! Sounds of the Season",
-    "category": "Performing Arts & Music",
+    "category": "Arts & Theater",
     "startDate": "2026-12-06",
     "endDate": "2026-12-06",
     "venue": "North Charleston Performing Arts Center",
@@ -1995,7 +1942,7 @@
   },
   {
     "name": "The Charleston Christmas Special (Brad & Jennifer Moranz)",
-    "category": "Performing Arts & Music",
+    "category": "Live Music",
     "startDate": "2026-12-11",
     "endDate": "2026-12-20",
     "venue": "Charleston Music Hall (37 John St)",
@@ -2006,7 +1953,7 @@
   },
   {
     "name": "Second Sunday on King Street (December Holiday Edition)",
-    "category": "Street Fair & Shopping",
+    "category": "Festivals & Traditions",
     "startDate": "2026-12-13",
     "endDate": "2026-12-13",
     "venue": "Lower King Street (Queen St to Calhoun St)",
@@ -2017,7 +1964,7 @@
   },
   {
     "name": "Folly Beach Flip-Flop Drop & New Year's Eve Fireworks",
-    "category": "Festivals & Seasonal",
+    "category": "Festivals & Traditions",
     "startDate": "2026-12-31",
     "endDate": "2026-12-31",
     "venue": "Center Street, Folly Beach (20 min drive)",
@@ -2028,7 +1975,7 @@
   },
   {
     "name": "Futurebirds with Arts Fishing Club (New Year's Eve)",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2026-12-31",
     "endDate": "2026-12-31",
     "venue": "Charleston Music Hall (37 John St)",
@@ -2039,7 +1986,7 @@
   },
   {
     "name": "Happy New Year Charleston (Marion Square Celebration)",
-    "category": "Festivals & Seasonal",
+    "category": "Festivals & Traditions",
     "startDate": "2026-12-31",
     "endDate": "2026-12-31",
     "venue": "Marion Square (Meeting & Calhoun St)",
@@ -2050,7 +1997,7 @@
   },
   {
     "name": "South Carolina Restaurant Week (Winter Edition)",
-    "category": "Food & Beverage",
+    "category": "Food, Wine & Markets",
     "startDate": "2027-01-07",
     "endDate": "2027-01-17",
     "venue": "Across Peninsula & French Quarter",
@@ -2061,7 +2008,7 @@
   },
   {
     "name": "Rumours ATL: A Fleetwood Mac Tribute",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2027-01-09",
     "endDate": "2027-01-09",
     "venue": "Charleston Music Hall (37 John St)",
@@ -2072,7 +2019,7 @@
   },
   {
     "name": "Second Sunday on King Street (January Edition)",
-    "category": "Street Fair & Shopping",
+    "category": "Festivals & Traditions",
     "startDate": "2027-01-10",
     "endDate": "2027-01-10",
     "venue": "Lower King Street (Queen St to Calhoun St)",
@@ -2094,7 +2041,7 @@
   },
   {
     "name": "The Black Jacket Symphony Presents Michael Jackson's Thriller",
-    "category": "Concerts & Live Music",
+    "category": "Arts & Theater",
     "startDate": "2027-01-16",
     "endDate": "2027-01-16",
     "venue": "Charleston Music Hall (37 John St)",
@@ -2105,7 +2052,7 @@
   },
   {
     "name": "Jonathan Van Ness (Charleston Comedy Week)",
-    "category": "Comedy & Entertainment",
+    "category": "Arts & Theater",
     "startDate": "2027-01-21",
     "endDate": "2027-01-21",
     "venue": "Charleston Music Hall (37 John St)",
@@ -2116,7 +2063,7 @@
   },
   {
     "name": "Hannibal Buress (Charleston Comedy Week)",
-    "category": "Comedy & Entertainment",
+    "category": "Arts & Theater",
     "startDate": "2027-01-30",
     "endDate": "2027-01-30",
     "venue": "Charleston Music Hall (37 John St)",
@@ -2127,7 +2074,7 @@
   },
   {
     "name": "Jupiter Coyote Live at Music Farm",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2027-01-30",
     "endDate": "2027-01-30",
     "venue": "Music Farm (32 Ann St)",
@@ -2138,7 +2085,7 @@
   },
   {
     "name": "North Charleston POPS! The Music of Motown",
-    "category": "Performing Arts & Music",
+    "category": "Arts & Theater",
     "startDate": "2027-01-30",
     "endDate": "2027-01-30",
     "venue": "North Charleston Performing Arts Center",
@@ -2149,7 +2096,7 @@
   },
   {
     "name": "Lowcountry Oyster Festival",
-    "category": "Food & Beverage",
+    "category": "Food, Wine & Markets",
     "startDate": "2027-01-31",
     "endDate": "2027-01-31",
     "venue": "Boone Hall Plantation (Mount Pleasant)",
@@ -2160,7 +2107,7 @@
   },
   {
     "name": "Charleston Gallery Association First Friday Artwalk (February)",
-    "category": "Arts & Culture",
+    "category": "Arts & Theater",
     "startDate": "2027-02-05",
     "endDate": "2027-02-05",
     "venue": "French Quarter Historic District (2 blocks from The Palmetto)",
@@ -2171,7 +2118,7 @@
   },
   {
     "name": "Best of Broadway: HAMILTON",
-    "category": "Performing Arts & Theatre",
+    "category": "Arts & Theater",
     "startDate": "2027-02-09",
     "endDate": "2027-02-21",
     "venue": "North Charleston Performing Arts Center",
@@ -2182,7 +2129,7 @@
   },
   {
     "name": "South Carolina Ballet: Sleeping Beauty",
-    "category": "Performing Arts & Dance",
+    "category": "Arts & Theater",
     "startDate": "2027-02-11",
     "endDate": "2027-02-12",
     "venue": "Charleston Music Hall (37 John St)",
@@ -2193,7 +2140,7 @@
   },
   {
     "name": "Southeastern Wildlife Exposition (SEWE)",
-    "category": "Festivals & Wildlife Art",
+    "category": "Festivals & Traditions",
     "startDate": "2027-02-12",
     "endDate": "2027-02-14",
     "venue": "Charleston Place, Brittlebank Park, Marion Square",
@@ -2204,7 +2151,7 @@
   },
   {
     "name": "Second Sunday on King Street (February Edition)",
-    "category": "Street Fair & Shopping",
+    "category": "Festivals & Traditions",
     "startDate": "2027-02-14",
     "endDate": "2027-02-14",
     "venue": "Lower King Street (Queen St to Calhoun St)",
@@ -2215,7 +2162,7 @@
   },
   {
     "name": "Three Dog Night Live in Concert",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2027-02-19",
     "endDate": "2027-02-19",
     "venue": "Charleston Music Hall (37 John St)",
@@ -2226,7 +2173,7 @@
   },
   {
     "name": "An Evening with Caroline Chambers",
-    "category": "Arts & Culture",
+    "category": "Live Music",
     "startDate": "2027-02-22",
     "endDate": "2027-02-22",
     "venue": "Music Farm (32 Ann St)",
@@ -2237,7 +2184,7 @@
   },
   {
     "name": "Charleston Wine + Food Festival",
-    "category": "Food & Beverage",
+    "category": "Food, Wine & Markets",
     "startDate": "2027-03-03",
     "endDate": "2027-03-07",
     "venue": "Riverfront Park & Venues across Peninsula",
@@ -2248,7 +2195,7 @@
   },
   {
     "name": "Charleston City Market Night Market (Spring Season Opening)",
-    "category": "Arts, Crafts & Local Markets",
+    "category": "Food, Wine & Markets",
     "startDate": "2027-03-05",
     "endDate": "2027-05-29",
     "venue": "Historic Charleston City Market (Church to East Bay St)",
@@ -2259,7 +2206,7 @@
   },
   {
     "name": "Charleston Gallery Association First Friday Artwalk (March)",
-    "category": "Arts & Culture",
+    "category": "Arts & Theater",
     "startDate": "2027-03-05",
     "endDate": "2027-03-05",
     "venue": "French Quarter Historic District (2 blocks from The Palmetto)",
@@ -2270,7 +2217,7 @@
   },
   {
     "name": "Daughtry Live in Concert",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2027-03-05",
     "endDate": "2027-03-05",
     "venue": "Charleston Music Hall (37 John St)",
@@ -2281,7 +2228,7 @@
   },
   {
     "name": "North Charleston POPS! John Williams Greatest Hits",
-    "category": "Performing Arts & Music",
+    "category": "Arts & Theater",
     "startDate": "2027-03-06",
     "endDate": "2027-03-06",
     "venue": "North Charleston Performing Arts Center",
@@ -2292,7 +2239,7 @@
   },
   {
     "name": "Second Sunday on King Street (March Spring Edition)",
-    "category": "Street Fair & Shopping",
+    "category": "Festivals & Traditions",
     "startDate": "2027-03-14",
     "endDate": "2027-03-14",
     "venue": "Lower King Street (Queen St to Calhoun St)",
@@ -2303,7 +2250,7 @@
   },
   {
     "name": "The Charleston Festival (Historic Houses & Secret Gardens)",
-    "category": "History & Architecture",
+    "category": "Live Music",
     "startDate": "2027-03-17",
     "endDate": "2027-04-18",
     "venue": "South of Broad, French Quarter & Historic Peninsula",
@@ -2314,7 +2261,7 @@
   },
   {
     "name": "The Charleston Show: Antiques, Art & Design",
-    "category": "Arts & Culture",
+    "category": "Live Music",
     "startDate": "2027-03-19",
     "endDate": "2027-03-21",
     "venue": "Festival Hall (56 Beaufain St)",
@@ -2325,7 +2272,7 @@
   },
   {
     "name": "Charleston Gallery Association First Friday Artwalk (April)",
-    "category": "Arts & Culture",
+    "category": "Arts & Theater",
     "startDate": "2027-04-02",
     "endDate": "2027-04-02",
     "venue": "French Quarter Historic District (2 blocks from The Palmetto)",
@@ -2336,7 +2283,7 @@
   },
   {
     "name": "Summerville Flowertown Festival",
-    "category": "Festivals & Seasonal",
+    "category": "Festivals & Traditions",
     "startDate": "2027-04-02",
     "endDate": "2027-04-04",
     "venue": "Azalea Park & Downtown Summerville (30 min drive)",
@@ -2347,7 +2294,7 @@
   },
   {
     "name": "Brandy Clark Live in Concert",
-    "category": "Concerts & Live Music",
+    "category": "Live Music",
     "startDate": "2027-04-03",
     "endDate": "2027-04-03",
     "venue": "Music Farm (32 Ann St)",
@@ -2380,7 +2327,7 @@
   },
   {
     "name": "Charleston Jazz Festival",
-    "category": "Performing Arts & Music",
+    "category": "Live Music",
     "startDate": "2027-04-11",
     "endDate": "2027-04-18",
     "venue": "Charleston Gaillard Center & Peninsula Venues",
@@ -2391,7 +2338,7 @@
   },
   {
     "name": "Lowcountry Cajun Festival",
-    "category": "Food & Beverage",
+    "category": "Food, Wine & Markets",
     "startDate": "2027-04-11",
     "endDate": "2027-04-11",
     "venue": "James Island County Park (15 min drive)",
@@ -2402,7 +2349,7 @@
   },
   {
     "name": "Second Sunday on King Street (April Edition)",
-    "category": "Street Fair & Shopping",
+    "category": "Festivals & Traditions",
     "startDate": "2027-04-11",
     "endDate": "2027-04-11",
     "venue": "Lower King Street (Queen St to Calhoun St)",
@@ -2413,7 +2360,7 @@
   },
   {
     "name": "North Charleston POPS! American Road Trip",
-    "category": "Performing Arts & Music",
+    "category": "Arts & Theater",
     "startDate": "2027-04-24",
     "endDate": "2027-04-24",
     "venue": "North Charleston Performing Arts Center",
@@ -2424,7 +2371,7 @@
   },
   {
     "name": "Town of Mount Pleasant Blessing of the Fleet & Seafood Festival",
-    "category": "Festivals & Seasonal",
+    "category": "Festivals & Traditions",
     "startDate": "2027-04-25",
     "endDate": "2027-04-25",
     "venue": "Mount Pleasant Memorial Waterfront Park (Under the Bridge)",
@@ -2435,7 +2382,7 @@
   },
   {
     "name": "North Charleston Arts Fest",
-    "category": "Arts & Culture",
+    "category": "Live Music",
     "startDate": "2027-04-28",
     "endDate": "2027-05-02",
     "venue": "Charleston Area Convention Center & Park Circle",
@@ -2446,7 +2393,7 @@
   },
   {
     "name": "Charleston Gallery Association First Friday Artwalk (May)",
-    "category": "Arts & Culture",
+    "category": "Arts & Theater",
     "startDate": "2027-05-07",
     "endDate": "2027-05-07",
     "venue": "French Quarter Historic District (2 blocks from The Palmetto)",
@@ -2457,7 +2404,7 @@
   },
   {
     "name": "Piccolo Spoleto Festival",
-    "category": "Arts & Culture",
+    "category": "Live Music",
     "startDate": "2027-05-28",
     "endDate": "2027-06-13",
     "venue": "Marion Square, Waterfront Park & Charleston Neighborhoods",
@@ -2468,7 +2415,7 @@
   },
   {
     "name": "Spoleto Festival USA (51st Season Opening)",
-    "category": "Performing Arts & Culture",
+    "category": "Live Music",
     "startDate": "2027-05-28",
     "endDate": "2027-06-13",
     "venue": "Gaillard Center, Dock Street Theatre, College of Charleston Cistern",
@@ -2479,7 +2426,7 @@
   },
   {
     "name": "Annual Sweetgrass Cultural Arts Festival",
-    "category": "Festivals & Heritage",
+    "category": "Festivals & Traditions",
     "startDate": "2027-06-12",
     "endDate": "2027-06-12",
     "venue": "Mount Pleasant Memorial Waterfront Park",
@@ -2490,7 +2437,7 @@
   },
   {
     "name": "Carolina Day Historic Peninsula Commemoration",
-    "category": "History & Architecture",
+    "category": "Live Music",
     "startDate": "2027-06-28",
     "endDate": "2027-06-28",
     "venue": "White Point Garden (The Battery) & St. Michael's Church",
@@ -2501,7 +2448,7 @@
   },
   {
     "name": "Patriots Point 4th of July Blast & Harbor Fireworks",
-    "category": "Festivals & Seasonal",
+    "category": "Festivals & Traditions",
     "startDate": "2027-07-04",
     "endDate": "2027-07-04",
     "venue": "USS Yorktown Flight Deck & Charleston Harbor",
@@ -2515,7 +2462,6 @@
     (function() {
       let allEvents = DEFAULT_EVENTS.slice();
       let currentCategory = 'all';
-      let currentQuickRange = 'all';
       let currentVenue = 'all';
       let currentSort = 'date_asc';
       let searchQuery = '';
@@ -2537,7 +2483,6 @@
       const clearAllFiltersBtn = document.getElementById('clearAllFiltersBtn');
       const backToTopBtn = document.getElementById('backToTopBtn');
       const categoryPillsContainer = document.getElementById('categoryPillsContainer');
-      const quickChips = document.querySelectorAll('.quick-chip');
 
       // Date Helper Functions
       function parseIsoDate(str) {
@@ -2576,18 +2521,48 @@
         }
       }
 
-      // Check Category Match
+      // Check Category Match (Consolidated 5 Clean Guest Buckets)
       function matchesCategory(event, catKey) {
         if (catKey === 'all') return true;
-        const cat = (event.category || '').toLowerCase();
-        if (catKey === 'concerts') return cat.includes('concert') || cat.includes('music');
-        if (catKey === 'theatre') return cat.includes('theatre') || cat.includes('theater') || cat.includes('performing') || cat.includes('broadway') || cat.includes('dance') || cat.includes('ballet') || cat.includes('symphony');
-        if (catKey === 'history') return cat.includes('history') || cat.includes('tour') || cat.includes('architecture');
-        if (catKey === 'festivals') return cat.includes('festival') || cat.includes('seasonal') || cat.includes('heritage') || cat.includes('holiday');
-        if (catKey === 'food') return cat.includes('food') || cat.includes('beverage') || cat.includes('market') || cat.includes('beer') || cat.includes('wine');
-        if (catKey === 'arts') return cat.includes('art') || cat.includes('culture') || cat.includes('museum') || cat.includes('literary');
-        if (catKey === 'sports') return cat.includes('sport') || cat.includes('baseball') || cat.includes('hockey') || cat.includes('outdoor');
-        if (catKey === 'comedy') return cat.includes('comedy') || cat.includes('entertainment');
+        const catRaw = (event.category || '').toLowerCase();
+        const name = (event.name || '').toLowerCase();
+        const text = catRaw + ' ' + name + ' ' + (event.venue || '').toLowerCase();
+
+        if (catKey === 'sports') {
+          return catRaw.includes('sport') || catRaw.includes('outdoors') ||
+                 /(hockey|baseball|stingrays|riverdogs|marathon|5k|bridge run|turkey trot|tennis)/.test(text);
+        }
+
+        if (catKey === 'food') {
+          return catRaw.includes('food') || catRaw.includes('beverage') || catRaw.includes('market') ||
+                 text.includes('farmers market') || text.includes('night market') || text.includes('beer week') ||
+                 text.includes('wine and food') || text.includes('wine & food') || text.includes('oyster fest') ||
+                 text.includes('bourbon') || text.includes('distill') || text.includes('restaurant week');
+        }
+
+        if (catKey === 'theater') {
+          return catRaw.includes('theatre') || catRaw.includes('theater') || catRaw.includes('dance') ||
+                 catRaw.includes('comedy') || catRaw.includes('ballet') || text.includes('broadway') ||
+                 text.includes('stand-up') || text.includes('symphony') || text.includes('orchestra') ||
+                 text.includes('pops!') || text.includes('literary') || text.includes('artwalk') ||
+                 text.includes('gallery') || text.includes('dracula') || text.includes('nutcracker') ||
+                 text.includes('swan lake') || text.includes('sleeping beauty') || text.includes('shadowcast') ||
+                 text.includes('mrs. doubtfire') || text.includes('hamilton') || text.includes('sonic live');
+        }
+
+        if (catKey === 'festivals') {
+          return catRaw.includes('festival') || catRaw.includes('seasonal') || catRaw.includes('heritage') ||
+                 catRaw.includes('shopping') || catRaw.includes('history') || catRaw.includes('tour') ||
+                 text.includes('second sunday') || text.includes('holiday festival') || text.includes('fright nights') ||
+                 text.includes('home tours') || text.includes('scottish games') || text.includes('parade') ||
+                 text.includes('carriage') || text.includes('ghost') || text.includes('sail') || text.includes('cruise');
+        }
+
+        if (catKey === 'music') {
+          return catRaw.includes('concert') || catRaw.includes('music') || catRaw.includes('live music') ||
+                 text.includes('band') || text.includes('tour') || text.includes('tribute') || text.includes('jazz');
+        }
+
         return false;
       }
 
@@ -2613,18 +2588,15 @@
         return year + '-' + month + '-' + day;
       }
 
-      // Check Date Overlap (Default 'All Upcoming' automatically filters out past events)
+      // Check Date Overlap (Default automatically filters out past events so guests see today onward)
       function matchesStayDates(event) {
         const evStart = parseIsoDate(event.startDate);
         const evEnd = parseIsoDate(event.endDate || event.startDate);
 
         if (!filterStartDate && !filterEndDate) {
-          if (currentQuickRange === 'all') {
-            const todayClean = new Date();
-            todayClean.setHours(0, 0, 0, 0);
-            return evEnd ? evEnd >= todayClean : true;
-          }
-          return true;
+          const todayClean = new Date();
+          todayClean.setHours(0, 0, 0, 0);
+          return evEnd ? evEnd >= todayClean : true;
         }
         if (!evStart) return true;
 
@@ -2682,15 +2654,14 @@
         resultsCountText.textContent = 'Showing ' + sorted.length + ' curated event' + (sorted.length === 1 ? '' : 's');
 
         // Active filter badge update
-        const hasFilters = currentCategory !== 'all' || currentVenue !== 'all' || currentQuickRange !== 'all' || searchQuery !== '' || filterStartDate !== null || filterEndDate !== null;
+        const hasFilters = currentCategory !== 'all' || currentVenue !== 'all' || searchQuery !== '' || filterStartDate !== null || filterEndDate !== null;
         if (hasFilters) {
           activeFiltersBadge.style.display = 'inline-flex';
           let parts = [];
           if (searchQuery) parts.push('"' + searchQuery + '"');
           if (currentCategory !== 'all') parts.push(currentCategory.toUpperCase());
           if (currentVenue !== 'all') parts.push(venueSelect.options[venueSelect.selectedIndex].text);
-          if (currentQuickRange !== 'all') parts.push(currentQuickRange.toUpperCase());
-          if (filterStartDate || filterEndDate) parts.push('Dates Selected');
+                    if (filterStartDate || filterEndDate) parts.push('Dates Selected');
           activeFilterDesc.textContent = parts.join(' • ');
         } else {
           activeFiltersBadge.style.display = 'none';
@@ -2761,66 +2732,13 @@
           .replace(/'/g, '&#039;');
       }
 
-      // Quick Date Range Handler with Dynamic Real-Time Dates
-      function applyQuickRange(rangeKey) {
-        currentQuickRange = rangeKey;
-        quickChips.forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.range === rangeKey);
-        });
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        filterStartDate = null;
-        filterEndDate = null;
-        startDateInput.value = '';
-        endDateInput.value = '';
-
-        if (rangeKey === 'week') {
-          // Dynamic next 7 days from today
-          filterStartDate = new Date(today);
-          filterEndDate = new Date(today);
-          filterEndDate.setDate(filterEndDate.getDate() + 7);
-        } else if (rangeKey === 'weekend') {
-          // Dynamic Friday through Sunday of the coming weekend
-          const day = today.getDay(); // 0 is Sun, 5 is Fri, 6 is Sat
-          let diffToFri = (5 - day);
-          if (day === 6) diffToFri = -1; // Saturday: weekend started yesterday
-          else if (day === 0) diffToFri = -2; // Sunday: weekend started 2 days ago
-
-          filterStartDate = new Date(today);
-          filterStartDate.setDate(today.getDate() + diffToFri);
-          filterEndDate = new Date(filterStartDate);
-          filterEndDate.setDate(filterStartDate.getDate() + 2); // through Sunday
-        } else if (rangeKey === 'november') {
-          filterStartDate = parseIsoDate('2026-11-01');
-          filterEndDate = parseIsoDate('2026-11-30');
-        } else if (rangeKey === 'holidays') {
-          filterStartDate = parseIsoDate('2026-12-01');
-          filterEndDate = parseIsoDate('2027-01-15');
-        } else if (rangeKey === 'spring') {
-          filterStartDate = parseIsoDate('2027-02-01');
-          filterEndDate = parseIsoDate('2027-05-31');
-        } else if (rangeKey === 'archive') {
-          filterStartDate = null;
-          filterEndDate = null;
-        }
-
-        if (filterStartDate) {
-          startDateInput.value = toLocalYMD(filterStartDate);
-        }
-        if (filterEndDate) {
-          endDateInput.value = toLocalYMD(filterEndDate);
-        }
-
-        render();
-      }
 
       function resetAllFilters() {
         searchQuery = '';
         searchInput.value = '';
         searchClearBtn.style.display = 'none';
         currentCategory = 'all';
-        currentQuickRange = 'all';
         currentVenue = 'all';
         currentSort = 'date_asc';
         filterStartDate = null;
@@ -2830,7 +2748,6 @@
         venueSelect.value = 'all';
         sortSelect.value = 'date_asc';
 
-        quickChips.forEach(btn => btn.classList.toggle('active', btn.dataset.range === 'all'));
         document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.category === 'all'));
 
         render();
@@ -2853,15 +2770,11 @@
 
       startDateInput.addEventListener('change', () => {
         filterStartDate = parseIsoDate(startDateInput.value);
-        currentQuickRange = 'custom';
-        quickChips.forEach(btn => btn.classList.remove('active'));
         render();
       });
 
       endDateInput.addEventListener('change', () => {
         filterEndDate = parseIsoDate(endDateInput.value);
-        currentQuickRange = 'custom';
-        quickChips.forEach(btn => btn.classList.remove('active'));
         render();
       });
 
@@ -2870,12 +2783,10 @@
         filterEndDate = null;
         startDateInput.value = '';
         endDateInput.value = '';
-        applyQuickRange('all');
+        render();
       });
 
-      quickChips.forEach(btn => {
-        btn.addEventListener('click', () => applyQuickRange(btn.dataset.range));
-      });
+
 
       categoryPillsContainer.addEventListener('click', (e) => {
         const btn = e.target.closest('.cat-btn');
