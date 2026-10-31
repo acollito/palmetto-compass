@@ -909,8 +909,6 @@
     <div class="footer-desc">194 East Bay Street &bull; Charleston, South Carolina 29401</div>
     <div class="footer-links">
       <a href="index.html">Palmetto Compass Map</a>
-      <a href="tel:+18438233604">Call Concierge (843) 823-3604</a>
-      <a href="mailto:anthony.collito@palmettohotelcharleston.com">Email Concierge</a>
       <a href="guest.html">Guest Discoveries Form</a>
       <span class="footer-sep">&bull;</span>
       <a href="submit-event.html">Partner Event Portal</a>
@@ -2793,9 +2791,7 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
 
-      // Background Live Sync from Google Sheet CSV export
-      async function syncLiveSheet() {
-              // Live Google Sheets Sync (Using Google GViz JSONP callback to bypass browser CORS completely)
+      // Live Google Sheets Sync (Using Google GViz JSONP callback to bypass browser CORS completely)
       window.handleLiveSheetData = function(json) {
         try {
           if (!json || !json.table || !json.table.rows) return;
