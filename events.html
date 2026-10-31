@@ -2890,6 +2890,20 @@
         return result;
       }
 
+      // Auto-populate stay dates from Revinate email merge tags (e.g. ?checkin=YYYY-MM-DD&checkout=YYYY-MM-DD)
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlCheckin = urlParams.get('checkin') || urlParams.get('startDate') || urlParams.get('arrival');
+      const urlCheckout = urlParams.get('checkout') || urlParams.get('endDate') || urlParams.get('departure');
+
+      if (urlCheckin) {
+        filterStartDate = parseIsoDate(urlCheckin);
+        startDateInput.value = urlCheckin;
+      }
+      if (urlCheckout) {
+        filterEndDate = parseIsoDate(urlCheckout);
+        endDateInput.value = urlCheckout;
+      }
+
       // Initial Render & Sync
       render();
       setTimeout(syncLiveSheet, 100);
