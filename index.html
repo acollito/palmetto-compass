@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>The Palmetto Compass — Curated Charleston</title>
+
+  <!-- Google Fonts: Courier Prime & Cinzel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+  <!-- Mapbox GL JS v2.15.0 -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+
+  <!-- PapaParse for Live Google Sheets CSV Sync -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+  <style>
+    :root {
+      --palmetto-green: #708771;
+      --palmetto-dark: #3E4D3F;
+      --palmetto-brass: #C5A059;
+      --palmetto-gold-light: #F3E5AB;
+      --palmetto-terracotta: #A84B35;
+      --palmetto-linen: #F7F5EE;
+      --text-main: #2D312E;
+      --text-muted: #646A66;
+      --white: #FFFFFF;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: var(--palmetto-linen);
+      font-family: 'Courier Prime', Courier, monospace;
+      color: var(--text-main);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background: var(--palmetto-green);
+      color: var(--white);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--palmetto-brass);
+      z-index: 1000;
+      min-height: 44px;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-family: 'Courier Prime', Courier, monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-compass {
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--palmetto-gold-light);
+      display: inline-flex;
+      align-items: center;
+      text-transform: uppercase;
+    }
+
+    .compass-c-svg {
+      width: 1.2em;
+      height: 1.2em;
+      display: inline-block;
+      vertical-align: -0.15em;
+      margin-right: 1px;
+    }
+
+    .hotel-info {
+      font-size: 0.78rem;
+      color: #E2E8E4;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hotel-info a {
+      color: var(--white);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    .header-guide-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      color: var(--white);
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 2px;
+      transition: all 0.2s ease;
+    }
+    .header-guide-btn:hover {
+      background: var(--palmetto-brass);
+      border-color: var(--palmetto-brass);
+    }
+
+    /* Category Nav */
+    .filter-bar-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: var(--white);
+      border-bottom: 1px solid #E2E0D8;
+      z-index: 500;
+      flex-shrink: 0;
+      width: 100%;
+    }
+
+    .nav-arrow {
+      background: var(--white);
+      border: 1px solid #DDD9CE;
+      color: var(--palmetto-dark);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 4px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+      z-index: 10;
+      transition: all 0.2s ease;
+    }
+    .nav-arrow:hover {
+      background: var(--palmetto-green);
+      color: var(--white);
+      border-color: var(--palmetto-green);
+    }
+    .nav-arrow:disabled {
+      opacity: 0.2;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .filter-bar {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      overflow-x: auto;
+      padding: 7px 4px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+    .filter-bar::-webkit-scrollbar {
+      height: 3px;
+    }
+    .filter-bar::-webkit-scrollbar-thumb {
+      background: var(--palmetto-brass);
+      border-radius: 3px;
+    }
+
+    .filter-btn {
+      background: var(--palmetto-linen);
+      border: 1px solid #DDD9CE;
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: 'Courier Prime', Courier, monospace;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--palmetto-green);
+      color: var(--white);
+      border-color: var(--palmetto-green);
+    }
+    .filter-btn.active {
+      box-shadow: 0 2px 6px rgba(112, 135, 113, 0.45);
+    }
+
+    .filter-btn-keys {
+      border-color: var(--palmetto-brass);
+      font-weight: 700;
+    }
+    .filter-btn-keys svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .filter-btn-suggest {
+      background: var(--palmetto-brass);
+      color: var(--white);
+      border-color: var(--palmetto-brass);
+      margin-left: auto;
+      font-weight: 700;
+    }
+    .filter-btn-suggest:hover {
+      background: #B38E47;
+      border-color: #B38E47;
+    }
+
+    /* Mapbox Map Container */
+    #mapContainer {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      min-height: 480px;
+      background: #EAE6DF;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .recenter-btn {
+      position: absolute;
+      bottom: 24px;
+      left: 16px;
+      z-index: 900;
+      background: var(--white);
+      color: var(--palmetto-dark);
+      border: 1px solid var(--palmetto-brass);
+      border-radius: 24px;
+      padding: 7px 14px;
+      font-family: 'Courier Prime', Courier, monospace;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease;
+    }
+    .recenter-btn:hover {
+      background: var(--palmetto-green);
+      color: var(--white);
+      border-color: var(--palmetto-green);
+    }
+
+    /* Token Error Notice (Visible only if Mapbox token is rejected) */
+    #tokenErrorNotice {
+      display: none;
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #A84B35;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      z-index: 9999;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      max-width: 90%;
+      text-align: center;
+    }
+
+    /* Mapbox Popups */
+    .mapboxgl-popup-content {
+      padding: 14px 16px !important;
+      border-radius: 12px !important;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2) !important;
+      border-top: 4px solid var(--palmetto-brass) !important;
+      background: var(--white) !important;
+      font-family: 'Courier Prime', Courier, monospace !important;
+      max-width: 290px !important;
+    }
+    .popup-cat {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--palmetto-terracotta);
+      margin-bottom: 2px;
+      letter-spacing: 0.5px;
+    }
+    .popup-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--palmetto-dark);
+      margin-bottom: 3px;
+      line-height: 1.25;
+    }
+    .popup-prox {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .popup-tip {
+      font-size: 0.78rem;
+      line-height: 1.4;
+      background: #F9F8F5;
+      padding: 7px 10px;
+      border-left: 3px solid var(--palmetto-green);
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .popup-tip strong {
+      color: var(--palmetto-green);
+    }
+    .popup-perk {
+      font-size: 0.78rem;
+      line-height: 1.4;
+      background: #FAF7F0;
+      padding: 7px 10px;
+      border-left: 3px solid var(--palmetto-brass);
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .popup-perk strong {
+      color: var(--palmetto-brass);
+    }
+    .popup-btn {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      background: var(--palmetto-green);
+      color: var(--white);
+      text-decoration: none;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: background 0.2s ease;
+    }
+    .popup-btn:hover {
+      background: var(--palmetto-dark);
+    }
+
+    .marker-pin {
+      cursor: pointer;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+      transition: transform 0.2s ease;
+    }
+    .marker-pin:hover {
+      transform: scale(1.18) translateY(-3px);
+      z-index: 9999 !important;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(45, 55, 46, 0.65);
+      backdrop-filter: blur(3px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+    .modal-box {
+      background: var(--white);
+      border-radius: 14px;
+      max-width: 440px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      position: relative;
+      border-top: 5px solid var(--palmetto-brass);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .modal-subtitle {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      color: var(--palmetto-brass);
+      font-weight: 700;
+      margin-bottom: 3px;
+      letter-spacing: 0.5px;
+    }
+    .modal-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--palmetto-dark);
+      margin-bottom: 8px;
+    }
+    .modal-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .modal-features {
+      background: var(--palmetto-linen);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      border: 1px solid #E2E0D8;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+    .modal-features div {
+      margin-bottom: 10px;
+    }
+    .modal-features div:last-child {
+      margin-bottom: 0;
+    }
+    .modal-submit {
+      width: 100%;
+      padding: 11px;
+      background: var(--palmetto-green);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Courier Prime', Courier, monospace;
+      font-weight: 700;
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .modal-submit:hover {
+      background: var(--palmetto-dark);
+    }
+  
+    /* Mobile Header Optimization */
+    @media (max-width: 600px) {
+      header {
+        padding: 6px 12px !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 3px !important;
+        min-height: auto !important;
+      }
+      .brand-title {
+        font-size: 0.88rem !important;
+        gap: 5px !important;
+      }
+      .brand-compass {
+        font-size: 0.94rem !important;
+      }
+      .compass-c-svg {
+        width: 1.1em !important;
+        height: 1.1em !important;
+      }
+      .hotel-info {
+        font-size: 0.72rem !important;
+        gap: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #F3E5AB !important;
+      }
+      .hotel-info a {
+        color: #F3E5AB !important;
+      }
+      .header-guide-btn {
+        width: 18px !important;
+        height: 18px !important;
+        font-size: 0.68rem !important;
+      }
+    }
+
+    /* Popup Suggestion Carousel */
+    .popup-carousel {
+      margin: 8px 0 10px 0;
+      background: #FAF8F5;
+      border: 1px solid #E5E0D5;
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+    .carousel-slide {
+      display: none;
+    }
+    .carousel-slide.active {
+      display: block;
+    }
+    .popup-submitter {
+      font-size: 0.72rem;
+      color: #708771;
+      font-style: italic;
+      margin-bottom: 4px;
+    }
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+      padding-top: 5px;
+      border-top: 1px dashed #DDD9CE;
+    }
+    .carousel-btn {
+      background: #FFFFFF;
+      border: 1px solid #C5A059;
+      color: #3E4D3F;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-weight: bold;
+      line-height: 1;
+      transition: all 0.2s;
+    }
+    .carousel-btn:hover {
+      background: #708771;
+      color: #FFFFFF;
+      border-color: #708771;
+    }
+    .carousel-indicator {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #646A66;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand-title">
+      <span>The Palmetto</span>
+      <span style="color:var(--palmetto-brass); font-size:0.5rem; opacity:0.8;">&#9670;</span>
+      <span class="brand-compass">
+        <svg class="compass-c-svg" viewBox="10 10 68 80"><path d="M 76,26 C 70,16 60,11 47,11 C 24,11 11,27 11,50 C 11,73 24,89 47,89 C 60,89 71,83 77,73 L 69,67 C 64,74 56,79 47,79 C 31,79 21,67 21,50 C 21,33 31,21 47,21 C 56,21 63,25 68,32 Z" fill="#F3E5AB"/><g transform="translate(47, 50) scale(0.58)"><circle cx="0" cy="0" r="26" fill="none" stroke="#C5A059" stroke-width="1.4" stroke-dasharray="1.5, 2.5" opacity="0.85"/><polygon points="0,0 2.5,-2.5 16,-16 0,0" fill="#B38E47"/><polygon points="0,0 -2.5,-2.5 16,-16 0,0" fill="#F3E5AB"/><polygon points="0,0 2.5,2.5 16,16 0,0" fill="#B38E47"/><polygon points="0,0 2.5,-2.5 16,16 0,0" fill="#F3E5AB"/><polygon points="0,0 -2.5,2.5 -16,16 0,0" fill="#B38E47"/><polygon points="0,0 2.5,2.5 -16,16 0,0" fill="#F3E5AB"/><polygon points="0,0 -2.5,-2.5 -16,-16 0,0" fill="#B38E47"/><polygon points="0,0 -2.5,2.5 -16,-16 0,0" fill="#F3E5AB"/><polygon points="0,0 -4.5,-5.5 0,-25" fill="#F3E5AB"/><polygon points="0,0 4.5,-5.5 0,-25" fill="#9C7A38"/><polygon points="0,0 4.5,5.5 0,25" fill="#F3E5AB"/><polygon points="0,0 -4.5,5.5 0,25" fill="#9C7A38"/><polygon points="0,0 5.5,-4.5 25,0" fill="#F3E5AB"/><polygon points="0,0 5.5,4.5 25,0" fill="#9C7A38"/><polygon points="0,0 -5.5,4.5 -25,0" fill="#F3E5AB"/><polygon points="0,0 -5.5,-4.5 -25,0" fill="#9C7A38"/><circle cx="0" cy="0" r="3.8" fill="#3E4D3F" stroke="#F3E5AB" stroke-width="1.4"/></g></svg>OMPASS
+      </span>
+    </div>
+    <div class="hotel-info">
+      <span>The Palmetto Hotel</span> &bull; <span>194 East Bay St</span> &bull; <a href="tel:+18438233604">(843) 823-3604</a>
+      <button class="header-guide-btn" id="openGuideBtn" title="About Keys to Charleston & Room Key Perks">?</button>
+    </div>
+  </header>
+
+  <!-- Category Nav -->
+  <div class="filter-bar-wrapper">
+    <button class="nav-arrow" id="navLeft" title="Scroll Left">&lsaquo;</button>
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-category="all">All Highlights</button>
+      <button class="filter-btn filter-btn-keys" data-category="keys">
+        <svg viewBox="0 0 64 64" fill="none"><defs><linearGradient id="navG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFEBB0"/><stop offset="100%" stop-color="#D4AF37"/></linearGradient></defs><g transform="translate(32,32) rotate(45) translate(-32,-32)"><rect x="29.5" y="15" width="5" height="43" rx="2" fill="url(#navG)"/><path d="M34.5 46 H43 V56 H34.5 Z" fill="url(#navG)"/><circle cx="32" cy="12" r="10" fill="url(#navG)"/></g><g transform="translate(32,32) rotate(-45) translate(-32,-32)"><rect x="29.5" y="15" width="5" height="43" rx="2" fill="url(#navG)"/><path d="M21 46 H29.5 V56 H21 Z" fill="url(#navG)"/><circle cx="32" cy="12" r="10" fill="url(#navG)"/></g></svg>
+        <span>Keys to Charleston Partners</span>
+      </button>
+      <button class="filter-btn" data-category="landmarks">Landmarks & History</button>
+      <button class="filter-btn" data-category="dining">Sip and Savor</button>
+      <button class="filter-btn" data-category="shopping">Boutiques & Shopping</button>
+      <button class="filter-btn" data-category="staff">Staff Picks</button>
+      <button class="filter-btn" data-category="guests">💜 Guest Discoveries</button>
+      <a class="filter-btn" href="events.html" style="background:#FAF8F5; border-color:var(--palmetto-brass); color:var(--palmetto-dark); text-decoration:none;" title="View The Lowcountry Scene: Events + Culture">📅 Events Guide</a>
+      <a class="filter-btn filter-btn-suggest" href="guest.html" target="_blank" rel="noopener noreferrer" id="openSuggestBtn" style="text-decoration:none;">+ Share a Suggestion</a>
+    </div>
+    <button class="nav-arrow" id="navRight" title="Scroll Right">&rsaquo;</button>
+  </div>
+
+  <!-- Mapbox Viewport -->
+  <div id="mapContainer">
+    <div id="map"></div>
+    <div id="tokenErrorNotice">Mapbox access token is unauthorized or URL restricted. Please check your Mapbox account.</div>
+    <button class="recenter-btn" id="recenterBtn">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="#C5A059"/></svg>Fit Map
+    </button>
+  </div>
+
+  <!-- Keys to Charleston Guide Modal -->
+  <div class="modal-backdrop" id="guideModal">
+    <div class="modal-box">
+      <button class="modal-close" id="closeGuideBtn">&times;</button>
+      <div class="modal-subtitle">The Palmetto Hotel Preferred Partner Program</div>
+      <div class="modal-title">Keys to Charleston</div>
+      <div class="modal-desc">
+        Your physical Palmetto room key unlocks exclusive discounts, complimentary treats, and special guest hospitality across the city.
+      </div>
+      <div class="modal-features">
+        <div><strong>🗝️ Show Your Physical Room Key:</strong> Present your Palmetto key card when ordering or paying at any partner business to instantly receive your guest perk.</div>
+        <div><strong>✨ Preferred Local Partners:</strong> From chef-driven Lowcountry dining and historic cocktail lounges to boutiques and tours, our partners are hand-picked to elevate your Charleston stay.</div>
+        <div><strong>📍 Partner Details on the Map:</strong> Look for the gold crossed-keys pins on the map. Tap any partner to see their specific guest perk, address, and walking directions.</div>
+        
+      </div>
+      <button class="modal-submit" id="dismissGuideBtn">Explore Partner Locations</button>
+    </div>
+  </div>
+
+  
+
+  <script>
+    // 1. Mapbox Token Setup
+    mapboxgl.accessToken = 'pk.eyJ1IjoicGFsbWV0dG9ob3RlbCIsImEiOiJjbXVuNDFib2UwNzJvMndvOGkxNmg3eXlrIn0.nDRlS-2FQ26qPMgbL9_d8w';
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: [-79.927238, 32.779776],
+      zoom: 14.6,
+      pitch: 0
+    });
+
+    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right');
+
+    // Token Error Listener
+    map.on('error', function(e) {
+      if (e && e.error && (e.error.status === 401 || e.error.status === 403)) {
+        console.error('Mapbox Token Error:', e.error);
+        const notice = document.getElementById('tokenErrorNotice');
+        if (notice) {
+          notice.style.display = 'block';
+          notice.innerHTML = 'Mapbox Token Blocked (HTTP ' + e.error.status + '). Please allow this domain in your Mapbox Account.';
+        }
+      }
+    });
+
+    // Force Mapbox to resize properly in dynamic layouts and iframes
+    function forceMapResize() {
+      if (map) map.resize();
+    }
+    [100, 300, 600, 1200, 2500].forEach(d => setTimeout(forceMapResize, d));
+    window.addEventListener('resize', forceMapResize);
+    document.addEventListener('DOMContentLoaded', forceMapResize);
+    if (window.ResizeObserver) {
+      new ResizeObserver(forceMapResize).observe(document.getElementById('mapContainer'));
+    }
+
+    // Pin SVG Generator
+    function getPinSvg(type) {
+      if (type === 'hotel') {
+        return `<svg viewBox="0 0 36 46" width="36" height="46" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 44 C18 44 2 28 2 18 A16 16 0 1 1 34 18 C34 28 18 44 18 44 Z" fill="#C5A059" stroke="#FFFFFF" stroke-width="2.5"/>
+          <circle cx="18" cy="18" r="11" fill="#3E4D3F" stroke="#F3E5AB" stroke-width="1"/>
+          <path d="M18 11 L12 16 V24 H24 V16 Z M16 24 V20 H20 V24 Z" fill="#F3E5AB"/>
+        </svg>`;
+      }
+      if (type === 'keys') {
+        return `<svg viewBox="0 0 34 44" width="34" height="44" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 42 C17 42 2 27 2 17 A15 15 0 1 1 32 17 C32 27 17 42 17 42 Z" fill="#708771" stroke="#C5A059" stroke-width="2.5"/>
+          <circle cx="17" cy="17" r="11" fill="#3E4D3F" stroke="#E5C16C" stroke-width="1.2"/>
+          <g transform="translate(17, 17) scale(0.42) translate(-32,-32)">
+            <g transform="translate(32,32) rotate(45) translate(-32,-32)">
+              <rect x="29" y="14" width="6" height="42" rx="2" fill="#D4AF37"/>
+              <path d="M35 46 H44 V56 H35 Z" fill="#D4AF37"/>
+              <circle cx="32" cy="12" r="11" fill="#D4AF37"/>
+            </g>
+            <g transform="translate(32,32) rotate(-45) translate(-32,-32)">
+              <rect x="29" y="14" width="6" height="42" rx="2" fill="#D4AF37"/>
+              <path d="M20 46 H29 V56 H20 Z" fill="#D4AF37"/>
+              <circle cx="32" cy="12" r="11" fill="#D4AF37"/>
+            </g>
+          </g>
+        </svg>`;
+      }
+            if (type === 'shopping') {
+        return `<svg viewBox="0 0 32 40" width="30" height="38" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 38 C16 38 2 24 2 15 A14 14 0 1 1 30 15 C30 24 16 38 16 38 Z" fill="#5A6D56" stroke="#F3E5AB" stroke-width="2"/>
+          <circle cx="16" cy="15" r="8" fill="#F8F6F0"/>
+          <path d="M12 14 V12 C12 9.8 13.8 8 16 8 C18.2 8 20 9.8 20 12 V14 M10 14 H22 L21 21 H11 Z" stroke="#5A6D56" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`;
+      }
+      if (type === 'dining') {
+        return `<svg viewBox="0 0 32 40" width="30" height="38" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 38 C16 38 2 24 2 15 A14 14 0 1 1 30 15 C30 24 16 38 16 38 Z" fill="#A84B35" stroke="#F3E5AB" stroke-width="2"/>
+          <circle cx="16" cy="15" r="8" fill="#F7F5EE"/>
+          <path d="M13 10 V19 M11 10 V14 C11 15 13 15 13 15 M18 10 V19 M18 10 C19.5 10 20 12 18 14.5" stroke="#A84B35" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`;
+      }
+      if (type === 'staff') {
+        return `<svg viewBox="0 0 32 40" width="30" height="38" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 38 C16 38 2 24 2 15 A14 14 0 1 1 30 15 C30 24 16 38 16 38 Z" fill="#C5A059" stroke="#3E4D3F" stroke-width="2"/>
+          <circle cx="16" cy="15" r="8" fill="#3E4D3F"/>
+          <path d="M12 12 H20 L16 16 V19 M13 19 H19" stroke="#F3E5AB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`;
+      }
+      if (type === 'guests') {
+        return `<svg viewBox="0 0 32 40" width="30" height="38" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 38 C16 38 2 24 2 15 A14 14 0 1 1 30 15 C30 24 16 38 16 38 Z" fill="#7A4B7D" stroke="#F3E5AB" stroke-width="2"/>
+          <circle cx="16" cy="15" r="8" fill="#FFFFFF"/>
+          <path d="M16 18 S12 15.5 12 13.5 A2 2 0 0 1 16 12.5 A2 2 0 0 1 20 13.5 C20 15.5 16 18 16 18 Z" fill="#7A4B7D"/>
+        </svg>`;
+      }
+      return `<svg viewBox="0 0 32 40" width="30" height="38" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 38 C16 38 2 24 2 15 A14 14 0 1 1 30 15 C30 24 16 38 16 38 Z" fill="#3E4D3F" stroke="#C5A059" stroke-width="2"/>
+        <circle cx="16" cy="15" r="8" fill="#F7F5EE"/>
+        <path d="M12 17 V13 M16 17 V13 M20 17 V13 M10 17 H22 M16 9 L10 12 H22 Z" stroke="#3E4D3F" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+      </svg>`;
+    }
+
+        // Palmetto Base Anchor Marker (No popup attached per user requirement)
+    const hotelEl = document.createElement('div');
+    hotelEl.className = 'marker-pin';
+    hotelEl.style.cursor = 'pointer';
+    hotelEl.title = 'The Palmetto Hotel (Home Base)';
+    hotelEl.innerHTML = getPinSvg('hotel');
+    hotelEl.addEventListener('click', () => {
+      map.flyTo({ center: [-79.927238, 32.779776], zoom: 15.5 });
+    });
+    new mapboxgl.Marker({ element: hotelEl, anchor: 'bottom' })
+      .setLngLat([-79.927238, 32.779776])
+      .addTo(map);
+
+        let allMarkers = [];
+    const markersByName = new Map();
+
+    // Global Carousel Navigation for Map Popups
+    window.carouselNav = function(btn, dir) {
+      const container = btn.closest('.popup-carousel');
+      if (!container) return;
+      const slides = container.querySelectorAll('.carousel-slide');
+      if (!slides || slides.length === 0) return;
+      let idx = parseInt(container.getAttribute('data-index') || '0', 10);
+      slides[idx].style.display = 'none';
+      idx = (idx + dir + slides.length) % slides.length;
+      slides[idx].style.display = 'block';
+      container.setAttribute('data-index', idx);
+      const ind = container.querySelector('.carousel-indicator');
+      if (ind) ind.textContent = (idx + 1) + ' of ' + slides.length + ' tips';
+    };
+
+    function getDriveImgUrl(url) {
+      if (!url) return '';
+      const m1 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (m1 && m1[1]) return 'https://drive.google.com/thumbnail?id=' + m1[1] + '&sz=w1000';
+      const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (m2 && m2[1]) return 'https://drive.google.com/thumbnail?id=' + m2[1] + '&sz=w1000';
+      return url;
+    }
+
+    function buildPopupContent(name, address, proximity, categoryTag, catDisplay, suggestions) {
+      let html = '<div class="popup-cat">' + catDisplay + '</div>';
+      html += '<div class="popup-title">' + name + '</div>';
+      if (address) {
+        html += '<div class="popup-meta" style="margin-bottom:2px;">' + address + '</div>';
+        if (proximity) {
+          html += '<div class="popup-proximity" style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px; line-height:1.35;">' + proximity + '</div>';
+        } else {
+          html += '<div style="margin-bottom:6px;"></div>';
+        }
+      }
+
+      const isKeys = (categoryTag === 'keys') || (catDisplay && catDisplay.toLowerCase().includes('keys'));
+
+      if (suggestions && suggestions.length > 1) {
+        html += '<div class="popup-carousel" data-index="0">';
+        html += '  <div class="carousel-track">';
+        suggestions.forEach((s, idx) => {
+          html += '    <div class="carousel-slide' + (idx === 0 ? ' active' : '') + '">';
+          if (s.submitter && !isKeys) {
+            html += '      <div class="popup-rec-by">Recommended by <strong>' + s.submitter + '</strong>:</div>';
+          }
+          
+          if (isKeys) {
+            if (idx === 0) {
+              const perkText = s.perk || s.tip || 'Exclusive Guest Perk available with Palmetto Room Key';
+              html += '      <div class="popup-perk"><strong>Exclusive Perk:</strong> ' + perkText + '</div>';
+              if (s.tip && s.perk && s.tip.trim().toLowerCase() !== s.perk.trim().toLowerCase()) {
+                html += '      <div class="popup-tip"><strong>Local Tip:</strong> ' + s.tip + '</div>';
+              }
+            } else {
+              if (s.submitter) {
+                html += '      <div class="popup-rec-by">Recommended by <strong>' + s.submitter + '</strong>:</div>';
+              }
+              const tipContent = s.tip || s.perk;
+              if (tipContent) {
+                html += '      <div class="popup-tip"><strong>Local Tip:</strong> ' + tipContent + '</div>';
+              }
+            }
+          } else {
+            if (s.tip) {
+              html += '      <div class="popup-tip"><strong>Local Tip:</strong> ' + s.tip + '</div>';
+            }
+          }
+
+          if (s.photo) {
+            const imgSrc = getDriveImgUrl(s.photo);
+            html += '      <div style="margin-top:8px;"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" style="width:100%; max-height:160px; object-fit:cover; border-radius:6px; border:1px solid #E5E0D5; display:block;" alt="Recommendation photo" /></a></div>';
+          }
+          html += '    </div>';
+        });
+        html += '  </div>';
+        html += '  <div class="carousel-controls">';
+        html += '    <button type="button" class="carousel-btn" onclick="window.carouselNav(this, -1)" title="Previous tip">&lsaquo;</button>';
+        html += '    <span class="carousel-indicator">1 of ' + suggestions.length + ' tips</span>';
+        html += '    <button type="button" class="carousel-btn" onclick="window.carouselNav(this, 1)" title="Next tip">&rsaquo;</button>';
+        html += '  </div>';
+        html += '</div>';
+      } else if (suggestions && suggestions.length === 1) {
+        const s = suggestions[0];
+        if (s.submitter && !isKeys) {
+          html += '<div class="popup-rec-by">Recommended by <strong>' + s.submitter + '</strong>:</div>';
+        }
+
+        if (isKeys) {
+          const perkText = s.perk || s.tip || 'Exclusive Guest Perk available with Palmetto Room Key';
+          html += '<div class="popup-perk"><strong>Exclusive Perk:</strong> ' + perkText + '</div>';
+          if (s.tip && s.perk && s.tip.trim().toLowerCase() !== s.perk.trim().toLowerCase()) {
+            html += '<div class="popup-tip"><strong>Local Tip:</strong> ' + s.tip + '</div>';
+          }
+        } else {
+          if (s.tip) {
+            html += '<div class="popup-tip"><strong>Local Tip:</strong> ' + s.tip + '</div>';
+          }
+        }
+
+        if (s.photo) {
+          const imgSrc = getDriveImgUrl(s.photo);
+          html += '<div style="margin-top:8px;"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" style="width:100%; max-height:160px; object-fit:cover; border-radius:6px; border:1px solid #E5E0D5; display:block;" alt="Recommendation photo" /></a></div>';
+        }
+      }
+
+      const query = encodeURIComponent(name + ' ' + address);
+      html += '<a class="popup-directions" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener">Google Directions &rarr;</a>';
+      return html;
+    }
+
+    function normalizePlaceName(name) {
+      if (!name) return '';
+      let s = name.toLowerCase()
+        .replace(/['’`]/g, '')
+        .replace(/[^a-z0-9]/g, ' ');
+      const noise = new Set(['the', 'irish', 'pub', 'restaurant', 'bar', 'tavern', 'grill', 'cafe', 'lounge', 'saloon', 'charleston', 'hotel', 'spot', 'spots']);
+      const words = s.split(/\s+/).filter(w => w && !noise.has(w));
+      let res = words.join(' ').trim();
+      if (res.endsWith('s') && res.length > 3) res = res.slice(0, -1);
+      return res || name.toLowerCase().trim();
+    }
+
+    function createMarker(data) {
+      const lat = parseFloat(data.lat !== undefined ? data.lat : data['Latitude']);
+      const lng = parseFloat(data.lng !== undefined ? data.lng : data['Longitude']);
+      const name = data.name || data['Place / Landmark / Tour Name'] || data['Place / Landmark / Spot Name'] || data['Place Name'] || data['Establishment Name'] || '';
+      const category = data.category || data['Category'] || '';
+      const address = data.address || data['Full Street Address or Location Point'] || data['Address'] || data['Street Address'] || '';
+      const proximity = data.proximity || data['Proximity to The Palmetto'] || data['Proximity to Hotel'] || data['Distance from The Palmetto'] || '';
+      const rawTip = data.tip || data['The Insider Tip / Photo Advice / Best Time to Visit'] || data['The Insider Tip / What Should Future Guests Know or Order?'] || data['The Insider Tip / Recommendations'] || data['The Insider Tip'] || data['The Insider Tip / What to Order'] || '';
+      const rawBooking = data.booking || data['Ticket & Booking Requirements'] || '';
+      const rawPerk = data.perk || data['Exclusive Perk / Booking Requirements'] || data['Exclusive Perk'] || '';
+      const submitter = data.submitter || data['Your Name & Hometown / City'] || data['Staff Member Name / Initials'] || data['Recommended By'] || data['Guest Name & Hometown'] || data['Staff Name'] || '';
+      const photo = data.photo || data['Photo URL'] || data['Photo / Media Link'] || data['Photo / Video Link or Social Handle (Optional)'] || data['Photo'] || '';
+      const isGuest = (data.isGuest === true) || (data.sheetType === 'guests');
+
+      if (isNaN(lat) || isNaN(lng) || !name) return null;
+
+      const cleanName = name.toLowerCase().trim();
+      const catLower = category.toLowerCase().trim();
+      const bestSuited = (data.bestSuited || data['Best Suited For'] || data['Vibe / Best For'] || '').toLowerCase();
+      const combinedText = catLower + ' ' + bestSuited + ' ' + cleanName;
+
+      // Strict determination of Keys Partner
+      const isKeys = (data.isKeys === true) || 
+                     (data.sheetType === 'keys') || 
+                     catLower.includes('keys to charleston') || 
+                     (rawPerk && rawPerk.toLowerCase().includes('room key')) ||
+                     (rawBooking && rawBooking.toLowerCase().includes('room key'));
+
+      // Strict determination of Landmark
+      const isLandmark = !isKeys && ((data.isLandmark === true) || 
+                         (data.sheetType === 'landmarks') || 
+                         catLower.includes('points of interest') || 
+                         catLower.includes('landmark') || 
+                         catLower.includes('museum') || 
+                         catLower.includes('historic house') ||
+                         catLower.includes('monument'));
+
+      // Subcategories for cross-filtering
+      function hasTerm(txt, terms) {
+        return terms.some(t => txt.includes(t));
+      }
+      const isDining = hasTerm(combinedText, ['dining', 'seafood', 'bistro', 'bakery', 'coffee', 'pub', 'cocktail', 'ice cream', 'bbq', 'cantina', 'tavern', 'cafe', 'bar', 'foodie', 'restaurant', 'eatery']);
+      const isShop = hasTerm(combinedText, ['shopping', 'boutique', 'curated retail', 'jewelry', 'clothing', 'art gallery', 'antique shop', 'souvenir', 'gift shop', 'keepsake']);
+
+      // Build Category Tags
+      const categoryTags = new Set();
+      if (isKeys) {
+        categoryTags.add('keys');
+        if (isDining) categoryTags.add('dining');
+        if (isShop) categoryTags.add('shopping');
+      } else if (isLandmark) {
+        categoryTags.add('landmarks');
+      } else if (isGuest) {
+        categoryTags.add('guests');
+        if (isDining) categoryTags.add('dining');
+        if (isShop) categoryTags.add('shopping');
+      } else {
+        categoryTags.add('staff');
+        if (isDining) categoryTags.add('dining');
+        if (isShop) categoryTags.add('shopping');
+      }
+
+      // Assign Pin and Display Name
+      let pinType = 'staff';
+      let categoryTag = 'staff';
+      let catDisplay = 'Staff Pick';
+
+      if (isKeys) {
+        pinType = 'keys';
+        categoryTag = 'keys';
+        catDisplay = 'Keys to Charleston Partner';
+      } else if (isLandmark) {
+        pinType = 'landmarks';
+        categoryTag = 'landmarks';
+        catDisplay = 'Landmark & History';
+      } else if (isGuest) {
+        pinType = 'guests';
+        categoryTag = 'guests';
+        catDisplay = 'Guest Discovery';
+      } else if (isShop) {
+        pinType = 'shopping';
+        categoryTag = 'shopping';
+        catDisplay = 'Boutiques & Shopping';
+      } else if (isDining) {
+        pinType = 'dining';
+        categoryTag = 'dining';
+        catDisplay = 'Sip and Savor';
+      }
+
+      // Resolve perk text for keys partners
+      let perk = '';
+      if (isKeys) {
+        if (rawPerk && rawPerk.length > 3 && !rawPerk.includes('Exclusive Guest Perk (Show Palmetto Room Key)')) {
+          perk = rawPerk;
+        } else if (rawTip && (rawTip.toLowerCase().includes('room key') || rawTip.toLowerCase().includes('% off') || rawTip.toLowerCase().includes('free '))) {
+          perk = rawTip;
+        } else if (rawBooking && rawBooking.length > 3) {
+          perk = rawBooking;
+        } else {
+          perk = 'Exclusive perk available with Palmetto Room Key';
+        }
+      }
+      let tip = rawTip;
+
+      // Smart Place Matching: Match by normalized name OR exact street address (NEVER by loose proximity)
+      const normKey = normalizePlaceName(name);
+      let existing = markersByName.get(normKey) || markersByName.get(cleanName);
+      
+      if (!existing && address) {
+        const addrA = address.toLowerCase().split(',')[0].trim();
+        if (addrA.length > 5) {
+          existing = allMarkers.find(m => {
+            const addrB = m.address ? m.address.toLowerCase().split(',')[0].trim() : '';
+            return addrB && addrA === addrB;
+          });
+        }
+      }
+
+      const newSuggestion = { submitter, tip, perk, category, photo };
+
+      if (existing) {
+        if (isKeys) {
+          existing.categoryTag = 'keys';
+          existing.catDisplay = 'Keys to Charleston Partner';
+          existing.element.innerHTML = getPinSvg('keys');
+          existing.isKeys = true;
+          if (!existing.categoryTags.includes('keys')) existing.categoryTags.push('keys');
+          if (isDining && !existing.categoryTags.includes('dining')) existing.categoryTags.push('dining');
+          if (isShop && !existing.categoryTags.includes('shopping')) existing.categoryTags.push('shopping');
+        }
+        categoryTags.forEach(t => {
+          if (!existing.categoryTags.includes(t)) existing.categoryTags.push(t);
+        });
+
+        // If existing marker was created from DEFAULT_DATA, live sheet data takes precedence
+        if (existing.isDefault) {
+          existing.suggestions = [newSuggestion];
+          existing.isDefault = false;
+        } else if (tip || perk) {
+          // Check for duplicate tip
+          const isDupe = existing.suggestions.some(s => 
+            (tip && s.tip && s.tip.trim().toLowerCase() === tip.trim().toLowerCase()) ||
+            (perk && s.perk && s.perk.trim().toLowerCase() === perk.trim().toLowerCase()) ||
+            (submitter && s.submitter && s.submitter.trim().toLowerCase() === submitter.trim().toLowerCase() && s.tip.slice(0, 20).toLowerCase() === tip.slice(0, 20).toLowerCase())
+          );
+          if (!isDupe) {
+            existing.suggestions.push(newSuggestion);
+          } else if (perk && !existing.suggestions.some(s => s.perk)) {
+            existing.suggestions[0].perk = perk;
+          }
+        }
+        existing.popup.setHTML(buildPopupContent(existing.name, existing.address, existing.proximity, existing.categoryTag, existing.catDisplay, existing.suggestions));
+        return existing;
+      }
+
+      const suggestions = [newSuggestion];
+      const el = document.createElement('div');
+      el.className = 'marker-pin';
+      el.innerHTML = getPinSvg(pinType);
+
+      const popupHtml = buildPopupContent(name, address, proximity, categoryTag, catDisplay, suggestions);
+      const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(popupHtml);
+
+      const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
+        .setLngLat([lng, lat])
+        .setPopup(popup)
+        .addTo(map);
+
+      const item = {
+        marker: marker,
+        element: el,
+        name: name,
+        address: address,
+        proximity: proximity,
+        categoryTag: categoryTag,
+        categoryTags: Array.from(categoryTags),
+        catDisplay: catDisplay,
+        isGuest: isGuest,
+        isKeys: isKeys,
+        isLandmark: isLandmark,
+        isDefault: data.isDefault || false,
+        lat: lat,
+        lng: lng,
+        suggestions: suggestions,
+        popup: popup
+      };
+
+      markersByName.set(cleanName, item);
+      markersByName.set(normKey, item);
+      allMarkers.push(item);
+      return item;
+    }
+
+    // Load Default Locations
+    const DEFAULT_DATA = [
+  {
+    "name": "Slightly North of Broad (SNOB)",
+    "category": "Keys to Charleston Partners",
+    "address": "192 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "Free Dessert with Entr\u00e9e Purchase when showing your Palmetto room key. Located next door to the hotel. An iconic culinary institution celebrating Lowcountry cuisine.",
+    "perk": "Free Dessert with Entr\u00e9e Purchase (Show Room Key)",
+    "lat": 32.779776,
+    "lng": -79.927238,
+    "isGuest": false,
+    "isKeys": true,
+    "isLandmark": false,
+    "isDefault": true
+  },
+  {
+    "name": "High Cotton (Keys Partner)",
+    "category": "Keys to Charleston Partners",
+    "address": "199 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "Free Dessert with Entr\u00e9e Purchase when showing your Palmetto room key. Directly across the street from The Palmetto. Live jazz music nightly and refined dining.",
+    "perk": "Free Dessert with Entr\u00e9e Purchase (Show Room Key)",
+    "lat": 32.779883,
+    "lng": -79.927623,
+    "isGuest": false,
+    "isKeys": true,
+    "isLandmark": false,
+    "isDefault": true
+  },
+  {
+    "name": "Poogan's Smokehouse",
+    "category": "Keys to Charleston Partners",
+    "address": "188 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "15% off your check at Poogan's Smokehouse when showing your Palmetto room key. Located half a block south. Slow-smoked Carolina pulled pork and ribs.",
+    "perk": "15% Off Your Check (Show Room Key)",
+    "lat": 32.779532,
+    "lng": -79.927164,
+    "isGuest": false,
+    "isKeys": true,
+    "isLandmark": false,
+    "isDefault": true
+  },
+  {
+    "name": "Carmella's Dessert Bar",
+    "category": "Keys to Charleston Partners",
+    "address": "198 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "10% off breakfast and dessert purchases between 8:00 AM and 11:00 AM when showing your Palmetto room key. Gourmet Italian pastries, gelato, and artisan coffee.",
+    "perk": "10% Off Morning Pastries & Coffee (Show Room Key)",
+    "lat": 32.780015,
+    "lng": -79.92735,
+    "isGuest": false,
+    "isKeys": true,
+    "isLandmark": false,
+    "isDefault": true
+  },
+  {
+    "name": "Amen Street Fish & Raw Bar",
+    "category": "Keys to Charleston Partners",
+    "address": "205 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "Complimentary Oyster Shooter with  minimum purchase when showing your Palmetto room key. Famous for fresh local oysters, crab cakes, and Lowcountry seafood.",
+    "perk": "Complimentary Oyster Shooter (Show Room Key)",
+    "lat": 32.780315,
+    "lng": -79.92781,
+    "isGuest": false,
+    "isKeys": true,
+    "isLandmark": false,
+    "isDefault": true
+  },
+  {
+    "name": "The Peacock",
+    "category": "Keys to Charleston Partners",
+    "address": "213 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "10% off food and beverage (not valid on VIP tables, group events, or burger night specials) with Palmetto room key. Chic lounge atmosphere with craft cocktails.",
+    "perk": "10% Off Food & Beverage (Show Room Key)",
+    "lat": 32.78065,
+    "lng": -79.92795,
+    "isGuest": false,
+    "isKeys": true,
+    "isLandmark": false,
+    "isDefault": true
+  },
+  {
+    "name": "Maris De Hart",
+    "category": "Keys to Charleston Partners",
+    "address": "32 Vendue Range Suite 100, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "15% off your purchase (excluding sale items) with Palmetto room key. Curated women's boutique with designer clothing, accessories, and gifts just one block away.",
+    "perk": "15% Off Boutique Purchases (Show Room Key)",
+    "lat": 32.77885,
+    "lng": -79.92621,
+    "isGuest": false,
+    "isKeys": true,
+    "isLandmark": false,
+    "isDefault": true
+  },
+  {
+    "name": "Lowcountry Artists Gallery",
+    "category": "Keys to Charleston Partners",
+    "address": "148 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "10% off purchase when showing your Palmetto room key. The oldest artist-owned gallery in Charleston, featuring original local paintings, pottery, and jewelry.",
+    "perk": "10% Off Original Fine Art (Show Room Key)",
+    "lat": 32.77772,
+    "lng": -79.92685,
+    "isGuest": false,
+    "isKeys": true,
+    "isLandmark": false,
+    "isDefault": true
+  },
+  {
+    "name": "Snaffle Bit Bracelet Company",
+    "category": "Keys to Charleston Partners",
+    "address": "194 E Bay St, Charleston, SC 29401 (At Front Desk)",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "30% off online purchases with exclusive guest code PALMETTO30, or ask the concierge desk for assistance. Signature equestrian Charleston bracelet designs.",
+    "perk": "30% Off Exclusive Jewelry (Show Room Key)",
+    "lat": 32.779776,
+    "lng": -79.927238,
+    "isGuest": false,
+    "isKeys": true,
+    "isLandmark": false,
+    "isDefault": true
+  },
+  {
+    "name": "Rainbow Row",
+    "category": "Points of Interest & Landmarks",
+    "address": "83-107 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "Best lighting is morning around 8:30-10:00 AM before street parking blocks facades and tourist foot traffic picks up. 13 pastel Georgian rowhouses.",
+    "lat": 32.7753504,
+    "lng": -79.9273372,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "booking": "Free & Open to the Public",
+    "isDefault": true
+  },
+  {
+    "name": "Pineapple Fountain (Joe Riley Waterfront Park)",
+    "category": "Points of Interest & Landmarks",
+    "address": "1 Vendue Range, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "Just two blocks east of The Palmetto. Walk past the fountain out onto the pier for harbor breeze, swing benches, and views of Fort Sumter and Ravenel Bridge.",
+    "lat": 32.7780879,
+    "lng": -79.9251889,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "booking": "Free & Open to the Public",
+    "isDefault": true
+  },
+  {
+    "name": "The Battery & White Point Garden",
+    "category": "Points of Interest & Landmarks",
+    "address": "E Battery & Murray Blvd, Charleston, SC 29401",
+    "proximity": "Moderate Walk (10\u201320 minutes)",
+    "tip": "Walk south down East Bay St past Rainbow Row all the way to the tip of the peninsula. Live oaks, Civil War cannons, and antebellum mansions. Great at sunset.",
+    "lat": 32.7692076,
+    "lng": -79.9290615,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "booking": "Free & Open to the Public",
+    "isDefault": true
+  },
+  {
+    "name": "International African American Museum (IAAM)",
+    "category": "Cultural & Art Museums",
+    "address": "14 Wharfside St, Charleston, SC 29401",
+    "proximity": "Short Uber / Taxi (5\u201310 minutes)",
+    "tip": "Built on Gadsden's Wharf where tens of thousands of enslaved Africans first entered America. Outstanding interactive exhibits and the African Ancestors Memorial Garden.",
+    "lat": 32.7887692,
+    "lng": -79.9253296,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "booking": "Book Well in Advance (Timed Entry)",
+    "isDefault": true
+  },
+  {
+    "name": "Nathaniel Russell House",
+    "category": "Historic House Museums & Tours",
+    "address": "51 Meeting St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "Features the world-famous freestanding cantilevered flying spiral staircase. Self-guided audio tour via smartphone is exceptionally well done.",
+    "lat": 32.7739972,
+    "lng": -79.9310299,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "booking": "Advance Booking Recommended",
+    "isDefault": true
+  },
+  {
+    "name": "Fort Sumter National Monument Ferry",
+    "category": "Boat & Harbor Tours",
+    "address": "340 Concord St, Charleston, SC 29401",
+    "proximity": "Short Uber / Taxi (5\u201310 minutes)",
+    "tip": "30-minute narrated harbor ferry ride out to the island fort where the Civil War began, followed by 1 hour on the island. Dolphins frequently swim alongside the boat.",
+    "lat": 32.7904694,
+    "lng": -79.9253797,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": true,
+    "booking": "Advance Booking Recommended",
+    "isDefault": true
+  },
+  {
+    "name": "167 Raw",
+    "category": "Dining: Seafood & Raw Bar",
+    "address": "193 King St, Charleston, SC 29401",
+    "proximity": "Moderate Walk (10\u201320 minutes)",
+    "tip": "No reservations accepted. Put your name in at the door 45-60 minutes before you want to eat and grab a drink nearby. The lobster roll and pastrami swordfish slider are essentials.",
+    "lat": 32.7794563,
+    "lng": -79.9333269,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": false,
+    "booking": "Walk-Up Friendly / Same-Day Booking OK",
+    "isDefault": true
+  },
+  {
+    "name": "High Cotton",
+    "category": "Dining: Upscale / Date Night",
+    "address": "199 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "Directly across the street from The Palmetto. Live jazz music nightly, refined Lowcountry classics (shrimp & grits, steaks), and an exceptional bar team. Great fallback for hotel guests.",
+    "lat": 32.7798408,
+    "lng": -79.9272191,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": false,
+    "booking": "Advance Booking Recommended",
+    "isDefault": true
+  },
+  {
+    "name": "Vern's",
+    "category": "Dining: Upscale / Date Night",
+    "address": "41 Bogard St, Charleston, SC 29403",
+    "proximity": "Short Uber / Taxi (5\u201310 minutes)",
+    "tip": "One of Charleston's most celebrated neighborhood bistros. House-baked sourdough, homemade pastas, and natural wine list. Books 30 days out on Resy at midnight.",
+    "lat": 32.7923336,
+    "lng": -79.9456888,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": false,
+    "booking": "Book Well in Advance (Resy 30 Days Out)",
+    "isDefault": true
+  },
+  {
+    "name": "The Griffon",
+    "category": "Historic Pubs & Neighborhood Bars",
+    "address": "18 Vendue Range, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "Historic neighborhood English tavern covered floor-to-ceiling in signed dollar bills. Located 1 block from The Palmetto. Great craft beers, fish and chips, and casual late-night refuge.",
+    "lat": 32.779021,
+    "lng": -79.926184,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": false,
+    "booking": "Walk-Up Friendly",
+    "isDefault": true
+  },
+  {
+    "name": "Citrus Club (at The Dewberry)",
+    "category": "Craft Cocktails & Rooftops",
+    "address": "334 Meeting St, Charleston, SC 29403",
+    "proximity": "Moderate Walk (10\u201320 minutes)",
+    "tip": "The highest public rooftop in downtown Charleston with 360-degree views of the harbor and steeple skyline. Ideal for sunset cocktails; book a table via Resy or arrive right at opening.",
+    "lat": 32.7877197,
+    "lng": -79.9345626,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": false,
+    "booking": "Advance Booking Recommended (Resy)",
+    "isDefault": true
+  },
+  {
+    "name": "Sightsee Coffee",
+    "category": "Coffee, Breakfast & Bakeries",
+    "address": "125 1/2 Line St, Charleston, SC 29403",
+    "proximity": "Short Uber / Taxi (5\u201310 minutes)",
+    "tip": "Micro-coffee shop and retail outfit celebrating travel and local artists. Try the signature salted caramel cold brew. Great neighborhood vibe away from the commercial strip.",
+    "lat": 32.7933305,
+    "lng": -79.9468441,
+    "isGuest": false,
+    "isKeys": false,
+    "isLandmark": false,
+    "booking": "Walk-Up Friendly",
+    "isDefault": true
+  },
+  {
+    "name": "Chez Nous",
+    "category": "Dining: Upscale / Date Night",
+    "address": "6 Payne Ct, Charleston, SC 29403",
+    "proximity": "Moderate Walk (10\u201320 minutes)",
+    "tip": "Hidden down a secluded alleyway in a historic 1835 home. Handwritten daily changing French menu on index cards. Best romantic dinner of our Charleston trip!",
+    "submitter": "Sarah & David M. (Chicago, IL)",
+    "lat": 32.78854,
+    "lng": -79.94052,
+    "isGuest": true,
+    "isKeys": false,
+    "isLandmark": false,
+    "booking": "Walk-Up / Intimate Booking",
+    "isDefault": true
+  },
+  {
+    "name": "Off Track Ice Cream",
+    "category": "Coffee, Breakfast & Bakeries",
+    "address": "6 Beaufain St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "All-natural and vegan craft ice cream made 100% from scratch with local ingredients. The bourbon caramel and brown butter pecan were incredible!",
+    "submitter": "The Miller Family (Charlotte, NC)",
+    "lat": 32.78012,
+    "lng": -79.93385,
+    "isGuest": true,
+    "isKeys": false,
+    "isLandmark": false,
+    "booking": "Walk-Up Friendly",
+    "isDefault": true
+  },
+  {
+    "name": "Vintage Lounge",
+    "category": "Craft Cocktails & Rooftops",
+    "address": "545 King St, Charleston, SC 29403",
+    "proximity": "Short Uber / Taxi (5\u201310 minutes)",
+    "tip": "Stunner of a wine and cocktail parlor with a 1920s gold-leaf barrel-vaulted ceiling. Exceptional cheese charcuterie boards and vintage champagne flights.",
+    "submitter": "Jessica T. (New York, NY)",
+    "lat": 32.79374,
+    "lng": -79.94191,
+    "isGuest": true,
+    "isKeys": false,
+    "isLandmark": false,
+    "booking": "Evening Walk-Up & Reservations",
+    "isDefault": true
+  },
+  {
+    "name": "Tommy Condon's Irish Pub",
+    "category": "Historic Pubs & Neighborhood Bars",
+    "address": "160 Church St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "Authentic Irish pub with live Celtic music and great shepherd pie.",
+    "booking": "Walk-Up Friendly",
+    "lat": 32.77926,
+    "lng": -79.92882,
+    "isGuest": true,
+    "isKeys": false,
+    "isLandmark": false,
+    "isDefault": true
+  }
+];
+    DEFAULT_DATA.forEach(row => {
+      createMarker(row);
+    });
+
+    function fitMap(filteredList) {
+      const bounds = new mapboxgl.LngLatBounds();
+      bounds.extend([-79.927238, 32.779776]);
+      const list = (filteredList && filteredList.length > 0) ? filteredList : allMarkers;
+      list.forEach(item => bounds.extend([item.lng, item.lat]));
+      map.fitBounds(bounds, { padding: 50, maxZoom: 15.5, duration: 1000 });
+    }
+
+    map.on('load', () => fitMap());
+
+    // Filter Buttons
+    let hasShownKeysGuide = false;
+    const filterButtons = document.querySelectorAll('.filter-btn[data-category]');
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const cat = btn.dataset.category;
+
+        if (cat === 'keys' && !hasShownKeysGuide) {
+          hasShownKeysGuide = true;
+          document.getElementById('guideModal').classList.add('active');
+        }
+
+        const visible = [];
+        allMarkers.forEach(item => {
+          if (cat === 'all' || item.categoryTag === cat || (item.categoryTags && item.categoryTags.includes(cat))) {
+            item.element.style.display = 'block';
+            visible.push(item);
+          } else {
+            item.element.style.display = 'none';
+          }
+        });
+
+        fitMap(visible);
+      });
+    });
+
+    document.getElementById('recenterBtn').addEventListener('click', () => fitMap());
+
+    // Scroll Controls
+    const filterBar = document.getElementById('filterBar');
+    const navLeft = document.getElementById('navLeft');
+    const navRight = document.getElementById('navRight');
+
+    function updateNavArrows() {
+      const maxScroll = filterBar.scrollWidth - filterBar.clientWidth;
+      navLeft.disabled = filterBar.scrollLeft <= 4;
+      navRight.disabled = filterBar.scrollLeft >= maxScroll - 4;
+    }
+    navLeft.addEventListener('click', () => filterBar.scrollBy({ left: -220, behavior: 'smooth' }));
+    navRight.addEventListener('click', () => filterBar.scrollBy({ left: 220, behavior: 'smooth' }));
+    filterBar.addEventListener('scroll', updateNavArrows);
+    window.addEventListener('resize', updateNavArrows);
+    setTimeout(updateNavArrows, 300);
+
+    // Modals
+    const guideModal = document.getElementById('guideModal');
+    const openGuideBtn = document.getElementById('openGuideBtn');
+    const closeGuideBtn = document.getElementById('closeGuideBtn');
+    const dismissGuideBtn = document.getElementById('dismissGuideBtn');
+
+    openGuideBtn.addEventListener('click', () => guideModal.classList.add('active'));
+    closeGuideBtn.addEventListener('click', () => guideModal.classList.remove('active'));
+    dismissGuideBtn.addEventListener('click', () => guideModal.classList.remove('active'));
+
+    // Suggest a Spot button is a direct link to ./guest.html
+
+    [guideModal].forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+      });
+    });
+
+    // Live Automated Google Sheets Sync across all 4 dedicated tabs
+    try {
+      const spreadsheetId = '1mKqYU1DX3AY5pdCm7oO6qXDVevF3mPLME5zMraC-0qk';
+      const keysCsv = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('Keys to Charleston Partners');
+      const landmarksCsv = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('Landmarks');
+      const staffCsv = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('Staff Subs');
+      const guestCsv = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('Guest Subs');
+
+      if (typeof Papa !== 'undefined') {
+        const liveValidKeys = new Set();
+        let pendingSheets = 4;
+
+        function checkSyncCompletion() {
+          pendingSheets--;
+          if (pendingSheets <= 0) {
+            // Prune any markers that are NOT in Google Sheets (leaving only Sheet items + Palmetto Hotel)
+            if (liveValidKeys.size > 0) {
+              const toRemove = [];
+              allMarkers.forEach(m => {
+                const norm = normalizePlaceName(m.name);
+                const rawName = m.name.toLowerCase().trim();
+                if (!liveValidKeys.has(norm) && !liveValidKeys.has(rawName)) {
+                  toRemove.push(m);
+                }
+              });
+
+              toRemove.forEach(m => {
+                if (m.marker) m.marker.remove();
+                const idx = allMarkers.indexOf(m);
+                if (idx !== -1) allMarkers.splice(idx, 1);
+                markersByName.delete(m.name.toLowerCase().trim());
+                markersByName.delete(normalizePlaceName(m.name));
+              });
+            }
+
+            // Re-apply active category filter
+            const activeBtn = document.querySelector('.filter-btn.active');
+            const currentCat = activeBtn ? activeBtn.dataset.category : 'all';
+            allMarkers.forEach(item => {
+              if (currentCat === 'all' || item.categoryTag === currentCat || (item.categoryTags && item.categoryTags.includes(currentCat))) {
+                item.element.style.display = 'block';
+              } else {
+                item.element.style.display = 'none';
+              }
+            });
+
+            fitMap();
+            console.log('Automated Sync: Complete. Active verified locations:', allMarkers.length);
+          }
+        }
+
+        function syncSheet(url, sheetType) {
+          Papa.parse(url, {
+            download: true,
+            header: true,
+            error: function() {
+              console.log('Sheet sync silent fallback for ' + sheetType);
+              checkSyncCompletion();
+            },
+            complete: function(res) {
+              if (!res || !res.data || res.data.length === 0) {
+                checkSyncCompletion();
+                return;
+              }
+
+              res.data.forEach(row => {
+                const st = (row['Approved?'] || row['Approved'] || row['Status'] || row['Status / Approval'] || row['Concierge Status'] || '').toString().toLowerCase().trim();
+                // Filter out any entries marked as denied or rejected
+                if (st.includes('denied') || st.includes('reject') || st.includes('remove') || st.includes('hide') || st.includes('delete') || st === 'no') {
+                  return;
+                }
+
+                const lat = parseFloat(row['Latitude']);
+                const lng = parseFloat(row['Longitude']);
+                const name = row['Place / Landmark / Tour Name'] || row['Place / Landmark / Spot Name'] || row['Place Name'] || row['Establishment Name'];
+                const address = row['Full Street Address or Location Point'] || row['Address'] || row['Street Address'] || '';
+                
+                if (name && name.trim().length > 1) {
+                  liveValidKeys.add(name.toLowerCase().trim());
+                  liveValidKeys.add(normalizePlaceName(name));
+                }
+
+                row.sheetType = sheetType;
+                if (sheetType === 'keys') row.isKeys = true;
+                if (sheetType === 'landmarks') row.isLandmark = true;
+                if (sheetType === 'staff') row.isStaff = true;
+                if (sheetType === 'guests') row.isGuest = true;
+
+                if (!isNaN(lat) && !isNaN(lng) && name) {
+                  createMarker(row);
+                } else if (name && (address || sheetType === 'guests')) {
+                  const queryLoc = (address && address.length > 3) ? address : name;
+                  const geoUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(queryLoc + ', Charleston, SC') + '.json?access_token=' + mapboxgl.accessToken + '&limit=1';
+                  fetch(geoUrl)
+                    .then(r => r.json())
+                    .then(geoData => {
+                      if (geoData && geoData.features && geoData.features.length > 0) {
+                        const [geoLng, geoLat] = geoData.features[0].center;
+                        row.Latitude = geoLat;
+                        row.Longitude = geoLng;
+                        row.sheetType = sheetType;
+                        if (sheetType === 'keys') row.isKeys = true;
+                        if (sheetType === 'landmarks') row.isLandmark = true;
+                        if (sheetType === 'staff') row.isStaff = true;
+                        if (sheetType === 'guests') row.isGuest = true;
+                        createMarker(row);
+                      }
+                    })
+                    .catch(() => {});
+                }
+              });
+
+              checkSyncCompletion();
+            }
+          });
+        }
+
+        // Sync in priority order
+        syncSheet(keysCsv, 'keys');
+        syncSheet(landmarksCsv, 'landmarks');
+        syncSheet(staffCsv, 'staff');
+        syncSheet(guestCsv, 'guests');
+      }
+    } catch (err) {
+      console.log('Google Sheets sync idle.');
+    }</script>
+</body>
+</html>

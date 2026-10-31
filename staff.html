@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>The Palmetto Compass — Staff Recommendations & Perks</title>
+
+  <!-- Google Fonts: Cinzel & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --p-green: #3E4D3F;
+      --p-sage: #708771;
+      --p-gold: #C5A059;
+      --p-gold-light: #F3E5AB;
+      --p-linen: #F8F6F0;
+      --p-card-bg: #FFFFFF;
+      --p-text: #232A25;
+      --p-muted: #5F6962;
+      --p-subtle: #848D86;
+      --p-border: #DDD8CE;
+      --p-border-light: #ECE8E0;
+      --p-input-bg: #FCFBF9;
+      --p-radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--p-linen);
+      color: var(--p-text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 32px 16px;
+    }
+
+    .portal-shell {
+      width: 100%;
+      max-width: 660px;
+      background: var(--p-card-bg);
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--p-border);
+      overflow: hidden;
+    }
+
+    /* Sleek, Non-Clunky Header */
+    .portal-header {
+      background: var(--p-green);
+      color: #FFFFFF;
+      padding: 22px 24px 18px 24px;
+      text-align: center;
+      border-bottom: 2px solid var(--p-gold);
+      position: relative;
+    }
+
+    .brand-emblem {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .brand-title {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 1.28rem;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      color: var(--p-gold-light);
+      text-transform: uppercase;
+    }
+
+    .compass-c-svg {
+      height: 1.05em;
+      width: auto;
+      vertical-align: -0.1em;
+    }
+
+    .portal-subtitle {
+      font-size: 0.8rem;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #FFFFFF;
+      opacity: 0.95;
+    }
+
+    .hotel-coords {
+      font-size: 0.72rem;
+      color: rgba(243, 229, 171, 0.9);
+      margin-top: 3px;
+      letter-spacing: 0.4px;
+    }
+
+    /* Form Content Body */
+    .form-body {
+      padding: 30px 28px;
+    }
+
+    .intro-banner {
+      background: #FAF8F5;
+      border-left: 3px solid var(--p-gold);
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin-bottom: 24px;
+      font-size: 0.84rem;
+      color: var(--p-muted);
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--p-green);
+      margin-bottom: 4px;
+    }
+
+    .form-label .req {
+      color: #B23B2A;
+      margin-left: 2px;
+    }
+
+    /* Clearly Differentiated Helper / Example Text */
+    .form-example {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      color: var(--p-subtle);
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+
+    .example-tag {
+      background: #EAE6DE;
+      color: var(--p-muted);
+      font-size: 0.65rem;
+      font-weight: 700;
+      font-style: normal;
+      padding: 1px 5px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 11px 13px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      border: 1px solid var(--p-border);
+      border-radius: 8px;
+      background: var(--p-input-bg);
+      color: var(--p-text);
+      transition: all 0.2s ease;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--p-sage);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(112, 135, 113, 0.18);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    /* Mapbox Autocomplete Suggestions Dropdown */
+    .autocomplete-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border: 1px solid var(--p-border);
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 1000;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .autocomplete-item {
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      border-bottom: 1px solid var(--p-border-light);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: background 0.15s;
+    }
+
+    .autocomplete-item:hover, .autocomplete-item.selected {
+      background: #F4F6F3;
+    }
+
+    .autocomplete-item .item-primary {
+      font-weight: 600;
+      color: var(--p-green);
+    }
+
+    .autocomplete-item .item-secondary {
+      font-size: 0.72rem;
+      color: var(--p-muted);
+    }
+
+    .geo-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      color: #2F6B34;
+      background: #EBF4EC;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-top: 6px;
+      display: none;
+    }
+
+    /* Styled File Upload Dropzone */
+    .file-dropzone {
+      border: 1.5px dashed var(--p-border);
+      border-radius: 8px;
+      padding: 18px;
+      text-align: center;
+      background: #FAF9F6;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .file-dropzone:hover, .file-dropzone.dragover {
+      border-color: var(--p-sage);
+      background: #F2F5F1;
+    }
+
+    .file-dropzone-icon {
+      font-size: 1.5rem;
+      color: var(--p-sage);
+      margin-bottom: 4px;
+    }
+
+    .file-dropzone-text {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--p-green);
+    }
+
+    .file-dropzone-sub {
+      font-size: 0.72rem;
+      color: var(--p-muted);
+      margin-top: 2px;
+    }
+
+    .file-preview-wrap {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: #FFFFFF;
+      border: 1px solid var(--p-border);
+      border-radius: 8px;
+    }
+
+    .file-preview-img {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--p-border);
+    }
+
+    .file-preview-info {
+      flex: 1;
+      font-size: 0.78rem;
+    }
+
+    .file-preview-name {
+      font-weight: 600;
+      color: var(--p-text);
+      word-break: break-all;
+    }
+
+    .file-preview-size {
+      font-size: 0.7rem;
+      color: var(--p-muted);
+    }
+
+    .file-remove-btn {
+      background: none;
+      border: none;
+      color: #A84B35;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--p-green);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-submit:hover {
+      background: #2D372E;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.99);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Success Screen */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .success-icon {
+      font-size: 3rem;
+      color: var(--p-sage);
+      margin-bottom: 12px;
+    }
+
+    .success-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--p-green);
+      margin-bottom: 8px;
+    }
+
+    .success-desc {
+      font-size: 0.86rem;
+      color: var(--p-muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .btn-back-map {
+      display: inline-block;
+      background: var(--p-gold);
+      color: #FFFFFF;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-size: 0.84rem;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-back-map:hover {
+      background: #B38E47;
+    }
+
+    /* Mobile Screen Optimization */
+    @media (max-width: 600px) {
+      body {
+        padding: 0;
+        background: var(--p-card-bg);
+      }
+      .portal-shell {
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+        min-height: 100vh;
+      }
+      .portal-header {
+        padding: 16px 18px 14px 18px;
+      }
+      .brand-title {
+        font-size: 1.15rem;
+      }
+      .form-body {
+        padding: 22px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="portal-shell">
+    <!-- Sleek Header -->
+    <div class="portal-header">
+      <div class="brand-emblem">
+        <svg class="compass-c-svg" viewBox="10 10 68 80"><path d="M 76,26 C 70,16 60,11 47,11 C 24,11 11,27 11,50 C 11,73 24,89 47,89 C 60,89 71,83 77,73 L 69,67 C 64,74 56,79 47,79 C 31,79 21,67 21,50 C 21,33 31,21 47,21 C 56,21 63,25 68,32 Z" fill="#F3E5AB"/><g transform="translate(47, 50) scale(0.58)"><circle cx="0" cy="0" r="26" fill="none" stroke="#C5A059" stroke-width="1.4" stroke-dasharray="1.5, 2.5" opacity="0.85"/><polygon points="0,0 2.5,-2.5 16,-16 0,0" fill="#B38E47"/><polygon points="0,0 -2.5,-2.5 16,-16 0,0" fill="#F3E5AB"/><polygon points="0,0 2.5,2.5 16,16 0,0" fill="#B38E47"/><polygon points="0,0 2.5,-2.5 16,16 0,0" fill="#F3E5AB"/><polygon points="0,0 -2.5,2.5 -16,16 0,0" fill="#B38E47"/><polygon points="0,0 2.5,2.5 -16,16 0,0" fill="#F3E5AB"/><polygon points="0,0 -2.5,-2.5 -16,-16 0,0" fill="#B38E47"/><polygon points="0,0 -2.5,2.5 -16,-16 0,0" fill="#F3E5AB"/><polygon points="0,0 -4.5,-5.5 0,-25" fill="#F3E5AB"/><polygon points="0,0 4.5,-5.5 0,-25" fill="#9C7A38"/><polygon points="0,0 4.5,5.5 0,25" fill="#F3E5AB"/><polygon points="0,0 -4.5,5.5 0,25" fill="#9C7A38"/><polygon points="0,0 5.5,-4.5 25,0" fill="#F3E5AB"/><polygon points="0,0 5.5,4.5 25,0" fill="#9C7A38"/><polygon points="0,0 -5.5,4.5 -25,0" fill="#F3E5AB"/><polygon points="0,0 -5.5,-4.5 -25,0" fill="#9C7A38"/><circle cx="0" cy="0" r="3.8" fill="#3E4D3F" stroke="#F3E5AB" stroke-width="1.4"/></g></svg>
+        <span class="brand-title">The Palmetto Compass</span>
+      </div>
+      <div class="portal-subtitle">Staff Recommendations Portal</div>
+      <div class="hotel-coords">194 East Bay Street &bull; Charleston, SC</div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="form-body" id="formWrapper">
+      <div class="intro-banner">
+        Add an insider staff pick, neighborhood secret, or Keys to Charleston partner perk to <strong>The Palmetto Compass</strong> concierge map.
+      </div>
+
+      <form id="staffForm" onsubmit="handleFormSubmit(event)">
+        <!-- Hidden Geo & Autocomplete Fields -->
+        <input type="hidden" name="latitude" id="latitude" />
+        <input type="hidden" name="longitude" id="longitude" />
+        <input type="hidden" name="neighborhood" id="neighborhood" />
+        <input type="hidden" name="proximity" id="proximity" />
+
+        <!-- 1. Guest Name & Hometown -->
+        <div class="form-group">
+          <label class="form-label">Staff Member Name / Initials <span class="req">*</span></label>
+          <div class="form-example"><span class="example-tag">e.g.</span> e.g., Anthony C., Bianca, Brandi, Shannon</div>
+          <input type="text" name="name" class="form-input" placeholder="Name & Hometown" required />
+        </div>
+
+        <!-- 2. Place Name or Address with Mapbox Autocomplete -->
+        <div class="form-group">
+          <label class="form-label">Place Name or Address <span class="req">*</span></label>
+          <div class="form-example"><span class="example-tag">e.g.</span> 167 Raw, Off Track Ice Cream, or 6 Payne Ct</div>
+          <div class="autocomplete-wrap">
+            <input type="text" name="placeName" id="placeInput" class="form-input" placeholder="Search place name or street address in Charleston..." autocomplete="off" required />
+            <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+          </div>
+          <div class="geo-status-badge" id="geoStatusBadge">
+            <span>&#10003;</span> <span id="geoStatusText">Address & coordinates verified</span>
+          </div>
+        </div>
+
+        <!-- Full Street Address (Confirmed / Fallback) -->
+        <div class="form-group">
+          <label class="form-label">Full Street Address</label>
+          <div class="form-example"><span class="example-tag">auto-filled</span> Standardized street address for map placement</div>
+          <input type="text" name="address" id="addressInput" class="form-input" placeholder="e.g., 193 King St, Charleston, SC 29401" />
+        </div>
+
+        <!-- 3. Category -->
+        <div class="form-group">
+          <label class="form-label">Category <span class="req">*</span></label>
+          <div class="form-example"><span class="example-tag">Select</span> Primary experience type</div>
+          <select name="category" class="form-select" required>
+            <option value="">-- Select Category --</option>
+            <option value="Dining: Seafood & Raw Bar">Dining: Seafood & Raw Bar</option>
+            <option value="Dining: Upscale / Date Night">Dining: Upscale / Date Night</option>
+            <option value="Dining: Casual & Quick Bites">Dining: Casual & Quick Bites</option>
+            <option value="Craft Cocktails & Rooftops">Craft Cocktails & Rooftops</option>
+            <option value="Historic Pubs & Neighborhood Bars">Historic Pubs & Neighborhood Bars</option>
+            <option value="Coffee, Breakfast & Bakeries">Coffee, Breakfast & Bakeries</option>
+            <option value="Points of Interest & Landmarks">Points of Interest & Landmarks</option>
+            <option value="Historic House Museums & Tours">Historic House Museums & Tours</option>
+            <option value="Cultural & Art Museums">Cultural & Art Museums</option>
+            <option value="Boat & Harbor Tours">Boat & Harbor Tours</option>
+            <option value="Boutique Shopping & Local Art">Boutique Shopping & Local Art</option>
+            <option value="Hidden Gem / Off the Beaten Path">Hidden Gem / Off the Beaten Path</option>
+          </select>
+        </div>
+
+        <!-- 4. Local Tip -->
+        <div class="form-group">
+          <label class="form-label">Local Tip / What to Order <span class="req">*</span></label>
+          <div class="form-example"><span class="example-tag">Advice</span> Favorite dish, cocktail, table tip, or best time to visit</div>
+          <textarea name="tip" class="form-textarea" placeholder="Tell future guests what made this spot special and what to order..." required></textarea>
+        </div>
+
+        <!-- 5. Photo / Media Upload Option -->
+        <div class="form-group">
+          <label class="form-label">Upload a Photo or Video (Optional)</label>
+          <div class="form-example"><span class="example-tag">Upload</span> Share a snapshot from your visit</div>
+          <div class="file-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+            <div class="file-dropzone-icon">&#128247;</div>
+            <div class="file-dropzone-text">Click to choose or drag & drop a photo</div>
+            <div class="file-dropzone-sub">Supports JPG, PNG, WEBP, HEIC (up to 15MB)</div>
+          </div>
+          <input type="file" id="fileInput" name="photoFile" accept="image/*,video/*" style="display:none;" onchange="handleFileSelected(event)" />
+          
+          <div class="file-preview-wrap" id="filePreviewWrap">
+            <img src="" id="filePreviewImg" class="file-preview-img" alt="Preview" />
+            <div class="file-preview-info">
+              <div class="file-preview-name" id="filePreviewName"></div>
+              <div class="file-preview-size" id="filePreviewSize"></div>
+            </div>
+            <button type="button" class="file-remove-btn" onclick="removeSelectedFile()" title="Remove file">&times;</button>
+          </div>
+          <input type="hidden" name="mediaData" id="mediaData" />
+          <input type="hidden" name="fileName" id="fileName" />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit" id="submitBtn">Publish Recommendation</button>
+      </form>
+    </div>
+
+    <!-- Success Screen with Back to Map Button -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">&#10004;</div>
+      <div class="success-title">Thank You!</div>
+      <div class="success-desc">
+        Your staff recommendation has been recorded and added to The Palmetto Compass!<br />
+        We look forward to featuring your tip on <strong>The Palmetto Compass</strong>!
+      </div>
+      <a href="https://palmettocompass.anthonycollito.workers.dev/" class="btn-back-map">Back to Map</a>
+    </div>
+  </div>
+
+  <script>
+    const MAPBOX_TOKEN = 'pk.eyJ1IjoiYW50aG9ueWNvbGxpdG8iLCJhIjoiY21nM212Y24yMDIxMjJqcTNkcHNtOGM4ZCJ9.tFvW83Q1p2sS-kX1nI5k5w';
+    const PALMETTO_COORDS = { lat: 32.779776, lng: -79.927238 };
+
+    // Autocomplete handling
+    const placeInput = document.getElementById('placeInput');
+    const addressInput = document.getElementById('addressInput');
+    const dropdown = document.getElementById('autocompleteDropdown');
+    const latInput = document.getElementById('latitude');
+    const lngInput = document.getElementById('longitude');
+    const neighborhoodInput = document.getElementById('neighborhood');
+    const proximityInput = document.getElementById('proximity');
+    const geoStatus = document.getElementById('geoStatusBadge');
+    const geoText = document.getElementById('geoStatusText');
+
+    let debounceTimer;
+
+    placeInput.addEventListener('input', function() {
+      const q = placeInput.value.trim();
+      clearTimeout(debounceTimer);
+      if (q.length < 2) {
+        dropdown.style.display = 'none';
+        return;
+      }
+      debounceTimer = setTimeout(() => searchMapboxPlaces(q), 250);
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!placeInput.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+
+    function searchMapboxPlaces(query) {
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?proximity=${PALMETTO_COORDS.lng},${PALMETTO_COORDS.lat}&bbox=-80.20,32.65,-79.75,33.00&types=poi,address,neighborhood&access_token=${MAPBOX_TOKEN}`;
+      
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          dropdown.innerHTML = '';
+          if (!data || !data.features || data.features.length === 0) {
+            dropdown.style.display = 'none';
+            return;
+          }
+          data.features.slice(0, 5).forEach(feat => {
+            const item = document.createElement('div');
+            item.className = 'autocomplete-item';
+            const primary = feat.text || feat.place_name.split(',')[0];
+            const secondary = feat.place_name.replace(primary + ', ', '');
+            item.innerHTML = `<span class="item-primary">${primary}</span><span class="item-secondary">${secondary}</span>`;
+            
+            item.addEventListener('click', () => {
+              placeInput.value = primary;
+              addressInput.value = feat.place_name;
+              dropdown.style.display = 'none';
+
+              const lng = feat.center[0];
+              const lat = feat.center[1];
+              latInput.value = lat;
+              lngInput.value = lng;
+
+              // Automatic Neighborhood Detection from Geodata
+              const neighborhood = deriveNeighborhood(lat, lng, feat);
+              neighborhoodInput.value = neighborhood;
+
+              // Automatic Proximity Calculation
+              const proximity = deriveProximity(lat, lng);
+              proximityInput.value = proximity;
+
+              geoText.textContent = `Verified: ${neighborhood} (${proximity})`;
+              geoStatus.style.display = 'inline-flex';
+            });
+            dropdown.appendChild(item);
+          });
+          dropdown.style.display = 'block';
+        })
+        .catch(() => {
+          dropdown.style.display = 'none';
+        });
+    }
+
+    function deriveNeighborhood(lat, lng, feat) {
+      if (feat && feat.context) {
+        const nContext = feat.context.find(c => c.id.startsWith('neighborhood'));
+        if (nContext) return nContext.text;
+      }
+      if (lat < 32.774) return 'South of Broad';
+      if (lat >= 32.774 && lat <= 32.784 && lng >= -79.932) return 'French Quarter';
+      if (lng >= -79.927 && lat <= 32.788) return 'Waterfront Park & Harborfront';
+      if (lat > 32.786) return 'Upper King / Cannonborough / Elliotborough';
+      if (lng > -79.90) return 'Mount Pleasant / Shem Creek';
+      return 'King Street / Historic Downtown';
+    }
+
+    function deriveProximity(lat, lng) {
+      const R = 6371; // km
+      const dLat = (lat - PALMETTO_COORDS.lat) * Math.PI / 180;
+      const dLon = (lng - PALMETTO_COORDS.lng) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(PALMETTO_COORDS.lat * Math.PI / 180) * Math.cos(lat * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      const distKm = R * c;
+
+      if (distKm < 0.8) return 'Immediate Walk (< 5–10 minutes)';
+      if (distKm < 1.6) return 'Moderate Walk (10–20 minutes)';
+      if (distKm < 6.0) return 'Short Uber / Taxi (5–10 minutes)';
+      return 'Day Trip / Drive (20+ minutes)';
+    }
+
+    // File Upload handling
+    function handleFileSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      document.getElementById('filePreviewName').textContent = file.name;
+      document.getElementById('filePreviewSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+      if (document.getElementById('fileName')) {
+        document.getElementById('fileName').value = file.name;
+      }
+
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            const maxDim = 1600;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              } else {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressed = canvas.toDataURL('image/jpeg', 0.82);
+            document.getElementById('filePreviewImg').src = compressed;
+            document.getElementById('mediaData').value = compressed;
+            document.getElementById('filePreviewWrap').style.display = 'flex';
+            document.getElementById('dropzone').style.display = 'none';
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('filePreviewImg').src = '';
+          document.getElementById('mediaData').value = e.target.result;
+          document.getElementById('filePreviewWrap').style.display = 'flex';
+          document.getElementById('dropzone').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function removeSelectedFile() {
+      document.getElementById('fileInput').value = '';
+      document.getElementById('mediaData').value = '';
+      document.getElementById('filePreviewWrap').style.display = 'none';
+      document.getElementById('dropzone').style.display = 'block';
+    }
+
+    // Form Submission
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Publishing Recommendation...';
+
+      const form = document.getElementById('staffForm');
+      const formData = {
+        name: form.name.value,
+        placeName: form.placeName.value,
+        address: form.address.value,
+        category: form.category.value,
+        tip: form.tip.value,
+        latitude: form.latitude.value,
+        longitude: form.longitude.value,
+        neighborhood: form.neighborhood.value,
+        proximity: form.proximity.value,
+        mediaData: form.mediaData.value,
+        fileName: form.fileName ? form.fileName.value : ''
+      };
+
+      // If running inside Google Apps Script:
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function() {
+            document.getElementById('formWrapper').style.display = 'none';
+            document.getElementById('successScreen').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          })
+          .withFailureHandler(function(err) {
+            btn.disabled = false;
+            btn.textContent = 'Publish Recommendation';
+            alert('Submission notice: ' + err);
+          })
+          .submitStaffRecommendation(formData);
+      } else {
+        // Standalone Web Form / Cloudflare Direct Submission
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzPcLzfawkrc2--XL3S_ivJIm57H7TRrgK-MJwGR13Cc_sKFjVq6fI6gqgc0rlwfHSW/exec';
+        fetch(scriptUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(formData)
+        }).then(() => {
+          document.getElementById('formWrapper').style.display = 'none';
+          document.getElementById('successScreen').style.display = 'block';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }).catch(() => {
+          document.getElementById('formWrapper').style.display = 'none';
+          document.getElementById('successScreen').style.display = 'block';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+    }
+  </script>
+</body>
+</html>
