@@ -526,11 +526,46 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
 
+    .card-actions-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+      width: 100%;
+    }
+    .card-action-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      text-decoration: none;
+      padding: 11px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .card-menu-btn {
+      background: #FAF7F0;
+      color: #8C6B1B;
+      border: 1.5px solid var(--palmetto-brass);
+      box-shadow: 0 2px 6px rgba(197, 160, 89, 0.15);
+    }
+    .card-menu-btn:hover {
+      background: var(--palmetto-brass);
+      color: #FFFFFF;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(197, 160, 89, 0.35);
+    }
     .card-directions-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       width: 100%;
       text-align: center;
       background: var(--palmetto-green);
@@ -544,10 +579,17 @@
       letter-spacing: 0.6px;
       transition: all 0.2s ease;
       box-shadow: 0 3px 8px rgba(62, 77, 63, 0.2);
-      margin-top: 4px;
+      border: 1.5px solid var(--palmetto-green);
+    }
+    .card-actions-row .card-directions-btn {
+      width: auto;
+      flex: 1;
+      font-size: 0.78rem;
+      padding: 11px 12px;
     }
     .card-directions-btn:hover {
       background: var(--palmetto-dark);
+      border-color: var(--palmetto-dark);
       box-shadow: 0 4px 12px rgba(62, 77, 63, 0.35);
       transform: translateY(-1px);
     }
@@ -1185,12 +1227,36 @@
         }
       }
 
-      // Directions Button
+      // Action Buttons (Menu + Directions)
+      const isDining = item.isDining || 
+                       (categoryTag === 'dining') || 
+                       (item.categoryTags && item.categoryTags.includes('dining')) || 
+                       (catDisplay && (catDisplay.toLowerCase().includes('sip') || catDisplay.toLowerCase().includes('dining')));
+      
+      let menuUrl = item.menu;
+      if (!menuUrl && isDining) {
+        menuUrl = 'https://www.google.com/search?q=' + encodeURIComponent(name + ' Charleston SC menu');
+      }
+
       const query = encodeURIComponent(name + ' ' + (address || 'Charleston SC'));
-      html += '<a class="card-directions-btn" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener">';
-      html += '  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>';
-      html += '  <span>Get Google Directions</span>';
-      html += '</a>';
+
+      if (menuUrl) {
+        html += '<div class="card-actions-row">';
+        html += '  <a class="card-action-btn card-menu-btn" href="' + menuUrl + '" target="_blank" rel="noopener" title="View official restaurant menu">';
+        html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a4 4 0 0 0-4 4v14a4 4 0 0 0 4 4h3V2z"/><path d="M6 2h3a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H6V2z"/></svg>';
+        html += '    <span>View Menu</span>';
+        html += '  </a>';
+        html += '  <a class="card-action-btn card-directions-btn" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener" title="Get directions in Google Maps">';
+        html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>';
+        html += '    <span>Directions</span>';
+        html += '  </a>';
+        html += '</div>';
+      } else {
+        html += '<a class="card-directions-btn" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener" style="margin-top:4px;">';
+        html += '  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>';
+        html += '  <span>Get Google Directions</span>';
+        html += '</a>';
+      }
 
       return html;
     }
@@ -1224,6 +1290,7 @@
       const rawPerk = data.perk || data['Exclusive Perk / Booking Requirements'] || data['Exclusive Perk'] || '';
       const submitter = data.submitter || data['Your Name & Hometown / City'] || data['Staff Member Name / Initials'] || data['Recommended By'] || data['Guest Name & Hometown'] || data['Staff Name'] || '';
       const photo = data.photo || data['Photo URL'] || data['Photo / Media Link'] || data['Photo / Video Link or Social Handle (Optional)'] || data['Photo'] || '';
+      const menu = data.menu || data['Menu Link'] || data['Menu URL'] || data['Menu'] || data['Website'] || data['Website / Menu'] || data['Website Link'] || '';
       const isGuest = (data.isGuest === true) || (data.sheetType === 'guests');
 
       if (isNaN(lat) || isNaN(lng) || !name) return null;
@@ -1383,6 +1450,9 @@
             existing.suggestions[0].perk = perk;
           }
         }
+        if (menu && !existing.menu) {
+          existing.menu = menu;
+        }
         if (activePlaceItem === existing) {
           openPlaceCard(existing);
         }
@@ -1410,6 +1480,8 @@
         isGuest: isGuest,
         isKeys: isKeys,
         isLandmark: isLandmark,
+        isDining: isDining,
+        menu: menu,
         isDefault: data.isDefault || false,
         lat: lat,
         lng: lng,
@@ -1431,6 +1503,7 @@
     const DEFAULT_DATA = [
   {
     "name": "Slightly North of Broad (SNOB)",
+    "menu": "https://snobcharleston.com/menus/",
     "category": "Keys to Charleston Partners",
     "address": "192 E Bay St, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
@@ -1641,6 +1714,7 @@
   },
   {
     "name": "167 Raw",
+    "menu": "https://167raw.com/charleston/",
     "category": "Sip and Savor",
     "address": "193 King St, Charleston, SC 29401",
     "proximity": "Moderate Walk (10\u201320 minutes)",
@@ -1655,6 +1729,7 @@
   },
   {
     "name": "High Cotton",
+    "menu": "https://highcottoncharleston.com/menus/",
     "category": "Sip and Savor",
     "address": "199 E Bay St, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
@@ -1669,6 +1744,7 @@
   },
   {
     "name": "Vern's",
+    "menu": "https://vernscharleston.com/menu/",
     "category": "Sip and Savor",
     "address": "41 Bogard St, Charleston, SC 29403",
     "proximity": "Short Uber / Taxi (5\u201310 minutes)",
@@ -1683,6 +1759,7 @@
   },
   {
     "name": "The Griffon",
+    "menu": "https://griffoncharleston.com/",
     "category": "Sip and Savor",
     "address": "18 Vendue Range, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
@@ -1697,6 +1774,7 @@
   },
   {
     "name": "Citrus Club (at The Dewberry)",
+    "menu": "https://thedewberrycharleston.com/dining/citrus-club/",
     "category": "Sip and Savor",
     "address": "334 Meeting St, Charleston, SC 29403",
     "proximity": "Moderate Walk (10\u201320 minutes)",
@@ -1711,6 +1789,7 @@
   },
   {
     "name": "Sightsee Coffee",
+    "menu": "https://sightseeshop.com/",
     "category": "Sip and Savor",
     "address": "125 1/2 Line St, Charleston, SC 29403",
     "proximity": "Short Uber / Taxi (5\u201310 minutes)",
@@ -1725,6 +1804,7 @@
   },
   {
     "name": "Chez Nous",
+    "menu": "https://cheznouschs.com/",
     "category": "Sip and Savor",
     "address": "6 Payne Ct, Charleston, SC 29403",
     "proximity": "Moderate Walk (10\u201320 minutes)",
@@ -1740,6 +1820,7 @@
   },
   {
     "name": "Off Track Ice Cream",
+    "menu": "https://offtrackicecream.com/",
     "category": "Sip and Savor",
     "address": "6 Beaufain St, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
@@ -1755,6 +1836,7 @@
   },
   {
     "name": "Vintage Lounge",
+    "menu": "https://vintagechs.com/menu/",
     "category": "Sip and Savor",
     "address": "545 King St, Charleston, SC 29403",
     "proximity": "Short Uber / Taxi (5\u201310 minutes)",
@@ -1770,6 +1852,7 @@
   },
   {
     "name": "Tommy Condon's Irish Pub",
+    "menu": "https://tommycondons.com/menu/",
     "category": "Sip and Savor",
     "address": "160 Church St, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
