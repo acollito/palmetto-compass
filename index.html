@@ -308,80 +308,256 @@
       text-align: center;
     }
 
-    /* Mapbox Popups */
-    .mapboxgl-popup-content {
-      padding: 14px 16px !important;
-      border-radius: 12px !important;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2) !important;
-      border-top: 4px solid var(--palmetto-brass) !important;
-      background: var(--white) !important;
-      font-family: 'Courier Prime', Courier, monospace !important;
-      max-width: 290px !important;
+    /* Fixed Place Details Card */
+    .place-card {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 380px;
+      max-width: calc(100% - 32px);
+      max-height: calc(100% - 85px);
+      background: var(--white);
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22), 0 2px 10px rgba(0, 0, 0, 0.08);
+      border-top: 5px solid var(--palmetto-brass);
+      border-left: 1px solid rgba(197, 160, 89, 0.2);
+      border-right: 1px solid rgba(0, 0, 0, 0.06);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      z-index: 950;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: 'Courier Prime', Courier, monospace;
     }
-    .popup-cat {
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--palmetto-terracotta);
-      margin-bottom: 2px;
-      letter-spacing: 0.5px;
+
+    .place-card.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
     }
-    .popup-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      text-transform: uppercase;
+
+    .place-card-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #F4F1EA;
+      border: 1px solid #E2DDD5;
       color: var(--palmetto-dark);
-      margin-bottom: 3px;
-      line-height: 1.25;
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      z-index: 10;
     }
-    .popup-prox {
-      font-size: 0.74rem;
-      color: var(--text-muted);
+
+    .place-card-close:hover {
+      background: var(--palmetto-brass);
+      border-color: var(--palmetto-brass);
+      color: var(--white);
+      transform: scale(1.08);
+    }
+
+    .place-card-body {
+      padding: 20px 22px 22px 22px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .place-card-body::-webkit-scrollbar {
+      width: 6px;
+    }
+    .place-card-body::-webkit-scrollbar-track {
+      background: #F7F5EE;
+    }
+    .place-card-body::-webkit-scrollbar-thumb {
+      background: #D4CEBF;
+      border-radius: 3px;
+    }
+    .place-card-body::-webkit-scrollbar-thumb:hover {
+      background: var(--palmetto-brass);
+    }
+
+    .card-cat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--palmetto-terracotta);
+      background: rgba(168, 75, 53, 0.08);
+      padding: 4px 10px;
+      border-radius: 20px;
       margin-bottom: 8px;
     }
-    .popup-tip {
-      font-size: 0.78rem;
+    .card-cat-badge.badge-keys {
+      color: #8C6B1B;
+      background: #FAF3DE;
+      border: 1px solid #E8D5A3;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--palmetto-dark);
+      margin-bottom: 6px;
+      line-height: 1.3;
+      text-transform: uppercase;
+      padding-right: 28px;
+    }
+
+    .card-address {
+      font-size: 0.82rem;
+      color: #4E5650;
+      margin-bottom: 4px;
       line-height: 1.4;
-      background: #F9F8F5;
-      padding: 7px 10px;
-      border-left: 3px solid var(--palmetto-green);
-      border-radius: 4px;
-      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
     }
-    .popup-tip strong {
-      color: var(--palmetto-green);
-    }
-    .popup-perk {
-      font-size: 0.78rem;
-      line-height: 1.4;
-      background: #FAF7F0;
-      padding: 7px 10px;
-      border-left: 3px solid var(--palmetto-brass);
-      border-radius: 4px;
-      margin-bottom: 8px;
-    }
-    .popup-perk strong {
+    .card-address svg {
+      flex-shrink: 0;
+      margin-top: 2px;
       color: var(--palmetto-brass);
     }
-    .popup-btn {
-      display: inline-block;
+
+    .card-proximity {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      line-height: 1.35;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-proximity svg {
+      flex-shrink: 0;
+      color: var(--palmetto-green);
+    }
+
+    .card-divider {
+      height: 1px;
+      background: #EAE6DF;
+      margin: 10px 0 14px 0;
+    }
+
+    .card-perk-box {
+      background: #FAF7F0;
+      border: 1.5px solid var(--palmetto-brass);
+      border-left: 5px solid var(--palmetto-brass);
+      border-radius: 8px;
+      padding: 11px 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(197, 160, 89, 0.1);
+    }
+    .card-perk-box .card-box-header {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #947225;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .card-perk-box .card-box-body {
+      font-size: 0.84rem;
+      line-height: 1.45;
+      color: var(--palmetto-dark);
+    }
+
+    .card-tip-box {
+      background: #F4F7F4;
+      border: 1px solid #D6E0D7;
+      border-left: 5px solid var(--palmetto-green);
+      border-radius: 8px;
+      padding: 11px 14px;
+      margin-bottom: 12px;
+    }
+    .card-tip-box .card-box-header {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--palmetto-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .card-tip-box .card-box-body {
+      font-size: 0.84rem;
+      line-height: 1.45;
+      color: var(--palmetto-dark);
+    }
+
+    .card-submitter {
+      font-size: 0.76rem;
+      color: var(--palmetto-green);
+      margin-bottom: 6px;
+    }
+    .card-submitter strong {
+      color: var(--palmetto-dark);
+    }
+
+    .card-photo-wrap {
+      margin-bottom: 12px;
+    }
+    .card-photo {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #E5E0D5;
+      display: block;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .card-directions-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       width: 100%;
       text-align: center;
       background: var(--palmetto-green);
       color: var(--white);
       text-decoration: none;
-      padding: 8px 10px;
-      border-radius: 6px;
-      font-size: 0.76rem;
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-size: 0.8rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: background 0.2s ease;
+      letter-spacing: 0.6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 3px 8px rgba(62, 77, 63, 0.2);
+      margin-top: 4px;
     }
-    .popup-btn:hover {
+    .card-directions-btn:hover {
       background: var(--palmetto-dark);
+      box-shadow: 0 4px 12px rgba(62, 77, 63, 0.35);
+      transform: translateY(-1px);
     }
 
+    .marker-pin.active-pin {
+      transform: scale(1.3) translateY(-4px) !important;
+      z-index: 10000 !important;
+      filter: drop-shadow(0 4px 10px rgba(197, 160, 89, 0.85)) drop-shadow(0 2px 6px rgba(0,0,0,0.4)) !important;
+    }
+    
     .marker-pin {
       cursor: pointer;
       filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
@@ -487,6 +663,22 @@
   
     /* Mobile Header Optimization */
     @media (max-width: 600px) {
+      .place-card {
+        top: 10px !important;
+        left: 10px !important;
+        right: 10px !important;
+        width: auto !important;
+        max-width: none !important;
+        max-height: calc(100% - 65px) !important;
+        border-radius: 12px !important;
+      }
+      .place-card-body {
+        padding: 16px 16px 18px 16px !important;
+      }
+      .card-title {
+        font-size: 1.15rem !important;
+      }
+
       header {
         padding: 6px 12px !important;
         flex-direction: column !important;
@@ -625,6 +817,12 @@
   <div id="mapContainer">
     <div id="map"></div>
     <div id="tokenErrorNotice">Mapbox access token is unauthorized or URL restricted. Please check your Mapbox account.</div>
+
+    <!-- Fixed Place Details Card -->
+    <div id="placeCard" class="place-card" aria-hidden="true">
+      <button class="place-card-close" id="placeCardClose" aria-label="Close details card">&times;</button>
+      <div id="placeCardBody" class="place-card-body"></div>
+    </div>
     <button class="recenter-btn" id="recenterBtn">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="#C5A059"/></svg>Fit Map
     </button>
@@ -798,54 +996,152 @@
       return url;
     }
 
-    function buildPopupContent(name, address, proximity, categoryTag, catDisplay, suggestions) {
-      let html = '<div class="popup-cat">' + catDisplay + '</div>';
-      html += '<div class="popup-title">' + name + '</div>';
+    let activePlaceItem = null;
+    const placeCard = document.getElementById('placeCard');
+    const placeCardClose = document.getElementById('placeCardClose');
+    const placeCardBody = document.getElementById('placeCardBody');
+
+    function openPlaceCard(item) {
+      if (!item) return;
+      activePlaceItem = item;
+
+      // Highlight active pin
+      allMarkers.forEach(m => {
+        if (m.element) m.element.classList.remove('active-pin');
+      });
+      if (item.element) item.element.classList.add('active-pin');
+
+      // Populate card HTML
+      placeCardBody.innerHTML = buildCardContent(item);
+      placeCard.classList.add('active');
+      placeCard.setAttribute('aria-hidden', 'false');
+
+      // Smoothly offset map so pin remains clearly visible
+      const isMobile = window.innerWidth <= 600;
+      const offsetX = isMobile ? 0 : 110;
+      const offsetY = isMobile ? 110 : 0;
+
+      map.easeTo({
+        center: [item.lng, item.lat],
+        offset: [offsetX, offsetY],
+        duration: 500
+      });
+    }
+
+    function closePlaceCard() {
+      activePlaceItem = null;
+      if (placeCard) {
+        placeCard.classList.remove('active');
+        placeCard.setAttribute('aria-hidden', 'true');
+      }
+      allMarkers.forEach(m => {
+        if (m.element) m.element.classList.remove('active-pin');
+      });
+    }
+
+    if (placeCardClose) {
+      placeCardClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closePlaceCard();
+      });
+    }
+    if (placeCard) {
+      placeCard.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && placeCard && placeCard.classList.contains('active')) {
+        closePlaceCard();
+      }
+    });
+
+    function buildCardContent(item) {
+      const name = item.name;
+      const address = item.address;
+      const proximity = item.proximity;
+      const catDisplay = item.catDisplay;
+      const categoryTag = item.categoryTag;
+      const suggestions = item.suggestions || [];
+      const isKeys = item.isKeys || (categoryTag === 'keys') || (catDisplay && catDisplay.toLowerCase().includes('keys'));
+
+      let html = '';
+
+      // Category Pill
+      html += '<div class="card-cat-badge ' + (isKeys ? 'badge-keys' : '') + '">';
+      if (isKeys) {
+        html += '<span style="font-size:0.92rem;">🗝️</span> ';
+      }
+      html += (catDisplay || 'Curated Spot');
+      html += '</div>';
+
+      // Title
+      html += '<h2 class="card-title">' + name + '</h2>';
+
+      // Address & Proximity
       if (address) {
-        html += '<div class="popup-meta" style="margin-bottom:2px;">' + address + '</div>';
-        if (proximity) {
-          html += '<div class="popup-proximity" style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px; line-height:1.35;">' + proximity + '</div>';
-        } else {
-          html += '<div style="margin-bottom:6px;"></div>';
-        }
+        html += '<div class="card-address">';
+        html += '  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 C8.13 2 5 5.13 5 9 C5 14.25 12 22 12 22 C12 22 19 14.25 19 9 C19 5.13 15.87 2 12 2 Z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+        html += '  <span>' + address + '</span>';
+        html += '</div>';
+      }
+      if (proximity) {
+        html += '<div class="card-proximity">';
+        html += '  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+        html += '  <span>' + proximity + '</span>';
+        html += '</div>';
       }
 
-      const isKeys = (categoryTag === 'keys') || (catDisplay && catDisplay.toLowerCase().includes('keys'));
+      html += '<div class="card-divider"></div>';
 
+      // Suggestions / Tips / Perks
       if (suggestions && suggestions.length > 1) {
-        html += '<div class="popup-carousel" data-index="0">';
+        html += '<div class="popup-carousel card-carousel" data-index="0">';
         html += '  <div class="carousel-track">';
         suggestions.forEach((s, idx) => {
           html += '    <div class="carousel-slide' + (idx === 0 ? ' active' : '') + '">';
           if (s.submitter && !isKeys) {
-            html += '      <div class="popup-rec-by">Recommended by <strong>' + s.submitter + '</strong>:</div>';
+            html += '      <div class="card-submitter">Recommended by <strong>' + s.submitter + '</strong></div>';
           }
-          
+
           if (isKeys) {
             if (idx === 0) {
               const perkText = s.perk || s.tip || 'Exclusive Guest Perk available with Palmetto Room Key';
-              html += '      <div class="popup-perk"><strong>Exclusive Perk:</strong> ' + perkText + '</div>';
+              html += '      <div class="card-perk-box">';
+              html += '        <div class="card-box-header">🗝️ Exclusive Guest Perk</div>';
+              html += '        <div class="card-box-body">' + perkText + '</div>';
+              html += '      </div>';
               if (s.tip && s.perk && s.tip.trim().toLowerCase() !== s.perk.trim().toLowerCase()) {
-                html += '      <div class="popup-tip"><strong>Local Tip:</strong> ' + s.tip + '</div>';
+                html += '      <div class="card-tip-box">';
+                html += '        <div class="card-box-header">✨ Insider Concierge Tip</div>';
+                html += '        <div class="card-box-body">' + s.tip + '</div>';
+                html += '      </div>';
               }
             } else {
               if (s.submitter) {
-                html += '      <div class="popup-rec-by">Recommended by <strong>' + s.submitter + '</strong>:</div>';
+                html += '      <div class="card-submitter">Recommended by <strong>' + s.submitter + '</strong></div>';
               }
               const tipContent = s.tip || s.perk;
               if (tipContent) {
-                html += '      <div class="popup-tip"><strong>Local Tip:</strong> ' + tipContent + '</div>';
+                html += '      <div class="card-tip-box">';
+                html += '        <div class="card-box-header">✨ Local Tip</div>';
+                html += '        <div class="card-box-body">' + tipContent + '</div>';
+                html += '      </div>';
               }
             }
           } else {
             if (s.tip) {
-              html += '      <div class="popup-tip"><strong>Local Tip:</strong> ' + s.tip + '</div>';
+              html += '      <div class="card-tip-box">';
+              html += '        <div class="card-box-header">✨ Insider Concierge Tip</div>';
+              html += '        <div class="card-box-body">' + s.tip + '</div>';
+              html += '      </div>';
             }
           }
 
           if (s.photo) {
             const imgSrc = getDriveImgUrl(s.photo);
-            html += '      <div style="margin-top:8px;"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" style="width:100%; max-height:160px; object-fit:cover; border-radius:6px; border:1px solid #E5E0D5; display:block;" alt="Recommendation photo" /></a></div>';
+            html += '      <div class="card-photo-wrap"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" class="card-photo" alt="' + name.replace(/"/g, '&quot;') + ' photo" /></a></div>';
           }
           html += '    </div>';
         });
@@ -859,30 +1155,49 @@
       } else if (suggestions && suggestions.length === 1) {
         const s = suggestions[0];
         if (s.submitter && !isKeys) {
-          html += '<div class="popup-rec-by">Recommended by <strong>' + s.submitter + '</strong>:</div>';
+          html += '<div class="card-submitter">Recommended by <strong>' + s.submitter + '</strong></div>';
         }
 
         if (isKeys) {
           const perkText = s.perk || s.tip || 'Exclusive Guest Perk available with Palmetto Room Key';
-          html += '<div class="popup-perk"><strong>Exclusive Perk:</strong> ' + perkText + '</div>';
+          html += '<div class="card-perk-box">';
+          html += '  <div class="card-box-header">🗝️ Exclusive Guest Perk</div>';
+          html += '  <div class="card-box-body">' + perkText + '</div>';
+          html += '</div>';
           if (s.tip && s.perk && s.tip.trim().toLowerCase() !== s.perk.trim().toLowerCase()) {
-            html += '<div class="popup-tip"><strong>Local Tip:</strong> ' + s.tip + '</div>';
+            html += '<div class="card-tip-box">';
+            html += '  <div class="card-box-header">✨ Insider Concierge Tip</div>';
+            html += '  <div class="card-box-body">' + s.tip + '</div>';
+            html += '</div>';
           }
         } else {
           if (s.tip) {
-            html += '<div class="popup-tip"><strong>Local Tip:</strong> ' + s.tip + '</div>';
+            html += '<div class="card-tip-box">';
+            html += '  <div class="card-box-header">✨ Insider Concierge Tip</div>';
+            html += '  <div class="card-box-body">' + s.tip + '</div>';
+            html += '</div>';
           }
         }
 
         if (s.photo) {
           const imgSrc = getDriveImgUrl(s.photo);
-          html += '<div style="margin-top:8px;"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" style="width:100%; max-height:160px; object-fit:cover; border-radius:6px; border:1px solid #E5E0D5; display:block;" alt="Recommendation photo" /></a></div>';
+          html += '<div class="card-photo-wrap"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" class="card-photo" alt="' + name.replace(/"/g, '&quot;') + ' photo" /></a></div>';
         }
       }
 
-      const query = encodeURIComponent(name + ' ' + address);
-      html += '<a class="popup-directions" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener">Google Directions &rarr;</a>';
+      // Directions Button
+      const query = encodeURIComponent(name + ' ' + (address || 'Charleston SC'));
+      html += '<a class="card-directions-btn" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener">';
+      html += '  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>';
+      html += '  <span>Get Google Directions</span>';
+      html += '</a>';
+
       return html;
+    }
+
+    // Compatibility shim
+    function buildPopupContent(name, address, proximity, categoryTag, catDisplay, suggestions) {
+      return buildCardContent({ name, address, proximity, categoryTag, catDisplay, suggestions });
     }
 
     function normalizePlaceName(name) {
@@ -1068,7 +1383,9 @@
             existing.suggestions[0].perk = perk;
           }
         }
-        existing.popup.setHTML(buildPopupContent(existing.name, existing.address, existing.proximity, existing.categoryTag, existing.catDisplay, existing.suggestions));
+        if (activePlaceItem === existing) {
+          openPlaceCard(existing);
+        }
         return existing;
       }
 
@@ -1077,12 +1394,8 @@
       el.className = 'marker-pin';
       el.innerHTML = getPinSvg(pinType);
 
-      const popupHtml = buildPopupContent(name, address, proximity, categoryTag, catDisplay, suggestions);
-      const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(popupHtml);
-
       const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([lng, lat])
-        .setPopup(popup)
         .addTo(map);
 
       const item = {
@@ -1100,9 +1413,13 @@
         isDefault: data.isDefault || false,
         lat: lat,
         lng: lng,
-        suggestions: suggestions,
-        popup: popup
+        suggestions: suggestions
       };
+
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openPlaceCard(item);
+      });
 
       markersByName.set(cleanName, item);
       markersByName.set(normKey, item);
@@ -1651,6 +1968,9 @@
     }
 
     map.on('load', () => fitMap());
+    map.on('click', () => {
+      closePlaceCard();
+    });
 
     // Filter Buttons
     let hasShownKeysGuide = false;
@@ -1677,11 +1997,14 @@
           }
         });
 
+        if (activePlaceItem && activePlaceItem.element && activePlaceItem.element.style.display === 'none') {
+          closePlaceCard();
+        }
         fitMap(visible);
       });
     });
 
-    document.getElementById('recenterBtn').addEventListener('click', () => fitMap());
+    document.getElementById('recenterBtn').addEventListener('click', () => { closePlaceCard(); fitMap(); });
 
     // Scroll Controls
     const filterBar = document.getElementById('filterBar');
