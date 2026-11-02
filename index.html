@@ -1135,7 +1135,7 @@
       html += '    <div><strong>🍸 The Palmetto Lobby Bar:</strong> Bespoke craft cocktail program, rare bourbon collection, and evening social hour.</div>';
       html += '    <div><strong>🚲 Custom Cruiser Fleet:</strong> Complimentary house bicycles for self-guided historic district exploration.</div>';
       html += '    <div><strong>☕ Artisanal Breakfast:</strong> Daily continental breakfast, fresh fruit, and craft espresso in the lobby.</div>';
-      html += '    <div><strong>💳 Amex THC Honored:</strong> $100 experience credit redeemable for Lobby Bar cocktails, Tiger Lily florals, Earthling Day Spa, and Lowcountry Strolls.</div>';
+      html += '    ';
       html += '  </div>';
       html += '</div>';
 
@@ -1456,20 +1456,31 @@ function openPlaceCard(item) {
                      (rawPerk && rawPerk.toLowerCase().includes('room key')) ||
                      (rawBooking && rawBooking.toLowerCase().includes('room key'));
 
-      // Strict determination of Landmark
+      // Strict determination of Beach & Coastal: Only true barrier island beaches, coastal parks, and piers
       const isBeach = !isKeys && ((data.isBeach === true) || 
                       catLower.includes('beach') || 
-                      catLower.includes('coastal') || 
+                      (catLower.includes('coastal') && (cleanName.includes('beach') || cleanName.includes('island') || cleanName.includes('pier') || cleanName.includes('park'))) || 
                       cleanName.includes('beach') || 
-                      cleanName.includes('island'));
+                      cleanName.includes('island')) &&
+                      !cleanName.includes('theatre') &&
+                      !cleanName.includes('theater') &&
+                      !cleanName.includes('market') &&
+                      !cleanName.includes('church') &&
+                      !cleanName.includes('museum') &&
+                      !cleanName.includes('house') &&
+                      !cleanName.includes('dungeon') &&
+                      !cleanName.includes('plantation');
 
       const isLandmark = !isKeys && !isBeach && ((data.isLandmark === true) || 
                          (data.sheetType === 'landmarks') || 
                          catLower.includes('points of interest') || 
                          catLower.includes('landmark') || 
                          catLower.includes('museum') || 
-                         catLower.includes('historic house') || 
-                         catLower.includes('monument'));
+                         catLower.includes('historic') || 
+                         catLower.includes('history') || 
+                         catLower.includes('monument') ||
+                         cleanName.includes('theatre') ||
+                         cleanName.includes('theater'));
 
       // Subcategories for cross-filtering
       function hasTerm(txt, terms) {
