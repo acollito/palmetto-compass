@@ -1000,7 +1000,7 @@
     <button class="recenter-btn" id="recenterBtn">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="#C5A059"/></svg>Fit Map
     </button>
-    <button class="text-concierge-btn" id="textConciergeBtn" title="Text The Palmetto Concierge at (857) 222-9043">
+    <button class="text-concierge-btn" id="textConciergeBtn" title="Text The Palmetto Concierge at (843) 994-2302">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Concierge
     </button>
   </div>
@@ -1030,11 +1030,15 @@
     // 1. Mapbox Token Setup
     
     // =========================================================================
-    // CONCIERGE TEXT MESSAGING (SMS) CONFIGURATION
-    // Dedicated concierge mobile / desk messaging line
+    // CONCIERGE TELEPHONY & MESSAGING CONFIGURATION
+    // Voice Line (Quo): Dedicated remote voice line with desk routing
+    // Text Line (Canary / SMS): Dedicated guest SMS line (swap when Canary onboarded)
     // =========================================================================
-    const CONCIERGE_SMS_NUMBER = '+18572229043';
-    const CONCIERGE_SMS_DISPLAY = '(857) 222-9043';
+    const CONCIERGE_VOICE_NUMBER = '+18439942302';
+    const CONCIERGE_VOICE_DISPLAY = '(843) 994-2302';
+
+    const CONCIERGE_SMS_NUMBER = '+18439942302'; // Replace with dedicated Canary texting number when live
+    const CONCIERGE_SMS_DISPLAY = '(843) 994-2302';
 
     function openConciergeText(contextName) {
       const message = contextName
@@ -1262,7 +1266,7 @@
 
       html += '<button class="card-action-btn card-menu-btn" onclick="openConciergeText(\'The Palmetto Hotel\')" style="width:100%; justify-content:center; margin-bottom:6px; cursor:pointer;" title="Text The Palmetto Concierge Desk">';
       html += '  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
-      html += '  <span>💬 Text Concierge: (857) 222-9043</span>';
+      html += '  <span>💬 Text Concierge: (843) 994-2302</span>';
       html += '</button>';
       html += '<a class="card-action-btn card-menu-btn" href="submit-event.html" target="_blank" rel="noopener" style="width:100%; justify-content:center;" title="Submit local event or partner promotion">';
       html += '  <span>+ Submit Partner Promotion / Event</span>';
