@@ -288,6 +288,69 @@
       color: var(--white);
       border-color: var(--palmetto-green);
     }
+    .text-concierge-btn {
+      position: absolute;
+      bottom: 24px;
+      left: 122px;
+      z-index: 900;
+      background: var(--palmetto-dark);
+      color: var(--white);
+      border: 1.5px solid var(--palmetto-brass);
+      border-radius: 24px;
+      padding: 7px 14px;
+      font-family: 'Courier Prime', Courier, monospace;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .text-concierge-btn:hover {
+      background: var(--palmetto-green);
+      border-color: var(--palmetto-gold-light);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+    .text-concierge-btn svg {
+      color: var(--palmetto-brass);
+    }
+
+    .card-text-concierge-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      text-align: center;
+      background: transparent;
+      color: var(--palmetto-dark);
+      border: 1px dashed var(--palmetto-brass);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.2s ease;
+      font-family: 'Courier Prime', Courier, monospace;
+    }
+    .card-text-concierge-btn:hover {
+      background: #FAF7F0;
+      border-color: var(--palmetto-dark);
+      color: var(--palmetto-dark);
+    }
+    .card-text-concierge-btn svg {
+      color: var(--palmetto-brass);
+    }
+
 
     /* Token Error Notice (Visible only if Mapbox token is rejected) */
     #tokenErrorNotice {
@@ -759,6 +822,19 @@
   
     /* Mobile Header Optimization */
     @media (max-width: 600px) {
+      .recenter-btn {
+        bottom: 16px !important;
+        left: 10px !important;
+        padding: 6px 10px !important;
+        font-size: 0.7rem !important;
+      }
+      .text-concierge-btn {
+        bottom: 16px !important;
+        left: 106px !important;
+        padding: 6px 12px !important;
+        font-size: 0.7rem !important;
+      }
+
       .place-card {
         top: 10px !important;
         left: 10px !important;
@@ -922,6 +998,9 @@
     <button class="recenter-btn" id="recenterBtn">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="#C5A059"/></svg>Fit Map
     </button>
+    <button class="text-concierge-btn" id="textConciergeBtn" title="Text The Palmetto Concierge at (857) 222-9043">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Concierge
+    </button>
   </div>
 
   <!-- Keys to Charleston Guide Modal -->
@@ -947,6 +1026,26 @@
 
   <script>
     // 1. Mapbox Token Setup
+    
+    // =========================================================================
+    // CONCIERGE TEXT MESSAGING (SMS) CONFIGURATION
+    // Dedicated concierge mobile / desk messaging line
+    // =========================================================================
+    const CONCIERGE_SMS_NUMBER = '+18572229043';
+    const CONCIERGE_SMS_DISPLAY = '(857) 222-9043';
+
+    function openConciergeText(contextName) {
+      const message = contextName
+        ? `Hi Palmetto Concierge, I have a question about ${contextName}.`
+        : `Hi Palmetto Concierge, I am a guest at The Palmetto Hotel and had a question about `;
+      
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const separator = isIOS ? '&' : '?';
+      const smsUrl = `sms:${CONCIERGE_SMS_NUMBER}${separator}body=${encodeURIComponent(message)}`;
+      
+      window.location.href = smsUrl;
+    }
+
     mapboxgl.accessToken = 'pk.eyJ1IjoicGFsbWV0dG9ob3RlbCIsImEiOiJjbXVuNDFib2UwNzJvMndvOGkxNmg3eXlrIn0.nDRlS-2FQ26qPMgbL9_d8w';
 
     const map = new mapboxgl.Map({
@@ -1159,6 +1258,10 @@
       html += '  </a>';
       html += '</div>';
 
+      html += '<button class="card-action-btn card-menu-btn" onclick="openConciergeText(\'The Palmetto Hotel\')" style="width:100%; justify-content:center; margin-bottom:6px; cursor:pointer;" title="Text The Palmetto Concierge Desk">';
+      html += '  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+      html += '  <span>💬 Text Concierge: (857) 222-9043</span>';
+      html += '</button>';
       html += '<a class="card-action-btn card-menu-btn" href="submit-event.html" target="_blank" rel="noopener" style="width:100%; justify-content:center;" title="Submit local event or partner promotion">';
       html += '  <span>+ Submit Partner Promotion / Event</span>';
       html += '</a>';
@@ -1406,6 +1509,14 @@ function openPlaceCard(item) {
         html += '  <span>Get Google Directions</span>';
         html += '</a>';
       }
+
+      
+      // Text Concierge Quick Link for this place
+      const safePlaceName = (name || '').replace(/'/g, "\\'");
+      html += '<button class="card-text-concierge-btn" onclick="openConciergeText(\'' + safePlaceName + '\')" title="Text concierge about ' + (name.replace(/"/g, '&quot;')) + '">';
+      html += '  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+      html += '  <span>Have questions? Text our concierge</span>';
+      html += '</button>';
 
       return html;
     }
@@ -2248,6 +2359,14 @@ function openPlaceCard(item) {
     });
 
     document.getElementById('recenterBtn').addEventListener('click', () => { closePlaceCard(); fitMap(); });
+    const textConciergeBtn = document.getElementById('textConciergeBtn');
+    if (textConciergeBtn) {
+      textConciergeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const currentName = (activePlaceItem && activePlaceItem.name) ? activePlaceItem.name : '';
+        openConciergeText(currentName);
+      });
+    }
 
     // Scroll Controls
     const filterBar = document.getElementById('filterBar');
