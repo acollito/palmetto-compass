@@ -308,7 +308,61 @@
       text-align: center;
     }
 
-    /* Fixed Place Details Card */
+    
+    /* Hotel Highlights & Marketing Card Styles */
+    .hotel-marketing-section {
+      background: #FAF7F0;
+      border: 1.5px solid var(--palmetto-brass);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(197, 160, 89, 0.12);
+    }
+    .hotel-marketing-header {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: #8C6B1B;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hotel-marketing-item {
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--palmetto-dark);
+      margin-bottom: 6px;
+    }
+    .hotel-marketing-item:last-child {
+      margin-bottom: 0;
+    }
+    .hotel-action-btn-primary {
+      background: var(--palmetto-dark);
+      color: var(--palmetto-gold-light);
+      border: 1.5px solid var(--palmetto-brass);
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      text-decoration: none;
+      padding: 11px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      transition: all 0.2s ease;
+    }
+    .hotel-action-btn-primary:hover {
+      background: var(--palmetto-green);
+      color: var(--white);
+      transform: translateY(-1px);
+    }
+/* Fixed Place Details Card */
     .place-card {
       position: absolute;
       top: 16px;
@@ -829,7 +883,7 @@
       </span>
     </div>
     <div class="hotel-info">
-      <span>The Palmetto Hotel</span> &bull; <span>194 East Bay St</span> &bull; <a href="tel:+18438233604">(843) 823-3604</a>
+      <span style="cursor:pointer; text-decoration:underline; font-weight:600;" onclick="if(typeof openHotelCard === 'function') openHotelCard();" title="View The Palmetto Hotel Highlights">The Palmetto Hotel</span> &bull; <span>194 East Bay St</span> &bull; <a href="tel:+18438233604">(843) 823-3604</a>
       <button class="header-guide-btn" id="openGuideBtn" title="About Keys to Charleston & Room Key Perks">?</button>
     </div>
   </header>
@@ -1004,8 +1058,9 @@
     hotelEl.style.cursor = 'pointer';
     hotelEl.title = 'The Palmetto Hotel (Home Base)';
     hotelEl.innerHTML = getPinSvg('hotel');
-    hotelEl.addEventListener('click', () => {
-      map.flyTo({ center: [-79.927238, 32.779776], zoom: 15.5 });
+    hotelEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openHotelCard();
     });
     new mapboxgl.Marker({ element: hotelEl, anchor: 'bottom' })
       .setLngLat([-79.927238, 32.779776])
@@ -1043,7 +1098,101 @@
     const placeCardClose = document.getElementById('placeCardClose');
     const placeCardBody = document.getElementById('placeCardBody');
 
-    function openPlaceCard(item) {
+    
+    function buildHotelCardContent() {
+      let html = '';
+      
+      // Category Badge
+      html += '<div class="card-cat-badge badge-keys" style="background:#FAF3DE; color:#8C6B1B; border:1px solid #E8D5A3;">';
+      html += '  <span style="font-size:0.92rem;">🗝️</span> Home Base &bull; French Quarter Luxury';
+      html += '</div>';
+
+      // Title
+      html += '<h2 class="card-title">The Palmetto Hotel</h2>';
+
+      // Location & Contact
+      html += '<div class="card-address">';
+      html += '  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 C8.13 2 5 5.13 5 9 C5 14.25 12 22 12 22 C12 22 19 14.25 19 9 C19 5.13 15.87 2 12 2 Z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+      html += '  <span>194 East Bay Street, Charleston, SC 29401</span>';
+      html += '</div>';
+      
+      html += '<div class="card-proximity">';
+      html += '  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+      html += '  <a href="tel:+18438233604" style="color:inherit; text-decoration:none;">(843) 823-3604 &bull; 24/7 Concierge & Front Desk</a>';
+      html += '</div>';
+
+      html += '<div class="card-divider"></div>';
+
+      // Signature Property Highlights
+      html += '<div class="card-perk-box">';
+      html += '  <div class="card-box-header">🗝️ Keys to Charleston Anchor</div>';
+      html += '  <div class="card-box-body">Your physical room key unlocks VIP perks, free desserts, and exclusive discounts at 30+ curated dining, boutique, and tour partners across the city.</div>';
+      html += '</div>';
+
+      html += '<div class="card-tip-box">';
+      html += '  <div class="card-box-header">✨ Property Highlights & House Amenities</div>';
+      html += '  <div class="card-box-body" style="display:flex; flex-direction:column; gap:6px;">';
+      html += '    <div><strong>🍸 The Palmetto Lobby Bar:</strong> Bespoke craft cocktail program, rare bourbon collection, and evening social hour.</div>';
+      html += '    <div><strong>🚲 Custom Cruiser Fleet:</strong> Complimentary house bicycles for self-guided historic district exploration.</div>';
+      html += '    <div><strong>☕ Artisanal Breakfast:</strong> Daily continental breakfast, fresh fruit, and craft espresso in the lobby.</div>';
+      html += '    <div><strong>💳 Amex THC Honored:</strong> $100 experience credit redeemable for Lobby Bar cocktails, Tiger Lily florals, Earthling Day Spa, and Lowcountry Strolls.</div>';
+      html += '  </div>';
+      html += '</div>';
+
+      // Marketing & Partnership Opportunities
+      html += '<div class="hotel-marketing-section">';
+      html += '  <div class="hotel-marketing-header">📈 Partnership & Marketing Opportunities</div>';
+      html += '  <div class="hotel-marketing-item"><strong>🤝 Keys to Charleston Partners:</strong> Showcase your local venue to thousands of verified arriving hotel guests via automated pre-arrival campaigns.</div>';
+      html += '  <div class="hotel-marketing-item"><strong>📅 Event Submissions:</strong> Connect your festival, theater run, or concert to <em>The Lowcountry Scene</em> digital calendar.</div>';
+      html += '  <div class="hotel-marketing-item"><strong>📸 Social & Content:</strong> Tag <code>@palmettohotel</code> &amp; <code>#PalmettoCompass</code> for guest feature collaborations.</div>';
+      html += '</div>';
+
+      // Action Buttons
+      html += '<div class="card-actions-row" style="margin-bottom:6px;">';
+      html += '  <a class="card-action-btn hotel-action-btn-primary" href="request.html" target="_blank" rel="noopener" title="Book flowers, spa, and walking tours">';
+      html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><circle cx="18" cy="18" r="2"/></svg>';
+      html += '    <span>Concierge Portal</span>';
+      html += '  </a>';
+      html += '  <a class="card-action-btn card-directions-btn" href="https://palmettohotelcharleston.com" target="_blank" rel="noopener" title="Official Hotel Website & Direct Reservations">';
+      html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>';
+      html += '    <span>Book Direct</span>';
+      html += '  </a>';
+      html += '</div>';
+
+      html += '<a class="card-action-btn card-menu-btn" href="submit-event.html" target="_blank" rel="noopener" style="width:100%; justify-content:center;" title="Submit local event or partner promotion">';
+      html += '  <span>+ Submit Partner Promotion / Event</span>';
+      html += '</a>';
+
+      return html;
+    }
+
+    function openHotelCard() {
+      allMarkers.forEach(m => {
+        if (m.element) m.element.classList.remove('active-pin');
+      });
+      if (typeof hotelEl !== 'undefined' && hotelEl) {
+        hotelEl.classList.remove('active-pin');
+      }
+      if (typeof hotelEl !== 'undefined' && hotelEl) {
+        hotelEl.classList.add('active-pin');
+      }
+      activePlaceItem = { name: 'The Palmetto Hotel', element: hotelEl, lat: 32.779776, lng: -79.927238 };
+      placeCardBody.innerHTML = buildHotelCardContent();
+      placeCard.classList.add('active');
+      placeCard.setAttribute('aria-hidden', 'false');
+
+      const isMobile = window.innerWidth <= 600;
+      const offsetX = isMobile ? 0 : 110;
+      const offsetY = isMobile ? 110 : 0;
+
+      map.easeTo({
+        center: [-79.927238, 32.779776],
+        offset: [offsetX, offsetY],
+        zoom: 15.5,
+        duration: 600
+      });
+    }
+function openPlaceCard(item) {
       if (!item) return;
       activePlaceItem = item;
 
