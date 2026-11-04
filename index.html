@@ -289,6 +289,7 @@
       border-color: var(--palmetto-green);
     }
     .text-concierge-btn {
+      display: none; /* Hidden on desktop, mobile only */
       position: absolute;
       bottom: 24px;
       left: 122px;
@@ -300,11 +301,10 @@
       padding: 7px 14px;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-size: 0.74rem;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       cursor: pointer;
-      display: inline-flex;
       align-items: center;
       gap: 6px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -322,7 +322,7 @@
     }
 
     .card-text-concierge-btn {
-      display: flex;
+      display: none; /* Hidden on desktop, mobile only */
       align-items: center;
       justify-content: center;
       gap: 6px;
@@ -334,13 +334,16 @@
       padding: 8px 10px;
       border-radius: 8px;
       font-size: 0.74rem;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       cursor: pointer;
       margin-top: 8px;
       transition: all 0.2s ease;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .hotel-mobile-text-btn {
+      display: none; /* Hidden on desktop, mobile only */
     }
     .card-text-concierge-btn:hover {
       background: #FAF7F0;
@@ -712,6 +715,18 @@
       box-shadow: 0 4px 12px rgba(62, 77, 63, 0.35);
       transform: translateY(-1px);
     }
+    .card-reserve-btn {
+      background: #3E4D3F;
+      color: #F3E5AB;
+      border: 1.5px solid var(--palmetto-brass);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+    .card-reserve-btn:hover {
+      background: var(--palmetto-green);
+      color: #FFFFFF;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(197, 160, 89, 0.35);
+    }
 
     .marker-pin.active-pin {
       transform: scale(1.3) translateY(-4px) !important;
@@ -831,10 +846,17 @@
         font-size: 0.7rem !important;
       }
       .text-concierge-btn {
+        display: inline-flex !important;
         bottom: 16px !important;
         left: 106px !important;
         padding: 6px 12px !important;
         font-size: 0.7rem !important;
+      }
+      .card-text-concierge-btn {
+        display: flex !important;
+      }
+      .hotel-mobile-text-btn {
+        display: flex !important;
       }
 
       .place-card {
@@ -1039,6 +1061,9 @@
 
     const CONCIERGE_SMS_NUMBER = '+18439942302'; // Replace with dedicated Canary texting number when live
     const CONCIERGE_SMS_DISPLAY = '(843) 994-2302';
+
+    // Dedicated OpenTable / Reservation Link (Leave empty until account is ready)
+    const CONCIERGE_OPENTABLE_URL = '';
 
     function openConciergeText(contextName) {
       const message = contextName
@@ -1252,7 +1277,12 @@
       html += '  <div class="hotel-marketing-item"><strong>📸 Social & Content:</strong> Tag <code>@palmettohotel</code> &amp; <code>#PalmettoCompass</code> for guest feature collaborations.</div>';
       html += '</div>';
 
-      // Action Buttons
+      // Action Buttons (OpenTable + Concierge + Book Direct)
+      html += '<a class="card-action-btn card-reserve-btn" href="' + (CONCIERGE_OPENTABLE_URL || '#') + '" target="_blank" rel="noopener" style="width:100%; justify-content:center; margin-bottom:6px; font-weight:700;" onclick="if(!CONCIERGE_OPENTABLE_URL){ alert(\'OpenTable reservations for The Palmetto are coming soon! Please text or call our concierge desk at (843) 994-2302 for assistance.\'); return false; }" title="Reserve a table on OpenTable">';
+      html += '  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+      html += '  <span>📅 Reserve Table (OpenTable)</span>';
+      html += '</a>';
+
       html += '<div class="card-actions-row" style="margin-bottom:6px;">';
       html += '  <a class="card-action-btn hotel-action-btn-primary" href="request.html" target="_blank" rel="noopener" title="Book flowers, spa, and walking tours">';
       html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><circle cx="18" cy="18" r="2"/></svg>';
@@ -1264,7 +1294,7 @@
       html += '  </a>';
       html += '</div>';
 
-      html += '<button class="card-action-btn card-menu-btn" onclick="openConciergeText(\'The Palmetto Hotel\')" style="width:100%; justify-content:center; margin-bottom:6px; cursor:pointer;" title="Text The Palmetto Concierge Desk">';
+      html += '<button class="card-action-btn card-menu-btn hotel-mobile-text-btn" onclick="openConciergeText(\'The Palmetto Hotel\')" style="width:100%; justify-content:center; margin-bottom:6px; cursor:pointer;" title="Text The Palmetto Concierge Desk">';
       html += '  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
       html += '  <span>💬 Text Concierge: (843) 994-2302</span>';
       html += '</button>';
@@ -1498,12 +1528,22 @@ function openPlaceCard(item) {
 
       const query = encodeURIComponent(name + ' ' + (address || 'Charleston SC'));
 
-      if (menuUrl) {
+      const resUrl = item.reservation && item.reservation.trim() !== '' && item.reservation !== '#' ? item.reservation : '';
+
+      if (menuUrl || resUrl) {
         html += '<div class="card-actions-row">';
-        html += '  <a class="card-action-btn card-menu-btn" href="' + menuUrl + '" target="_blank" rel="noopener" title="View official restaurant menu">';
-        html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a4 4 0 0 0-4 4v14a4 4 0 0 0 4 4h3V2z"/><path d="M6 2h3a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H6V2z"/></svg>';
-        html += '    <span>View Menu</span>';
-        html += '  </a>';
+        if (menuUrl) {
+          html += '  <a class="card-action-btn card-menu-btn" href="' + menuUrl + '" target="_blank" rel="noopener" title="View official restaurant menu">';
+          html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a4 4 0 0 0-4 4v14a4 4 0 0 0 4 4h3V2z"/><path d="M6 2h3a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H6V2z"/></svg>';
+          html += '    <span>View Menu</span>';
+          html += '  </a>';
+        }
+        if (resUrl) {
+          html += '  <a class="card-action-btn card-reserve-btn" href="' + resUrl + '" target="_blank" rel="noopener" title="Book a table">';
+          html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+          html += '    <span>Reserve</span>';
+          html += '  </a>';
+        }
         html += '  <a class="card-action-btn card-directions-btn" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener" title="Get directions in Google Maps">';
         html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>';
         html += '    <span>Directions</span>';
@@ -1557,6 +1597,7 @@ function openPlaceCard(item) {
       const submitter = data.submitter || data['Your Name & Hometown / City'] || data['Staff Member Name / Initials'] || data['Recommended By'] || data['Guest Name & Hometown'] || data['Staff Name'] || '';
       const photo = data.photo || data['Photo URL'] || data['Photo / Media Link'] || data['Photo / Video Link or Social Handle (Optional)'] || data['Photo'] || '';
       const menu = data.menu || data['Menu Link'] || data['Menu URL'] || data['Menu'] || data['Website'] || data['Website / Menu'] || data['Website Link'] || '';
+      const reservation = data.reservation || data['Reservation Link'] || data['Reservation URL'] || data['Resy Link'] || data['OpenTable Link'] || '';
       const isGuest = (data.isGuest === true) || (data.sheetType === 'guests');
 
       if (isNaN(lat) || isNaN(lng) || !name) return null;
@@ -1730,6 +1771,9 @@ function openPlaceCard(item) {
         if (menu && !existing.menu) {
           existing.menu = menu;
         }
+        if (reservation && !existing.reservation) {
+          existing.reservation = reservation;
+        }
         if (activePlaceItem === existing) {
           openPlaceCard(existing);
         }
@@ -1759,6 +1803,7 @@ function openPlaceCard(item) {
         isLandmark: isLandmark,
         isDining: isDining,
         menu: menu,
+        reservation: reservation,
         isDefault: data.isDefault || false,
         lat: lat,
         lng: lng,
