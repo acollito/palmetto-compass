@@ -648,9 +648,9 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
 
-    .card-actions-row {
+        .card-actions-row {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin-top: 4px;
       width: 100%;
     }
@@ -659,17 +659,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       text-align: center;
       text-decoration: none;
-      padding: 11px 12px;
+      padding: 10px 6px;
       border-radius: 8px;
-      font-size: 0.78rem;
+      font-size: 0.74rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       transition: all 0.2s ease;
       white-space: nowrap;
+      min-width: 0;
     }
     .card-menu-btn {
       background: #FAF7F0;
@@ -683,38 +684,6 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(197, 160, 89, 0.35);
     }
-    .card-directions-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      width: 100%;
-      text-align: center;
-      background: var(--palmetto-green);
-      color: var(--white);
-      text-decoration: none;
-      padding: 11px 16px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      transition: all 0.2s ease;
-      box-shadow: 0 3px 8px rgba(62, 77, 63, 0.2);
-      border: 1.5px solid var(--palmetto-green);
-    }
-    .card-actions-row .card-directions-btn {
-      width: auto;
-      flex: 1;
-      font-size: 0.78rem;
-      padding: 11px 12px;
-    }
-    .card-directions-btn:hover {
-      background: var(--palmetto-dark);
-      border-color: var(--palmetto-dark);
-      box-shadow: 0 4px 12px rgba(62, 77, 63, 0.35);
-      transform: translateY(-1px);
-    }
     .card-reserve-btn {
       background: #3E4D3F;
       color: #F3E5AB;
@@ -726,6 +695,57 @@
       color: #FFFFFF;
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(197, 160, 89, 0.35);
+    }
+    .card-directions-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      width: 100%;
+      text-align: center;
+      background: var(--palmetto-green);
+      color: var(--white);
+      text-decoration: none;
+      padding: 10px 6px;
+      border-radius: 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s ease;
+      box-shadow: 0 3px 8px rgba(62, 77, 63, 0.2);
+      border: 1.5px solid var(--palmetto-green);
+      white-space: nowrap;
+      min-width: 0;
+    }
+    .card-directions-btn:hover {
+      background: var(--palmetto-dark);
+      border-color: var(--palmetto-dark);
+      box-shadow: 0 4px 12px rgba(62, 77, 63, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .marker-pin-hotel {
+      z-index: 99999 !important;
+      cursor: pointer;
+      filter: drop-shadow(0 4px 14px rgba(197, 160, 89, 0.98)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6)) !important;
+      transition: transform 0.2s ease;
+    }
+    .marker-pin-hotel:hover {
+      transform: scale(1.25) translateY(-4px) !important;
+      z-index: 100000 !important;
+    }
+
+    @media (max-width: 380px) {
+      .card-actions-row {
+        flex-wrap: wrap;
+      }
+      .card-actions-row .card-action-btn {
+        flex: 1 1 45%;
+      }
+      .card-actions-row .card-directions-btn {
+        flex: 1 1 100%;
+      }
     }
 
     .marker-pin.active-pin {
@@ -1115,10 +1135,20 @@
     // Pin SVG Generator
     function getPinSvg(type) {
       if (type === 'hotel') {
-        return `<svg viewBox="0 0 36 46" width="36" height="46" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 44 C18 44 2 28 2 18 A16 16 0 1 1 34 18 C34 28 18 44 18 44 Z" fill="#C5A059" stroke="#FFFFFF" stroke-width="2.5"/>
-          <circle cx="18" cy="18" r="11" fill="#3E4D3F" stroke="#F3E5AB" stroke-width="1"/>
-          <path d="M18 11 L12 16 V24 H24 V16 Z M16 24 V20 H20 V24 Z" fill="#F3E5AB"/>
+        return `<svg viewBox="0 0 40 52" width="40" height="52" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="hotelGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFEBB0"/>
+              <stop offset="100%" stop-color="#C5A059"/>
+            </radialGradient>
+          </defs>
+          <path d="M20 50 C20 50 2 33 2 20 A18 18 0 1 1 38 20 C38 33 20 50 20 50 Z" fill="url(#hotelGlow)" stroke="#FFFFFF" stroke-width="3"/>
+          <circle cx="20" cy="20" r="13" fill="#2D3A2E" stroke="#FFEBB0" stroke-width="1.5"/>
+          <path d="M20 11 L13 17 V27 H27 V17 Z" fill="#F3E5AB"/>
+          <rect x="18" y="21" width="4" height="6" fill="#2D3A2E"/>
+          <rect x="15" y="19" width="2.5" height="2.5" fill="#2D3A2E"/>
+          <rect x="22.5" y="19" width="2.5" height="2.5" fill="#2D3A2E"/>
+          <polygon points="20,7.5 21.5,10.5 24.5,10.5 22,12.5 23,15.5 20,13.5 17,15.5 18,12.5 15.5,10.5 18.5,10.5" fill="#FFEBB0"/>
         </svg>`;
       }
       if (type === 'keys') {
@@ -1184,17 +1214,22 @@
 
         // Palmetto Base Anchor Marker (No popup attached per user requirement)
     const hotelEl = document.createElement('div');
-    hotelEl.className = 'marker-pin';
+    hotelEl.className = 'marker-pin marker-pin-hotel';
+    hotelEl.id = 'palmettoHotelPin';
     hotelEl.style.cursor = 'pointer';
+    hotelEl.style.zIndex = '99999';
     hotelEl.title = 'The Palmetto Hotel (Home Base)';
     hotelEl.innerHTML = getPinSvg('hotel');
     hotelEl.addEventListener('click', (e) => {
       e.stopPropagation();
       openHotelCard();
     });
-    new mapboxgl.Marker({ element: hotelEl, anchor: 'bottom' })
+    const hotelMarker = new mapboxgl.Marker({ element: hotelEl, anchor: 'bottom' })
       .setLngLat([-79.927238, 32.779776])
       .addTo(map);
+    if (hotelMarker.getElement()) {
+      hotelMarker.getElement().style.zIndex = '99999';
+    }
 
         let allMarkers = [];
     const markersByName = new Map();
@@ -1515,11 +1550,16 @@ function openPlaceCard(item) {
         }
       }
 
-      // Action Buttons (Menu + Directions)
+      // Action Buttons (Menu + Dining Reservation + Directions)
       const isDining = item.isDining || 
                        (categoryTag === 'dining') || 
                        (item.categoryTags && item.categoryTags.includes('dining')) || 
-                       (catDisplay && (catDisplay.toLowerCase().includes('sip') || catDisplay.toLowerCase().includes('dining')));
+                       (catDisplay && (catDisplay.toLowerCase().includes('sip') || catDisplay.toLowerCase().includes('dining') || catDisplay.toLowerCase().includes('restaurant') || catDisplay.toLowerCase().includes('bar') || catDisplay.toLowerCase().includes('lounge'))) ||
+                       (item.suggestions && item.suggestions.some(s => {
+                         const txt = ((s.tip || '') + ' ' + (s.perk || '') + ' ' + (s.category || '')).toLowerCase();
+                         return /food|beverage|cocktail|lounge|wine|beer|dining|restaurant|bistro|eatery|menu|cuisine|dish|chef|seafood|bourbon|drinks|bar|oyster/.test(txt);
+                       })) ||
+                       (item.menu && item.menu.length > 5);
       
       let menuUrl = item.menu;
       if (!menuUrl && isDining) {
@@ -1528,24 +1568,27 @@ function openPlaceCard(item) {
 
       const query = encodeURIComponent(name + ' ' + (address || 'Charleston SC'));
 
-      const resUrl = item.reservation && item.reservation.trim() !== '' && item.reservation !== '#' ? item.reservation : '';
+      const safePlaceName = (name || '').replace(/'/g, "\\'");
+      const hasSpecificRes = item.reservation && item.reservation.trim() !== '' && item.reservation !== '#';
+      const resLink = hasSpecificRes ? item.reservation : '#';
+      const resOnClick = hasSpecificRes ? '' : 'onclick="alert(\'Online dining reservations for ' + safePlaceName + ' are coming soon! Please call or text our concierge desk at (843) 994-2302 for table assistance.\'); return false;"';
 
-      if (menuUrl || resUrl) {
+      if (isDining || menuUrl || hasSpecificRes) {
         html += '<div class="card-actions-row">';
         if (menuUrl) {
-          html += '  <a class="card-action-btn card-menu-btn" href="' + menuUrl + '" target="_blank" rel="noopener" title="View official restaurant menu">';
-          html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a4 4 0 0 0-4 4v14a4 4 0 0 0 4 4h3V2z"/><path d="M6 2h3a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H6V2z"/></svg>';
-          html += '    <span>View Menu</span>';
+          html += '  <a class="card-action-btn card-menu-btn" href="' + menuUrl + '" target="_blank" rel="noopener" title="View official menu">';
+          html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a4 4 0 0 0-4 4v14a4 4 0 0 0 4 4h3V2z"/><path d="M6 2h3a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H6V2z"/></svg>';
+          html += '    <span>Menu</span>';
           html += '  </a>';
         }
-        if (resUrl) {
-          html += '  <a class="card-action-btn card-reserve-btn" href="' + resUrl + '" target="_blank" rel="noopener" title="Book a table">';
-          html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+        if (isDining || hasSpecificRes) {
+          html += '  <a class="card-action-btn card-reserve-btn" href="' + resLink + '" ' + (hasSpecificRes ? 'target="_blank" rel="noopener"' : '') + ' ' + resOnClick + ' title="Book a table or request reservation assistance">';
+          html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
           html += '    <span>Reserve</span>';
           html += '  </a>';
         }
         html += '  <a class="card-action-btn card-directions-btn" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener" title="Get directions in Google Maps">';
-        html += '    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>';
+        html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>';
         html += '    <span>Directions</span>';
         html += '  </a>';
         html += '</div>';
@@ -1558,7 +1601,7 @@ function openPlaceCard(item) {
 
       
       // Text Concierge Quick Link for this place
-      const safePlaceName = (name || '').replace(/'/g, "\\'");
+      // safePlaceName already defined = (name || '').replace(/'/g, "\\'");
       html += '<button class="card-text-concierge-btn" onclick="openConciergeText(\'' + safePlaceName + '\')" title="Text concierge about ' + (name.replace(/"/g, '&quot;')) + '">';
       html += '  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
       html += '  <span>Have questions? Text our concierge</span>';
@@ -1605,7 +1648,7 @@ function openPlaceCard(item) {
       const cleanName = name.toLowerCase().trim();
       const catLower = category.toLowerCase().trim();
       const bestSuited = (data.bestSuited || data['Best Suited For'] || data['Vibe / Best For'] || '').toLowerCase();
-      const combinedText = catLower + ' ' + bestSuited + ' ' + cleanName;
+      const combinedText = catLower + ' ' + bestSuited + ' ' + cleanName + ' ' + (rawTip || '').toLowerCase() + ' ' + (rawPerk || '').toLowerCase();
 
       // Strict determination of Keys Partner
       const isKeys = (data.isKeys === true) || 
@@ -1831,8 +1874,8 @@ function openPlaceCard(item) {
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
     "tip": "Free Dessert with Entr\u00e9e Purchase when showing your Palmetto room key. Located next door to the hotel. An iconic culinary institution celebrating Lowcountry cuisine.",
     "perk": "Free Dessert with Entr\u00e9e Purchase (Show Room Key)",
-    "lat": 32.779776,
-    "lng": -79.927238,
+    "lat": 32.77948,
+    "lng": -79.92728,
     "isGuest": false,
     "isKeys": true,
     "isLandmark": false,
@@ -2401,6 +2444,13 @@ function openPlaceCard(item) {
             item.element.style.display = 'none';
           }
         });
+        if (typeof hotelEl !== 'undefined' && hotelEl) {
+          hotelEl.style.display = 'block';
+        }
+        if (typeof hotelMarker !== 'undefined' && hotelMarker && hotelMarker.getElement()) {
+          hotelMarker.getElement().style.display = 'block';
+          hotelMarker.getElement().style.zIndex = '99999';
+        }
 
         if (activePlaceItem && activePlaceItem.element && activePlaceItem.element.style.display === 'none') {
           closePlaceCard();
@@ -2498,6 +2548,13 @@ function openPlaceCard(item) {
                 item.element.style.display = 'none';
               }
             });
+            if (typeof hotelEl !== 'undefined' && hotelEl) {
+              hotelEl.style.display = 'block';
+            }
+            if (typeof hotelMarker !== 'undefined' && hotelMarker && hotelMarker.getElement()) {
+              hotelMarker.getElement().style.display = 'block';
+              hotelMarker.getElement().style.zIndex = '99999';
+            }
 
             fitMap();
             console.log('Automated Sync: Complete. Active verified locations:', allMarkers.length);
