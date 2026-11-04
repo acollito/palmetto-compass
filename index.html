@@ -725,43 +725,52 @@
       transform: translateY(-1px);
     }
 
+    .marker-pin {
+      cursor: pointer;
+      position: relative;
+    }
+    .marker-pin-inner {
+      display: block;
+      transform-origin: bottom center;
+      transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s ease;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+    }
+    .marker-pin:hover {
+      z-index: 9999 !important;
+    }
+    .marker-pin:hover .marker-pin-inner {
+      transform: scale(1.18) translateY(-3px);
+      filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.45));
+    }
+    .marker-pin.active-pin {
+      z-index: 10000 !important;
+    }
+    .marker-pin.active-pin .marker-pin-inner {
+      transform: scale(1.28) translateY(-4px);
+      filter: drop-shadow(0 6px 14px rgba(197, 160, 89, 0.95)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+    }
+
+    /* Home Base: The Palmetto Hotel Pin */
     .marker-pin-hotel {
       z-index: 99999 !important;
       cursor: pointer;
-      filter: drop-shadow(0 4px 14px rgba(197, 160, 89, 0.98)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6)) !important;
-      transition: transform 0.2s ease;
+    }
+    .marker-pin-hotel .marker-pin-inner {
+      filter: drop-shadow(0 4px 14px rgba(197, 160, 89, 0.98)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
     }
     .marker-pin-hotel:hover {
-      transform: scale(1.25) translateY(-4px) !important;
       z-index: 100000 !important;
     }
-
-    @media (max-width: 380px) {
-      .card-actions-row {
-        flex-wrap: wrap;
-      }
-      .card-actions-row .card-action-btn {
-        flex: 1 1 45%;
-      }
-      .card-actions-row .card-directions-btn {
-        flex: 1 1 100%;
-      }
+    .marker-pin-hotel:hover .marker-pin-inner {
+      transform: scale(1.22) translateY(-4px);
+      filter: drop-shadow(0 6px 18px rgba(197, 160, 89, 1)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7));
     }
-
-    .marker-pin.active-pin {
-      transform: scale(1.3) translateY(-4px) !important;
-      z-index: 10000 !important;
-      filter: drop-shadow(0 4px 10px rgba(197, 160, 89, 0.85)) drop-shadow(0 2px 6px rgba(0,0,0,0.4)) !important;
+    .marker-pin-hotel.active-pin {
+      z-index: 100000 !important;
     }
-    
-    .marker-pin {
-      cursor: pointer;
-      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
-      transition: transform 0.2s ease;
-    }
-    .marker-pin:hover {
-      transform: scale(1.18) translateY(-3px);
-      z-index: 9999 !important;
+    .marker-pin-hotel.active-pin .marker-pin-inner {
+      transform: scale(1.3) translateY(-5px);
+      filter: drop-shadow(0 8px 22px rgba(197, 160, 89, 1)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7));
     }
 
     /* Modals */
@@ -1219,7 +1228,7 @@
     hotelEl.style.cursor = 'pointer';
     hotelEl.style.zIndex = '99999';
     hotelEl.title = 'The Palmetto Hotel (Home Base)';
-    hotelEl.innerHTML = getPinSvg('hotel');
+    hotelEl.innerHTML = `<div class="marker-pin-inner">${getPinSvg('hotel')}</div>`;
     hotelEl.addEventListener('click', (e) => {
       e.stopPropagation();
       openHotelCard();
@@ -1402,6 +1411,9 @@ function openPlaceCard(item) {
       allMarkers.forEach(m => {
         if (m.element) m.element.classList.remove('active-pin');
       });
+      if (typeof hotelEl !== 'undefined' && hotelEl) {
+        hotelEl.classList.remove('active-pin');
+      }
     }
 
     if (placeCardClose) {
@@ -1569,19 +1581,64 @@ function openPlaceCard(item) {
       const query = encodeURIComponent(name + ' ' + (address || 'Charleston SC'));
 
       const safePlaceName = (name || '').replace(/'/g, "\\'");
-      const hasSpecificRes = item.reservation && item.reservation.trim() !== '' && item.reservation !== '#';
+      const rawRes = (item.reservation || '').trim();
+      const rawResLower = rawRes.toLowerCase();
+      const hasSpecificRes = rawRes.startsWith('http') || rawRes.includes('opentable') || rawRes.includes('resy') || rawRes.includes('sevenrooms') || rawRes.includes('tock');
+      const isExplicitNoRes = ['no', 'none', 'n/a', 'na', 'false', 'walk-up', 'walk up', 'walk-in', 'walk in'].includes(rawResLower);
+
+      let canReserve = false;
+      if (hasSpecificRes) {
+        canReserve = true;
+      } else if (!isExplicitNoRes && isDining) {
+        // Gather full descriptive context to identify venue service model
+        let fullPlaceText = (name + ' ' + (catDisplay || '') + ' ' + (categoryTag || '') + ' ' + (item.booking || '')).toLowerCase();
+        if (item.suggestions && item.suggestions.length > 0) {
+          item.suggestions.forEach(s => {
+            fullPlaceText += ' ' + (s.tip || '') + ' ' + (s.perk || '') + ' ' + (s.category || '') + ' ' + (s.booking || '');
+          });
+        }
+
+        // Strict exclusions: casual walk-ups, ice cream, coffee shops, bakeries, dessert bars, taverns/dive bars, or places explicitly stating no reservations
+        const noResRegex = /no reservation|walk-in only|walk in only|walk-up only|walk up only|first-come|first come|counter service|counter-service|put your name in at the door|ice cream|creamery|gelato|sorbet|dessert bar|bakery|bakehouse|pastry|pastries|donut|doughnut|bagel|coffee|espresso|roaster|dive bar|tavern|cantina|irish pub/i;
+        
+        const knownNoResNames = [
+          'off track ice cream',
+          'sightsee coffee',
+          'carmella',
+          '167 raw',
+          'the griffon',
+          'the brick',
+          'tommy condon',
+          'el jefe',
+          'maris de hart',
+          'snaffle bit',
+          'lowcountry artists gallery'
+        ];
+
+        const isKnownNoRes = knownNoResNames.some(kn => name.toLowerCase().includes(kn));
+        const matchesNoRes = noResRegex.test(fullPlaceText);
+
+        if (!isKnownNoRes && !matchesNoRes) {
+          const hasResSignal = /reservation|reserve|resy|opentable|book well in advance|advance booking|fine dining|bistro|chophouse|steakhouse/i.test(fullPlaceText);
+          const isSitDownPartner = isKeys || categoryTag === 'dining' || (catDisplay && (catDisplay.toLowerCase().includes('dining') || catDisplay.toLowerCase().includes('partner')));
+          if (hasResSignal || isSitDownPartner) {
+            canReserve = true;
+          }
+        }
+      }
+
       const resLink = hasSpecificRes ? item.reservation : '#';
       const resOnClick = hasSpecificRes ? '' : 'onclick="alert(\'Online dining reservations for ' + safePlaceName + ' are coming soon! Please call or text our concierge desk at (843) 994-2302 for table assistance.\'); return false;"';
 
-      if (isDining || menuUrl || hasSpecificRes) {
+      if (canReserve || menuUrl) {
         html += '<div class="card-actions-row">';
         if (menuUrl) {
           html += '  <a class="card-action-btn card-menu-btn" href="' + menuUrl + '" target="_blank" rel="noopener" title="View official menu">';
           html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a4 4 0 0 0-4 4v14a4 4 0 0 0 4 4h3V2z"/><path d="M6 2h3a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H6V2z"/></svg>';
-          html += '    <span>Menu</span>';
+          html += '    <span>' + (canReserve ? 'Menu' : 'View Menu') + '</span>';
           html += '  </a>';
         }
-        if (isDining || hasSpecificRes) {
+        if (canReserve) {
           html += '  <a class="card-action-btn card-reserve-btn" href="' + resLink + '" ' + (hasSpecificRes ? 'target="_blank" rel="noopener"' : '') + ' ' + resOnClick + ' title="Book a table or request reservation assistance">';
           html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
           html += '    <span>Reserve</span>';
@@ -1776,7 +1833,7 @@ function openPlaceCard(item) {
         if (isKeys) {
           existing.categoryTag = 'keys';
           existing.catDisplay = 'Keys to Charleston Partner';
-          existing.element.innerHTML = getPinSvg('keys');
+          existing.element.innerHTML = `<div class="marker-pin-inner">${getPinSvg('keys')}</div>`;
           existing.isKeys = true;
           if (!existing.categoryTags.includes('keys')) existing.categoryTags.push('keys');
           if (isDining && !existing.categoryTags.includes('dining')) existing.categoryTags.push('dining');
@@ -1784,7 +1841,7 @@ function openPlaceCard(item) {
         } else if (isBeach) {
           existing.categoryTag = 'beaches';
           existing.catDisplay = 'Beach & Coastal Landmark';
-          existing.element.innerHTML = getPinSvg('beaches');
+          existing.element.innerHTML = `<div class="marker-pin-inner">${getPinSvg('beaches')}</div>`;
           existing.isBeach = true;
           existing.isLandmark = false;
           existing.categoryTags = existing.categoryTags.filter(t => t !== 'landmarks');
@@ -1826,7 +1883,7 @@ function openPlaceCard(item) {
       const suggestions = [newSuggestion];
       const el = document.createElement('div');
       el.className = 'marker-pin';
-      el.innerHTML = getPinSvg(pinType);
+      el.innerHTML = `<div class="marker-pin-inner">${getPinSvg(pinType)}</div>`;
 
       const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([lng, lat])
