@@ -1072,6 +1072,9 @@
         
       </div>
       <button class="modal-submit" id="dismissGuideBtn">Explore Partner Locations</button>
+      <div style="margin-top:14px; text-align:center; font-size:0.76rem; color:var(--text-muted);">
+        Local business in Charleston? <a href="partner.html" target="_blank" rel="noopener" style="color:var(--palmetto-green); font-weight:700; text-decoration:underline;">Apply to become a partner brand &rarr;</a>
+      </div>
     </div>
   </div>
 
@@ -1342,8 +1345,11 @@
       html += '  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
       html += '  <span>💬 Text Concierge: (843) 994-2302</span>';
       html += '</button>';
-      html += '<a class="card-action-btn card-menu-btn" href="submit-event.html" target="_blank" rel="noopener" style="width:100%; justify-content:center;" title="Submit local event or partner promotion">';
+      html += '<a class="card-action-btn card-menu-btn" href="submit-event.html" target="_blank" rel="noopener" style="width:100%; justify-content:center; margin-bottom:6px;" title="Submit local event or partner promotion">';
       html += '  <span>+ Submit Partner Promotion / Event</span>';
+      html += '</a>';
+      html += '<a class="card-action-btn card-menu-btn" href="partner.html" target="_blank" rel="noopener" style="width:100%; justify-content:center;" title="Apply to become a Keys to Charleston Partner Brand">';
+      html += '  <span>🗝️ Apply to Become a Partner Brand</span>';
       html += '</a>';
 
       return html;
@@ -2634,8 +2640,8 @@ function openPlaceCard(item) {
 
               res.data.forEach(row => {
                 const st = (row['Approved?'] || row['Approved'] || row['Status'] || row['Status / Approval'] || row['Concierge Status'] || '').toString().toLowerCase().trim();
-                // Filter out any entries marked as denied or rejected
-                if (st.includes('denied') || st.includes('reject') || st.includes('remove') || st.includes('hide') || st.includes('delete') || st === 'no') {
+                // Strictly filter out any entries marked as denied, rejected, or pending review/approval
+                if (st.includes('denied') || st.includes('reject') || st.includes('remove') || st.includes('hide') || st.includes('delete') || st === 'no' || st.includes('pending') || st.includes('review') || st.includes('hold')) {
                   return;
                 }
 

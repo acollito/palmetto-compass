@@ -12,8 +12,10 @@
 const CONFIG = {
   SPREADSHEET_ID: '1mKqYU1DX3AY5pdCm7oO6qXDVevF3mPLME5zMraC-0qk',
   EVENTS_SPREADSHEET_ID: '1S-k9hNJMkusyw0WF81AvKDE1inbiaDe6foEdM0zdQdU',
+  KEYS_SHEET: 'Keys to Charleston Partners',
   STAFF_SHEET: 'Staff Subs',
   GUEST_SHEET: 'Guest Subs',
+  PARTNER_SHEET: 'Partner Subs',
   MEDIA_FOLDER_ID: '1lTzst8yUhWUygqpfvo-qNWJNuYsmR_NkxpyopAlueazTSrZgMF7hwLizw7rzf20vC_8u0hvf',
   HOTEL_ADDRESS: '194 East Bay Street, Charleston, SC 29401',
   NOTIFICATION_EMAIL: 'anthony.collito@palmettohotelcharleston.com',
@@ -420,7 +422,9 @@ function doPost(e) {
     }
 
     let result;
-    if (data.action === 'submitAreaEvent') {
+    if (data.action === 'submitPartnerApplication' || data.action === 'partnerIntake') {
+      result = submitPartnerApplication(data);
+    } else if (data.action === 'submitAreaEvent') {
       result = submitAreaEvent(data);
     } else if (data.action === 'conciergeRequest' || data.serviceKey || data.serviceName) {
       result = submitConciergeRequest(data);
@@ -1047,5 +1051,167 @@ function logPartnerAction(orderId, partnerName, status, note) {
     }
   } catch (err) {
     Logger.log(`Error logging partner action to sheet: ${err.toString()}`);
+  }
+}
+
+
+/**
+ * ============================================================================
+ * KEYS TO CHARLESTON — BRAND / PARTNER ONBOARDING HANDLER
+ * ============================================================================
+ * Handles submissions from partner.html, geocodes address, saves media to Drive,
+ * logs to 'Partner Subs' tab for manual promotion by Anthony Collito, and sends
+ * email alert to the concierge team.
+ */
+function submitPartnerApplication(formData) {
+  try {
+    formData = formData || {};
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    let sheet = ss.getSheetByName(CONFIG.KEYS_SHEET || 'Keys to Charleston Partners');
+    if (!sheet) {
+      sheet = ss.getSheets()[0];
+    }
+
+    // Save hero photo or brand logo to Google Drive media folder
+    let photoUrl = '';
+    if (formData.mediaData) {
+      const cleanName = (formData.businessName || 'Partner').replace(/[^a-zA-Z0-9]/g, '_') + '_' + new Date().getTime();
+      photoUrl = saveMediaToDrive(formData.mediaData, formData.fileName || cleanName);
+    }
+
+    // Geocode physical address for Charleston GPS coordinates
+    let lat = formData.latitude || '';
+    let lng = formData.longitude || '';
+    if ((!lat || !lng) && formData.address) {
+      try {
+        const query = formData.address.toLowerCase().includes('charleston') 
+          ? formData.address 
+          : `${formData.address}, Charleston, SC`;
+        const geo = Maps.newGeocoder().geocode(query);
+        if (geo.status === 'OK' && geo.results && geo.results.length > 0) {
+          lat = geo.results[0].geometry.location.lat;
+          lng = geo.results[0].geometry.location.lng;
+        }
+      } catch (geoErr) {
+        Logger.log('Geocoding notice for partner: ' + geoErr.toString());
+      }
+    }
+
+    // Determine default walk proximity based on neighborhood
+    let proximity = 'Immediate Walk (< 5–10 minutes)';
+    const nHood = (formData.neighborhood || '').toLowerCase();
+    if (nHood.includes('upper king') || nHood.includes('cannonborough')) {
+      proximity = 'Moderate Walk (10–20 minutes)';
+    } else if (nHood.includes('pleasant') || nHood.includes('island')) {
+      proximity = 'Short Drive (10–15 minutes)';
+    }
+
+    const timestamp = Utilities.formatDate(new Date(), "America/New_York", "yyyy-MM-dd HH:mm:ss");
+    const contactInfo = `${formData.contactName || 'Manager'} (${formData.contactTitle || 'Liaison'}) • ${formData.contactEmail || ''} • ${formData.contactPhone || ''}`;
+
+    // Append matching exact 20-column Keys to Charleston Partners schema
+    sheet.appendRow([
+      timestamp,                                // A. Timestamp
+      formData.contactName || 'Partner Liaison', // B. Staff Member Name / Initials
+      formData.businessName || '',              // C. Place / Landmark / Tour Name
+      'Keys to Charleston Partners',            // D. Category (Always Keys Partner)
+      formData.address || '',                   // E. Full Street Address or Location Point
+      formData.neighborhood || 'French Quarter', // F. Neighborhood / Region
+      proximity,                                // G. Proximity to The Palmetto
+      formData.guestPerk || '',                 // H. Ticket & Booking Requirements (Exclusive Perk)
+      'Standard Visit (1–2 hours)',             // I. Recommended Time Commitment
+      'N/A',                                    // J. Tour Operator / Guide
+      formData.insiderTip || '',                // K. The Insider Tip / Photo Advice
+      formData.category || 'Curated Partner',   // L. Best Suited For
+      '$$ ($15–$30 per person)',                // M. Price Range
+      photoUrl,                                 // N. Photo URL
+      formData.menuUrl || '',                   // O. Menu Link
+      formData.reservationUrl || '',            // P. Reservation Link
+      contactInfo,                              // Q. Share Photos / Contact Details
+      lat,                                      // R. Latitude
+      lng,                                      // S. Longitude
+      'Pending Review'                          // T. Approved? (TOGGLE: Set to 'Approved' to go live)
+    ]);
+
+    // Send instant email notification to Anthony & Concierge Desk
+    const recipients = `${CONFIG.NOTIFICATION_EMAIL}, Concierge@palmettohotelcharleston.com`;
+    const subject = `[New Partner Application — Action Required] ${formData.businessName || 'New Partner'}`;
+    const sheetUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.SPREADSHEET_ID}/edit`;
+
+    const htmlBody = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 620px; margin: 0 auto; border: 1px solid #DDD8CE; border-radius: 10px; overflow: hidden; background-color: #FFFFFF;">
+        <div style="background-color: #3E4D3F; color: #FFFFFF; padding: 22px 24px; border-bottom: 3px solid #C5A059;">
+          <h2 style="margin: 0; font-family: Georgia, serif; font-size: 20px; color: #F3E5AB;">The Palmetto Hotel &mdash; New Partner Application</h2>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #E2DED5; text-transform: uppercase; letter-spacing: 0.8px;">Keys to Charleston &bull; Direct Directory Ingestion</p>
+        </div>
+
+        <div style="padding: 24px; color: #232A25; font-size: 14px; line-height: 1.5;">
+          <p style="margin-top: 0; font-size: 15px;">Hello Anthony &amp; Concierge Team,</p>
+          <p>A new local business has submitted their brand details to join the <strong>Keys to Charleston</strong> partner program. This entry has been logged directly into your <strong>Keys to Charleston Partners</strong> tab as <strong>Pending Review</strong>.</p>
+
+          <table style="width: 100%; border-collapse: collapse; margin: 18px 0; background: #FAF8F5; border-radius: 8px; overflow: hidden; border: 1px solid #ECE8E0;">
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962; width: 35%;">Business Name:</td>
+              <td style="padding: 10px 14px; font-weight: 700; color: #3E4D3F;">${formData.businessName}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Category:</td>
+              <td style="padding: 10px 14px;">${formData.category}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Street Address:</td>
+              <td style="padding: 10px 14px;">${formData.address} (${formData.neighborhood})</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Room Key Perk:</td>
+              <td style="padding: 10px 14px; font-weight: 700; color: #8C6B1B; background: #FAF3DE;">${formData.guestPerk}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Insider Tip:</td>
+              <td style="padding: 10px 14px; font-style: italic;">&ldquo;${formData.insiderTip}&rdquo;</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Contact Person:</td>
+              <td style="padding: 10px 14px;">${contactInfo}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Coordinates:</td>
+              <td style="padding: 10px 14px; font-family: monospace;">Lat: ${lat || 'Pending'}, Lng: ${lng || 'Pending'}</td>
+            </tr>
+          </table>
+
+          <div style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 14px 16px; border-radius: 4px; margin: 20px 0;">
+            <p style="margin: 0; font-size: 13px; color: #1B5E20; font-weight: 600;">
+              ⚡ How to Push Live: Open your spreadsheet and change Column T (Approved?) from <em>'Pending Review'</em> to <em>'Approved'</em>. The card and gold pin will automatically go live on the map upon the next sync!
+            </p>
+          </div>
+
+          <div style="text-align: center; margin: 24px 0 10px 0;">
+            <a href="${sheetUrl}" style="background-color: #3E4D3F; color: #F3E5AB; padding: 13px 26px; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 14px; display: inline-block; border: 1.5px solid #C5A059; box-shadow: 0 3px 8px rgba(62,77,63,0.3);">
+              Review in Keys to Charleston Partners &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
+
+    MailApp.sendEmail({
+      to: recipients,
+      subject: subject,
+      htmlBody: htmlBody
+    });
+
+    return {
+      success: true,
+      message: 'Partner application submitted and logged to Keys to Charleston Partners.',
+      businessName: formData.businessName,
+      status: 'Pending Review'
+    };
+  } catch (err) {
+    Logger.log('Error in submitPartnerApplication: ' + err.toString());
+    return {
+      success: false,
+      error: err.toString()
+    };
   }
 }
