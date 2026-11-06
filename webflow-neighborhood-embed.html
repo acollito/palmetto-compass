@@ -1,0 +1,35 @@
+<!-- ========================================================================== -->
+<!-- THE PALMETTO HOTEL &mdash; NEIGHBORHOOD GUIDE (WEBFLOW EMBED CODE)           -->
+<!-- Target URL: https://www.palmettohotelcharleston.com/neighborhood           -->
+<!-- ========================================================================== -->
+<!-- INSTRUCTIONS:                                                               -->
+<!-- 1. In your Webflow Designer, open the 'Neighborhood' page.                 -->
+<!-- 2. Delete or hide the old static attraction cards container.               -->
+<!-- 3. Add an 'HTML Embed' element between your header and footer.             -->
+<!-- 4. Paste this snippet inside the embed element and click Save & Publish.    -->
+<!-- ========================================================================== -->
+
+<div id="palmetto-compass-embed-wrapper" style="width: 100%; min-height: 82vh; height: calc(100vh - 120px); position: relative; background: #F8F6F0;">
+  <iframe 
+    id="palmetto-compass-frame"
+    src="https://palmetto-compass.anthonycollito.workers.dev/" 
+    style="width: 100%; height: 100%; border: none; display: block; position: absolute; top: 0; left: 0; right: 0; bottom: 0;" 
+    loading="lazy" 
+    title="The Palmetto Compass &mdash; Interactive French Quarter & Charleston Guide"
+    allow="geolocation">
+  </iframe>
+</div>
+
+<script>
+  // Ensure responsive viewport adjustment on mobile devices
+  window.addEventListener('resize', function() {
+    var wrapper = document.getElementById('palmetto-compass-embed-wrapper');
+    if (wrapper) {
+      if (window.innerWidth <= 600) {
+        wrapper.style.height = 'calc(100vh - 80px)';
+      } else {
+        wrapper.style.height = 'calc(100vh - 120px)';
+      }
+    }
+  });
+</script>

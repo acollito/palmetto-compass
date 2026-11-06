@@ -16,7 +16,9 @@ const CONFIG = {
   GUEST_SHEET: 'Guest Subs',
   MEDIA_FOLDER_ID: '1lTzst8yUhWUygqpfvo-qNWJNuYsmR_NkxpyopAlueazTSrZgMF7hwLizw7rzf20vC_8u0hvf',
   HOTEL_ADDRESS: '194 East Bay Street, Charleston, SC 29401',
-  NOTIFICATION_EMAIL: 'anthony.collito@palmettohotelcharleston.com'
+  NOTIFICATION_EMAIL: 'anthony.collito@palmettohotelcharleston.com',
+  TIGER_LILY_EMAIL: 'orders@tigerlilyflorist.com',
+  LOWCOUNTRY_STROLLS_EMAIL: 'tours@lowcountrystrolls.com'
 };
 
 /**
@@ -52,6 +54,148 @@ function testSubmission() {
  * Serves either the Guest Form (default) or Staff Form (?view=staff)
  */
 function doGet(e) {
+  // 1. Handle 1-Click Partner Confirmation Actions (e.g. Tiger Lily Florist)
+  if (e && e.parameter && e.parameter.action) {
+    const action = e.parameter.action;
+    const orderId = e.parameter.orderId || e.parameter.id || 'N/A';
+    const reason = e.parameter.reason || '';
+
+    const partner = (e.parameter.partner || (e.parameter.type === 'tour' ? 'strolls' : 'tigerlily')).toLowerCase();
+    const partnerName = partner.includes('stroll') ? 'Lowcountry Strolls' : 'Tiger Lily Florist';
+    const partnerType = partner.includes('stroll') ? 'Walking Tour Booking' : 'Floral Order';
+
+    if (action === 'accept') {
+      logPartnerAction(orderId, partnerName, 'ACCEPTED', '');
+      MailApp.sendEmail({
+        to: `${CONFIG.NOTIFICATION_EMAIL}, Concierge@palmettohotelcharleston.com`,
+        subject: `[CONFIRMED] ${partnerName} #${orderId}`,
+        htmlBody: `
+          <div style="font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; padding: 20px; color: #2D3A2E;">
+            <h2 style="color: #2E7D32; margin-top:0;">✓ ${partnerName} Confirmed</h2>
+            <p><strong>${partnerName}</strong> has <strong>ACCEPTED</strong> ${partnerType} <strong>#${orderId}</strong> via one-click email confirmation.</p>
+            <p>The concierge and front desk have been notified automatically.</p>
+          </div>
+        `
+      });
+      return HtmlService.createHtmlOutput(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>Order Confirmed &bull; The Palmetto Hotel</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; text-align: center; padding: 50px 20px; background: #FAF8F5; color: #232A25; }
+            .card { background: #FFFFFF; padding: 36px 28px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); max-width: 440px; margin: 0 auto; border-top: 5px solid #3E4D3F; }
+            .icon { font-size: 48px; color: #2E7D32; margin-bottom: 12px; }
+            h2 { color: #3E4D3F; margin: 0 0 10px 0; font-size: 24px; }
+            p { color: #5F6962; font-size: 15px; line-height: 1.5; margin: 6px 0; }
+            .order-tag { background: #FAF3DE; color: #8C6B1B; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 14px; display: inline-block; margin: 10px 0; }
+            .footer-note { font-size: 12px; color: #848D86; margin-top: 24px; border-top: 1px solid #ECE8E0; padding-top: 14px; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <div class="icon">✓</div>
+            <h2>Booking Confirmed!</h2>
+            <div class="order-tag">Request #${orderId}</div>
+            <p>Thank you, ${partnerName} team! You have successfully <strong>accepted</strong> this ${partnerType.toLowerCase()}.</p>
+            <p>The Palmetto Hotel concierge and front desk have been notified automatically.</p>
+            <div class="footer-note">The Palmetto Hotel Concierge &bull; 194 East Bay Street &bull; (843) 823-3604</div>
+          </div>
+        </body>
+        </html>
+      `).setTitle("Order Confirmed — The Palmetto Hotel");
+    }
+
+    if (action === 'decline_form') {
+      const webAppUrl = ScriptApp.getService().getUrl();
+      const placeholderText = partner.includes('stroll') 
+        ? 'e.g. Tour time fully booked, guide unavailable on requested date, bad weather forecasted...'
+        : 'e.g. Specific bloom out of season, delivery window unavailable, sold out for date...';
+
+      return HtmlService.createHtmlOutput(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>Decline Request &bull; The Palmetto Hotel</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px 20px; background: #FAF8F5; color: #232A25; }
+            .card { background: #FFFFFF; padding: 32px 26px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); max-width: 480px; margin: 0 auto; border-top: 5px solid #C62828; }
+            h2 { color: #C62828; margin: 0 0 8px 0; font-size: 22px; }
+            p { color: #5F6962; font-size: 14px; line-height: 1.5; margin-bottom: 16px; }
+            .order-tag { background: #FFEBEE; color: #C62828; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 13px; display: inline-block; margin-bottom: 14px; }
+            textarea { width: 100%; height: 110px; padding: 12px; border: 1.5px solid #DDD8CE; border-radius: 6px; font-size: 14px; box-sizing: border-box; font-family: inherit; margin-bottom: 16px; }
+            textarea:focus { outline: none; border-color: #C62828; box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.15); }
+            button { background: #C62828; color: #FFFFFF; border: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; transition: background 0.2s; }
+            button:hover { background: #B71C1C; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <h2>Decline ${partnerName} Request</h2>
+            <div class="order-tag">Request #${orderId}</div>
+            <p>Please share a brief note explaining why this ${partnerType.toLowerCase()} cannot be accommodated:</p>
+            <form action="${webAppUrl}" method="GET">
+              <input type="hidden" name="action" value="submit_decline">
+              <input type="hidden" name="partner" value="${partner}">
+              <input type="hidden" name="orderId" value="${orderId}">
+              <textarea name="reason" placeholder="${placeholderText}" required></textarea>
+              <button type="submit">Submit Decline &amp; Notify Concierge</button>
+            </form>
+          </div>
+        </body>
+        </html>
+      `).setTitle("Decline Request — The Palmetto Hotel");
+    }
+
+    if (action === 'submit_decline') {
+      logPartnerAction(orderId, partnerName, 'DECLINED', reason);
+      MailApp.sendEmail({
+        to: `${CONFIG.NOTIFICATION_EMAIL}, Concierge@palmettohotelcharleston.com`,
+        subject: `[DECLINED] ${partnerName} Request #${orderId}`,
+        htmlBody: `
+          <div style="font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; padding: 20px; color: #2D3A2E;">
+            <h2 style="color: #C62828; margin-top:0;">✕ ${partnerName} Request Declined</h2>
+            <p><strong>${partnerName}</strong> has <strong>DECLINED</strong> ${partnerType} <strong>#${orderId}</strong>.</p>
+            <p><strong>Reason Provided:</strong></p>
+            <blockquote style="background: #F8F9FA; padding: 12px 16px; border-left: 4px solid #C62828; border-radius: 4px; font-style: italic; color: #333;">
+              ${reason || 'No reason provided.'}
+            </blockquote>
+            <p>Please contact the guest or coordinate an alternative tour/date.</p>
+          </div>
+        `
+      });
+      return HtmlService.createHtmlOutput(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>Order Declined &bull; The Palmetto Hotel</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; text-align: center; padding: 50px 20px; background: #FAF8F5; color: #232A25; }
+            .card { background: #FFFFFF; padding: 36px 28px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); max-width: 440px; margin: 0 auto; border-top: 5px solid #C62828; }
+            .icon { font-size: 48px; color: #C62828; margin-bottom: 12px; }
+            h2 { color: #C62828; margin: 0 0 10px 0; font-size: 24px; }
+            p { color: #5F6962; font-size: 15px; line-height: 1.5; margin: 6px 0; }
+            .order-tag { background: #FFEBEE; color: #C62828; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 14px; display: inline-block; margin: 10px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <div class="icon">✕</div>
+            <h2>Response Received</h2>
+            <div class="order-tag">Request #${orderId}</div>
+            <p>Your response for ${partnerName} has been logged and sent to The Palmetto concierge team.</p>
+            <p>The hotel front desk will follow up with the guest accordingly.</p>
+          </div>
+        </body>
+        </html>
+      `).setTitle("Order Declined — The Palmetto Hotel");
+    }
+  }
+
+  // 2. Standard View Routing (Staff / Events / Guest)
   const view = (e && e.parameter && e.parameter.view) ? e.parameter.view.toLowerCase() : 'guest';
   
   if (view === 'staff') {
@@ -395,6 +539,22 @@ function submitConciergeRequest(data) {
     ].join('\t');
 
     // Send instant email alert to Front Desk and Anthony
+    // 1. Tiger Lily Florist 1-Click Partner Dispatch
+    const isFloral = (data.serviceKey === 'tiger-lily') || 
+                     (serviceName && serviceName.toLowerCase().includes('tiger lily')) || 
+                     (serviceName && serviceName.toLowerCase().includes('flower'));
+    if (isFloral) {
+      sendTigerLilyActionEmail(data, confNum);
+    }
+
+    // 2. Lowcountry Strolls Walking Tour 1-Click Partner Dispatch
+    const isWalkingTour = (data.serviceKey === 'walking-tour') || 
+                          (serviceName && serviceName.toLowerCase().includes('lowcountry stroll')) || 
+                          (serviceName && serviceName.toLowerCase().includes('walking tour'));
+    if (isWalkingTour) {
+      sendLowcountryStrollsActionEmail(data, confNum);
+    }
+
     const recipients = `${CONFIG.NOTIFICATION_EMAIL}, Concierge@palmettohotelcharleston.com`;
     const subject = `[Concierge Request] ${serviceName} | ${guestName} | Conf: ${confNum}`;
     
@@ -646,5 +806,246 @@ function submitAreaEvent(data) {
   } catch (err) {
     Logger.log('Error in submitAreaEvent: ' + err);
     return { success: false, error: err.toString() };
+  }
+}
+
+
+/**
+ * ============================================================================
+ * TIGER LILY FLORIST 1-CLICK CONFIRMATION & ORDER DISPATCH
+ * ============================================================================
+ */
+
+function sendTigerLilyActionEmail(data, orderId) {
+  try {
+    const tigerLilyEmail = 'orders@tigerlilyflorist.com';
+    let webAppUrl = '';
+    try {
+      webAppUrl = ScriptApp.getService().getUrl();
+    } catch (e) {
+      webAppUrl = 'https://script.google.com/macros/s/AKfycbwXVEd9ZpJug89JZ32JBJar2M169FYUmJoUjoBXUQTocRd0OlRsPGkPbuuVrwhQBI_H/exec';
+    }
+
+    const encodedId = encodeURIComponent(orderId);
+    const acceptUrl = `${webAppUrl}?action=accept&orderId=${encodedId}`;
+    const declineUrl = `${webAppUrl}?action=decline_form&orderId=${encodedId}`;
+
+    const guestName = data.guestName || 'Valued Guest';
+    const confNum = data.confirmationNum || 'Not Provided';
+    const roomNum = data.roomNum || 'Unassigned';
+    const checkin = data.checkinDate || 'Not Provided';
+    const preferences = data.preferences || 'Standard Arrangement';
+    const timing = data.requestedTiming || 'Prior to Arrival';
+    const details = data.details || {};
+    const cardMsg = details.cardMessage || data.specialNotes || 'None';
+
+    const htmlBody = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; margin: 0 auto; border: 1px solid #DDD8CE; border-radius: 10px; overflow: hidden; background-color: #FFFFFF;">
+        <div style="background-color: #3E4D3F; color: #FFFFFF; padding: 22px 24px; border-bottom: 3px solid #C5A059;">
+          <h2 style="margin: 0; font-family: Georgia, serif; font-size: 20px; color: #F3E5AB;">The Palmetto Hotel &mdash; New Floral Order Request</h2>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #E2DED5; text-transform: uppercase; letter-spacing: 0.8px;">Partner Order Dispatch &bull; Tiger Lily Florist</p>
+        </div>
+
+        <div style="padding: 24px; color: #232A25; font-size: 14px; line-height: 1.5;">
+          <p style="margin-top: 0; font-size: 15px;">Hello Tiger Lily Team,</p>
+          <p>A new guest floral request has been submitted through <strong>The Palmetto Compass</strong> pre-arrival concierge portal:</p>
+
+          <table style="width: 100%; border-collapse: collapse; margin: 18px 0; background: #FAF8F5; border-radius: 8px; overflow: hidden; border: 1px solid #ECE8E0;">
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962; width: 35%;">Order / Conf #:</td>
+              <td style="padding: 10px 14px; font-weight: 700; color: #3E4D3F;">${orderId}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Guest Name:</td>
+              <td style="padding: 10px 14px; font-weight: 600;">${guestName}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Room Number:</td>
+              <td style="padding: 10px 14px; font-weight: 600;">${roomNum}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Delivery Date:</td>
+              <td style="padding: 10px 14px; font-weight: 600;">${checkin} (${timing})</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Arrangement Style:</td>
+              <td style="padding: 10px 14px; font-weight: 700; color: #8C6B1B;">${preferences}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Card Message:</td>
+              <td style="padding: 10px 14px; font-style: italic; color: #2D3A2E;">&ldquo;${cardMsg}&rdquo;</td>
+            </tr>
+          </table>
+
+          <div style="text-align: center; margin: 30px 0 20px 0;">
+            <a href="${acceptUrl}" style="background-color: #2E7D32; color: #FFFFFF; padding: 13px 26px; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 14px; display: inline-block; margin-right: 12px; letter-spacing: 0.5px; box-shadow: 0 3px 8px rgba(46,125,50,0.3);">
+              &#10003; ACCEPT ORDER
+            </a>
+            <a href="${declineUrl}" style="background-color: #C62828; color: #FFFFFF; padding: 13px 26px; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 14px; display: inline-block; letter-spacing: 0.5px; box-shadow: 0 3px 8px rgba(198,40,40,0.3);">
+              &#10005; DECLINE WITH NOTE
+            </a>
+          </div>
+
+          <p style="font-size: 12px; color: #848D86; text-align: center; margin-top: 20px;">
+            Clicking either button will update The Palmetto Hotel concierge log instantly. No login required.
+          </p>
+        </div>
+      </div>
+    `;
+
+    MailApp.sendEmail({
+      to: tigerLilyEmail,
+      cc: `${CONFIG.NOTIFICATION_EMAIL}, Concierge@palmettohotelcharleston.com`,
+      subject: `[New Floral Order] ${guestName} (Conf #${orderId})`,
+      htmlBody: htmlBody
+    });
+    Logger.log(`Successfully dispatched Tiger Lily action email for Order #${orderId}`);
+  } catch (err) {
+    Logger.log(`Error sending Tiger Lily action email: ${err.toString()}`);
+  }
+}
+
+function logTigerLilyAction(orderId, status, note) {
+  try {
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    let sheet = ss.getSheetByName('Concierge Requests') || ss.getSheetByName('Staff Subs');
+    if (sheet) {
+      const data = sheet.getDataRange().getValues();
+      for (let i = 1; i < data.length; i++) {
+        if (data[i].some(cell => String(cell).includes(orderId))) {
+          sheet.getRange(i + 1, 8).setValue(status);
+          if (note) {
+            sheet.getRange(i + 1, 9).setValue(note);
+          }
+          break;
+        }
+      }
+    }
+  } catch (err) {
+    Logger.log(`Error logging action to sheet: ${err.toString()}`);
+  }
+}
+
+
+/**
+ * ============================================================================
+ * LOWCOUNTRY STROLLS 1-CLICK CONFIRMATION & TOUR DISPATCH
+ * ============================================================================
+ */
+
+function sendLowcountryStrollsActionEmail(data, orderId) {
+  try {
+    const tourEmail = CONFIG.LOWCOUNTRY_STROLLS_EMAIL || 'tours@lowcountrystrolls.com';
+    let webAppUrl = '';
+    try {
+      webAppUrl = ScriptApp.getService().getUrl();
+    } catch (e) {
+      webAppUrl = 'https://script.google.com/macros/s/AKfycbwXVEd9ZpJug89JZ32JBJar2M169FYUmJoUjoBXUQTocRd0OlRsPGkPbuuVrwhQBI_H/exec';
+    }
+
+    const encodedId = encodeURIComponent(orderId);
+    const acceptUrl = `${webAppUrl}?action=accept&partner=strolls&orderId=${encodedId}`;
+    const declineUrl = `${webAppUrl}?action=decline_form&partner=strolls&orderId=${encodedId}`;
+
+    const guestName = data.guestName || 'Valued Guest';
+    const confNum = data.confirmationNum || 'Not Provided';
+    const roomNum = data.roomNum || 'Unassigned';
+    const checkin = data.checkinDate || 'Not Provided';
+    const preferences = data.preferences || 'Historic Walking Tour';
+    const timing = data.requestedTiming || 'Flexible Date/Time';
+    const guestPhone = data.guestPhone || 'Not provided';
+    const specialNotes = data.specialNotes || 'None';
+
+    const htmlBody = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; margin: 0 auto; border: 1px solid #DDD8CE; border-radius: 10px; overflow: hidden; background-color: #FFFFFF;">
+        <div style="background-color: #3E4D3F; color: #FFFFFF; padding: 22px 24px; border-bottom: 3px solid #C5A059;">
+          <h2 style="margin: 0; font-family: Georgia, serif; font-size: 20px; color: #F3E5AB;">The Palmetto Hotel &mdash; New Walking Tour Booking Request</h2>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #E2DED5; text-transform: uppercase; letter-spacing: 0.8px;">Partner Tour Dispatch &bull; Lowcountry Strolls</p>
+        </div>
+
+        <div style="padding: 24px; color: #232A25; font-size: 14px; line-height: 1.5;">
+          <p style="margin-top: 0; font-size: 15px;">Hello Lowcountry Strolls Team,</p>
+          <p>A new guest walking tour reservation request has been submitted through <strong>The Palmetto Compass</strong> pre-arrival concierge portal:</p>
+
+          <table style="width: 100%; border-collapse: collapse; margin: 18px 0; background: #FAF8F5; border-radius: 8px; overflow: hidden; border: 1px solid #ECE8E0;">
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962; width: 35%;">Booking / Conf #:</td>
+              <td style="padding: 10px 14px; font-weight: 700; color: #3E4D3F;">${orderId}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Guest Name:</td>
+              <td style="padding: 10px 14px; font-weight: 600;">${guestName}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Hotel Stay / Room:</td>
+              <td style="padding: 10px 14px; font-weight: 600;">Room ${roomNum} (Check-in: ${checkin})</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Tour Requested:</td>
+              <td style="padding: 10px 14px; font-weight: 700; color: #8C6B1B;">${preferences}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Requested Timing:</td>
+              <td style="padding: 10px 14px; font-weight: 600;">${timing}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ECE8E0;">
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Guest Phone:</td>
+              <td style="padding: 10px 14px;">${guestPhone}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; font-weight: 700; color: #5F6962;">Special Notes:</td>
+              <td style="padding: 10px 14px; font-style: italic; color: #2D3A2E;">&ldquo;${specialNotes}&rdquo;</td>
+            </tr>
+          </table>
+
+          <div style="text-align: center; margin: 30px 0 20px 0;">
+            <a href="${acceptUrl}" style="background-color: #2E7D32; color: #FFFFFF; padding: 13px 26px; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 14px; display: inline-block; margin-right: 12px; letter-spacing: 0.5px; box-shadow: 0 3px 8px rgba(46,125,50,0.3);">
+              &#10003; ACCEPT TOUR BOOKING
+            </a>
+            <a href="${declineUrl}" style="background-color: #C62828; color: #FFFFFF; padding: 13px 26px; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 14px; display: inline-block; letter-spacing: 0.5px; box-shadow: 0 3px 8px rgba(198,40,40,0.3);">
+              &#10005; DECLINE WITH NOTE
+            </a>
+          </div>
+
+          <p style="font-size: 12px; color: #848D86; text-align: center; margin-top: 20px;">
+            Clicking either button will update The Palmetto Hotel concierge log instantly. No login required.
+          </p>
+        </div>
+      </div>
+    `;
+
+    MailApp.sendEmail({
+      to: tourEmail,
+      cc: `${CONFIG.NOTIFICATION_EMAIL}, Concierge@palmettohotelcharleston.com`,
+      subject: `[New Tour Request] Lowcountry Strolls for ${guestName} (Conf #${orderId})`,
+      htmlBody: htmlBody
+    });
+    Logger.log(`Successfully dispatched Lowcountry Strolls action email for Order #${orderId}`);
+  } catch (err) {
+    Logger.log(`Error sending Lowcountry Strolls action email: ${err.toString()}`);
+  }
+}
+
+/**
+ * Universal Partner Action Logger
+ */
+function logPartnerAction(orderId, partnerName, status, note) {
+  try {
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    let sheet = ss.getSheetByName('Concierge Requests') || ss.getSheetByName('Staff Subs');
+    if (sheet) {
+      const data = sheet.getDataRange().getValues();
+      for (let i = 1; i < data.length; i++) {
+        if (data[i].some(cell => String(cell).includes(orderId))) {
+          sheet.getRange(i + 1, 8).setValue(`${status} (${partnerName})`);
+          if (note) {
+            sheet.getRange(i + 1, 9).setValue(note);
+          }
+          break;
+        }
+      }
+    }
+  } catch (err) {
+    Logger.log(`Error logging partner action to sheet: ${err.toString()}`);
   }
 }
