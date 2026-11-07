@@ -517,6 +517,7 @@ function submitConciergeRequest(data) {
     const guestName = data.guestName || 'Guest';
     const guestEmail = data.guestEmail || '';
     const guestPhone = data.guestPhone || 'Not provided';
+    const cleanPhone = (guestPhone !== 'Not provided') ? guestPhone.replace(/[^0-9+]/g, '') : '';
     const confNum = data.confirmationNum || 'Not provided';
     const checkin = data.checkinDate || 'Not provided';
     const roomNum = data.roomNum || 'Unassigned';
@@ -627,12 +628,30 @@ function submitConciergeRequest(data) {
             </tr>
           </table>
 
-          <!-- 1-Click Action Buttons -->
+          <!-- 1-Click Action Buttons (SMS + Call + Resy Concierge + Email) -->
           <div style="text-align: center; margin: 24px 0 20px;">
-            <a href="mailto:${guestEmail}?subject=The%20Palmetto%20Hotel%20Concierge%20%E2%80%94%20${encodeURIComponent(serviceName)}" 
-               style="background-color: #3E4D3F; color: #FFFFFF; text-decoration: none; padding: 10px 22px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-right: 8px;">
-              Reply to Guest
+            ${cleanPhone ? `
+            <a href="sms:${cleanPhone}?body=${encodeURIComponent('Hi ' + guestName + ', this is The Palmetto Hotel Concierge regarding your ' + serviceName + '.')}" 
+               style="background-color: #3E4D3F; color: #FFFFFF; text-decoration: none; padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin: 4px;">
+              💬 Text Guest (${guestPhone})
             </a>
+            <a href="tel:${cleanPhone}" 
+               style="background-color: #FAF8F5; color: #3E4D3F; border: 1.5px solid #C5A059; text-decoration: none; padding: 10px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin: 4px;">
+              📞 Call Guest
+            </a>
+            ` : ''}
+            ${isDining ? `
+            <a href="https://resy.com/cities/charleston-sc" target="_blank" 
+               style="background-color: #B02A30; color: #FFFFFF; text-decoration: none; padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin: 4px;">
+              🛎️ Open Resy Concierge
+            </a>
+            ` : ''}
+            ${guestEmail ? `
+            <a href="mailto:${guestEmail}?subject=The%20Palmetto%20Hotel%20Concierge%20%E2%80%94%20${encodeURIComponent(serviceName)}" 
+               style="background-color: #708771; color: #FFFFFF; text-decoration: none; padding: 10px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin: 4px;">
+              ✉️ Email Guest
+            </a>
+            ` : ''}
           </div>
 
           <!-- Structured Excel CRM Ingestion Block (Power Automate / CoPilot) -->
