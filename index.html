@@ -1150,11 +1150,37 @@
     </div>
     <button class="nav-arrow" id="navRight" title="Scroll Right">&rsaquo;</button>
   </div>
+
+  <!-- Mapbox Viewport -->
+  <div id="mapContainer">
+    <div id="map"></div>
+    <div id="tokenErrorNotice">Mapbox access token is unauthorized or URL restricted. Please check your Mapbox account.</div>
+
+    <!-- Fixed Place Details Card -->
+    <div id="placeCard" class="place-card" aria-hidden="true">
+      <button class="place-card-close" id="placeCardClose" aria-label="Close details card">&times;</button>
+      <div id="placeCardBody" class="place-card-body"></div>
+    </div>
+
+    <!-- Floating Action Buttons -->
     <button class="recenter-btn" id="recenterBtn">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="#C5A059"/></svg>Fit Map
     </button>
     <button class="text-concierge-btn" id="textConciergeBtn" title="Text The Palmetto Concierge at (843) 994-2302">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Concierge
+    </button>
+
+    <!-- Floating Curated List View Button -->
+    <button class="list-view-btn" id="openListViewBtn" title="View curated spots in this category as a list" aria-label="View curated list of places">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="8" y1="6" x2="21" y2="6"></line>
+        <line x1="8" y1="12" x2="21" y2="12"></line>
+        <line x1="8" y1="18" x2="21" y2="18"></line>
+        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+      </svg>
+      <span id="listViewBtnLabel">View List</span>
     </button>
   </div>
 
@@ -1371,6 +1397,32 @@
   </div>
 
   
+
+    <!-- Curated Category List Modal -->
+  <div class="modal-backdrop" id="listModal" aria-hidden="true">
+    <div class="list-modal-card">
+      <div class="list-modal-header">
+        <div>
+          <div class="list-modal-badge" id="listModalBadge">Sip &amp; Savor</div>
+          <h2 class="list-modal-title" id="listModalTitle">Curated Charleston Dining</h2>
+          <div class="list-modal-subtitle" id="listModalSubtitle">The Palmetto Hotel Concierge Curated Guide &bull; Tap any spot to view on map</div>
+        </div>
+        <button class="modal-close" id="closeListModalBtn" aria-label="Close list view">&times;</button>
+      </div>
+
+      <!-- Quick Search / Filter Bar within list -->
+      <div class="list-modal-search-wrap">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="listSearchInput" placeholder="Filter by name, cuisine, perk, or area..." />
+        <span class="list-count-indicator" id="listCountIndicator">0 Spots</span>
+      </div>
+
+      <!-- Scrollable List of Cards -->
+      <div class="list-modal-body" id="listModalBody">
+        <!-- Rendered cards go here -->
+      </div>
+    </div>
+  </div>
 
   <script>
     // 1. Mapbox Token Setup
@@ -1987,7 +2039,277 @@ function openPlaceCard(item) {
       });
     }
 
+    
+    // ==========================================
+    // --- CURATED LIST VIEW LOGIC & INTEGRATION ---
+    // ==========================================
+    let currentCategoryTag = 'all';
+    let currentCategoryName = 'All Highlights';
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    const openListViewBtn = document.getElementById('openListViewBtn');
+    const listViewBtnLabel = document.getElementById('listViewBtnLabel');
+    const listModal = document.getElementById('listModal');
+    const closeListModalBtn = document.getElementById('closeListModalBtn');
+    const listModalTitle = document.getElementById('listModalTitle');
+    const listModalSubtitle = document.getElementById('listModalSubtitle');
+    const listModalBadge = document.getElementById('listModalBadge');
+    const listCountIndicator = document.getElementById('listCountIndicator');
+    const listSearchInput = document.getElementById('listSearchInput');
+    const listModalBody = document.getElementById('listModalBody');
+
+    function getVisibleCategoryItems() {
+      if (!allMarkers || allMarkers.length === 0) return [];
+      if (currentCategoryTag === 'all') {
+        return allMarkers.slice();
+      }
+      return allMarkers.filter(item => {
+        return (item.categoryTag === currentCategoryTag) || 
+               (item.categoryTags && item.categoryTags.includes(currentCategoryTag));
+      });
+    }
+
+    function updateListViewButton() {
+      const items = getVisibleCategoryItems();
+      const count = items.length;
+      if (listViewBtnLabel) {
+        if (currentCategoryTag === 'dining') {
+          listViewBtnLabel.textContent = 'Dining List (' + count + ')';
+        } else if (currentCategoryTag === 'keys') {
+          listViewBtnLabel.textContent = 'Partner List (' + count + ')';
+        } else if (currentCategoryTag === 'all') {
+          listViewBtnLabel.textContent = 'View List (' + count + ')';
+        } else {
+          listViewBtnLabel.textContent = 'List View (' + count + ')';
+        }
+      }
+    }
+
+    function renderListCards(filterQuery) {
+      if (!listModalBody) return;
+      const items = getVisibleCategoryItems();
+      const q = (filterQuery || '').trim().toLowerCase();
+
+      let filtered = items;
+      if (q) {
+        filtered = items.filter(item => {
+          const name = (item.name || '').toLowerCase();
+          const addr = (item.address || '').toLowerCase();
+          const cat = (item.catDisplay || item.categoryTag || '').toLowerCase();
+          const tips = (item.suggestions || []).map(s => (s.tip || '') + ' ' + (s.perk || '') + ' ' + (s.submitter || '')).join(' ').toLowerCase();
+          return name.includes(q) || addr.includes(q) || cat.includes(q) || tips.includes(q);
+        });
+      }
+
+      if (listCountIndicator) {
+        listCountIndicator.textContent = filtered.length + ' ' + (filtered.length === 1 ? 'Spot' : 'Spots');
+      }
+
+      if (filtered.length === 0) {
+        listModalBody.innerHTML = '<div style="text-align:center; padding:36px 20px; color:#646A66;"><div style="font-size:2rem; margin-bottom:8px;">🔍</div><div style="font-family:Cinzel, Georgia, serif; font-size:1.1rem; color:#2D3A2E; margin-bottom:6px;">No spots found matching "' + escapeHtml(filterQuery) + '"</div><div style="font-size:0.80rem;">Try searching for a different term or clear the filter.</div></div>';
+        return;
+      }
+
+      let htmlCards = '';
+      filtered.forEach(item => {
+        const name = item.name || '';
+        const address = item.address || '';
+        const proximity = item.proximity || '';
+        const catDisplay = item.catDisplay || item.categoryTag || 'Curated Spot';
+        const isKeys = item.isKeys || (item.categoryTag === 'keys') || (catDisplay && catDisplay.toLowerCase().includes('keys'));
+        const isDining = item.isDining || (item.categoryTag === 'dining') || (catDisplay && catDisplay.toLowerCase().includes('sip'));
+        const suggestions = item.suggestions || [];
+        const phone = item.phone || '';
+        const website = item.website || '';
+        const hours = item.hours || '';
+
+        const escapedName = name.replace(/'/g, "\\'");
+        const dest = encodeURIComponent((name ? name + ', ' : '') + (address || 'Charleston, SC'));
+        const directionsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + dest;
+
+        htmlCards += '<div class="list-item-card">';
+        htmlCards += '  <div class="list-item-top">';
+        htmlCards += '    <span class="list-item-cat ' + (isKeys ? 'keys-cat' : '') + '">';
+        if (isKeys) htmlCards += '🗝️ ';
+        htmlCards += escapeHtml(catDisplay);
+        htmlCards += '    </span>';
+        if (proximity) {
+          htmlCards += '    <span class="list-item-dist">' + escapeHtml(proximity) + '</span>';
+        }
+        htmlCards += '  </div>';
+
+        htmlCards += '  <h3 class="list-item-title" style="cursor:pointer;" onclick="selectListItemAndShowMap(\'' + escapedName + '\')" title="View on Map">' + escapeHtml(name) + '</h3>';
+
+        htmlCards += '  <div class="list-item-meta">';
+        if (address) {
+          htmlCards += '    <span><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 C8.13 2 5 5.13 5 9 C5 14.25 12 22 12 22 C12 22 19 14.25 19 9 C19 5.13 15.87 2 12 2 Z"/><circle cx="12" cy="9" r="2.5"/></svg>' + escapeHtml(address) + '</span>';
+        }
+        if (phone) {
+          htmlCards += '    <a href="tel:' + phone.replace(/[^0-9+]/g, '') + '"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' + escapeHtml(phone) + '</a>';
+        }
+        if (hours) {
+          htmlCards += '    <span><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' + escapeHtml(hours) + '</span>';
+        }
+        htmlCards += '  </div>';
+
+        if (isKeys && suggestions.length > 0 && suggestions[0].perk) {
+          htmlCards += '  <div class="list-item-perk">';
+          htmlCards += '    <strong>🗝️ Palmetto Room Key Perk</strong>';
+          htmlCards += '    <div>' + escapeHtml(suggestions[0].perk) + '</div>';
+          htmlCards += '  </div>';
+        }
+
+        const primaryTip = suggestions.length > 0 ? (suggestions[0].tip || '') : '';
+        if (primaryTip) {
+          htmlCards += '  <div class="list-item-tip">';
+          htmlCards += '    &ldquo;' + escapeHtml(primaryTip) + '&rdquo;';
+          if (suggestions[0].submitter && !isKeys) {
+            htmlCards += '    <div class="list-item-submitter">&mdash; Recommended by ' + escapeHtml(suggestions[0].submitter) + '</div>';
+          }
+          htmlCards += '  </div>';
+        }
+
+        htmlCards += '  <div class="list-item-actions">';
+        htmlCards += '    <button type="button" class="list-item-btn list-btn-map" onclick="selectListItemAndShowMap(\'' + escapedName + '\')" title="Pinpoint on Map">';
+        htmlCards += '      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg> View on Map';
+        htmlCards += '    </button>';
+
+        htmlCards += '    <a class="list-item-btn list-btn-directions" href="' + directionsUrl + '" target="_blank" rel="noopener" title="Get Google Maps Directions">';
+        htmlCards += '      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg> Directions';
+        htmlCards += '    </a>';
+
+        if (isDining) {
+          const sitDownResSpots = ['SNOB', 'S.N.O.B.', 'Slightly North of Broad', 'High Cotton', 'Vern', 'Citrus Club', 'Amen Street', 'Chez Nous', 'Melfi', 'The Ordinary', 'FIG', 'Husk', 'Halls Chophouse', 'The Grocery', 'Indaco', 'Charleston Grill'];
+          const isSitDown = sitDownResSpots.some(s => name.toLowerCase().includes(s.toLowerCase()));
+
+          if (isSitDown) {
+            htmlCards += '    <button type="button" class="list-item-btn list-btn-reserve" onclick="closeListModal(); openDiningModal(\'' + escapedName + '\');" title="Request VIP Concierge Reservation">';
+            htmlCards += '      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Reserve';
+            htmlCards += '    </button>';
+          } else if (item.menuUrl) {
+            htmlCards += '    <a class="list-item-btn list-btn-menu" href="' + item.menuUrl + '" target="_blank" rel="noopener" title="View Food & Drink Menu">';
+            htmlCards += '      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Menu';
+            htmlCards += '    </a>';
+          }
+        }
+
+        if (phone) {
+          htmlCards += '    <a class="list-item-btn list-btn-call" href="tel:' + phone.replace(/[^0-9+]/g, '') + '" title="Call ' + escapeHtml(name) + '">';
+          htmlCards += '      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Call';
+          htmlCards += '    </a>';
+        }
+
+        if (website) {
+          htmlCards += '    <a class="list-item-btn list-btn-web" href="' + website + '" target="_blank" rel="noopener" title="Official Website">';
+          htmlCards += '      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Website';
+          htmlCards += '    </a>';
+        }
+
+        htmlCards += '  </div>';
+        htmlCards += '</div>';
+      });
+
+      listModalBody.innerHTML = htmlCards;
+    }
+
+    function openListModal() {
+      if (!listModal) return;
+
+      if (currentCategoryTag === 'dining') {
+        listModalBadge.textContent = 'Sip & Savor';
+        listModalTitle.textContent = 'Curated Charleston Dining & Drinks';
+        listModalSubtitle.textContent = 'Chef-driven culinary spots, historic seafood taverns, and craft cocktail bars';
+      } else if (currentCategoryTag === 'keys') {
+        listModalBadge.textContent = 'Keys to Charleston';
+        listModalTitle.textContent = 'Preferred Partner Directory';
+        listModalSubtitle.textContent = 'Exclusive guest discounts and perks unlocked with your physical Palmetto room key';
+      } else if (currentCategoryTag === 'landmarks') {
+        listModalBadge.textContent = 'Landmarks & History';
+        listModalTitle.textContent = 'Historic Landmarks & Culture';
+        listModalSubtitle.textContent = 'Iconic architecture, historic alleys, waterfront parks, and museums';
+      } else if (currentCategoryTag === 'beaches') {
+        listModalBadge.textContent = 'Beaches & Coastal';
+        listModalTitle.textContent = 'Coastal Escapes & Barrier Islands';
+        listModalSubtitle.textContent = 'Pristine barrier beaches, oceanfront dining, and coastal lighthouses';
+      } else if (currentCategoryTag === 'shopping') {
+        listModalBadge.textContent = 'Boutiques & Shopping';
+        listModalTitle.textContent = 'Curated Boutiques & Local Goods';
+        listModalSubtitle.textContent = 'Independent Southern clothiers, antiquities, apothecary, and artisan craft';
+      } else if (currentCategoryTag === 'staff') {
+        listModalBadge.textContent = 'Staff Picks';
+        listModalTitle.textContent = 'Palmetto Team Insider Favorites';
+        listModalSubtitle.textContent = 'Personal go-to spots hand-picked by your front desk and concierge team';
+      } else if (currentCategoryTag === 'guests') {
+        listModalBadge.textContent = 'Guest Discoveries';
+        listModalTitle.textContent = 'Fellow Traveler Recommendations';
+        listModalSubtitle.textContent = 'Favorite memories and hidden finds shared by past Palmetto guests';
+      } else if (currentCategoryTag === 'services') {
+        listModalBadge.textContent = 'Services & Essentials';
+        listModalTitle.textContent = 'Charleston Services & Essentials';
+        listModalSubtitle.textContent = 'Urgent care clinics, pharmacies, hospital emergency rooms, and local services';
+      } else {
+        listModalBadge.textContent = 'Curated Collection';
+        listModalTitle.textContent = 'All Charleston Highlights';
+        listModalSubtitle.textContent = 'The comprehensive curated digital compass for guests of The Palmetto Hotel';
+      }
+
+      if (listSearchInput) listSearchInput.value = '';
+      renderListCards();
+
+      listModal.classList.add('active');
+      listModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeListModal() {
+      if (listModal) {
+        listModal.classList.remove('active');
+        listModal.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    function selectListItemAndShowMap(placeName) {
+      closeListModal();
+      const norm = normalizeKey(placeName);
+      const item = markersByName.get(norm) || allMarkers.find(m => normalizeKey(m.name) === norm);
+      if (item) {
+        openPlaceCard(item);
+      }
+    }
+
+    if (openListViewBtn) {
+      openListViewBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openListModal();
+      });
+    }
+    if (closeListModalBtn) {
+      closeListModalBtn.addEventListener('click', closeListModal);
+    }
+    if (listModal) {
+      listModal.addEventListener('click', (e) => {
+        if (e.target === listModal) closeListModal();
+      });
+    }
+    if (listSearchInput) {
+      listSearchInput.addEventListener('input', (e) => {
+        renderListCards(e.target.value);
+      });
+    }
+
+
     window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && listModal && listModal.classList.contains('active')) {
+        closeListModal();
+      }
       if (e.key === 'Escape' && placeCard && placeCard.classList.contains('active')) {
         closePlaceCard();
       }
@@ -3429,6 +3751,9 @@ function openPlaceCard(item) {
         btn.classList.add('active');
 
         const cat = btn.dataset.category;
+        currentCategoryTag = cat;
+        currentCategoryName = btn.innerText.replace(/[\d+]/g, '').trim();
+        updateListViewButton();
 
         if (cat === 'keys' && !hasShownKeysGuide) {
           hasShownKeysGuide = true;
