@@ -1922,15 +1922,20 @@ function openPlaceCard(item) {
         html += '  </a>';
         html += '</div>';
       } else {
-        const isDining = item.isDining || 
+        const isBeachItem = item.isBeach || (categoryTag === 'beaches') || (item.categoryTags && item.categoryTags.includes('beaches'));
+        const isLandmarkItem = item.isLandmark || (categoryTag === 'landmarks') || (item.categoryTags && item.categoryTags.includes('landmarks'));
+        const isServiceItemStrict = item.isService || (categoryTag === 'services') || (item.categoryTags && item.categoryTags.includes('services'));
+        const isDining = !isBeachItem && !isLandmarkItem && !isServiceItemStrict && (
+                         item.isDining || 
                          (categoryTag === 'dining') || 
                          (item.categoryTags && item.categoryTags.includes('dining')) || 
-                         (catDisplay && (catDisplay.toLowerCase().includes('sip') || catDisplay.toLowerCase().includes('dining') || catDisplay.toLowerCase().includes('restaurant') || catDisplay.toLowerCase().includes('bar') || catDisplay.toLowerCase().includes('lounge'))) ||
+                         (catDisplay && (catDisplay.toLowerCase().includes('sip') || catDisplay.toLowerCase().includes('dining') || catDisplay.toLowerCase().includes('restaurant') || catDisplay.toLowerCase().includes('bistro') || catDisplay.toLowerCase().includes('tavern') || catDisplay.toLowerCase().includes('pub'))) ||
                          (item.suggestions && item.suggestions.some(s => {
                            const txt = ((s.tip || '') + ' ' + (s.perk || '') + ' ' + (s.category || '')).toLowerCase();
-                           return /food|beverage|cocktail|lounge|wine|beer|dining|restaurant|bistro|eatery|menu|cuisine|dish|chef|seafood|bourbon|drinks|bar|oyster/.test(txt);
+                           return /\b(food|beverage|cocktail|lounge|wine|beer|dining|restaurant|bistro|eatery|menu|cuisine|dish|chef|seafood|bourbon|drinks|bar|oyster)\b/i.test(txt);
                          })) ||
-                         (item.menu && item.menu.length > 5);
+                         (item.menu && item.menu.length > 5)
+                       );
         
         let menuUrl = item.menu;
         if (!menuUrl && isDining) {
@@ -1953,6 +1958,7 @@ function openPlaceCard(item) {
             });
           }
 
+          // Strict exclusions: casual walk-ins, pubs/dive taverns, and counter dessert/coffee
           const noResRegex = /no reservation|walk-in only|walk in only|walk-up only|walk up only|first-come|first come|counter service|counter-service|put your name in at the door|ice cream|creamery|gelato|sorbet|dessert bar|bakery|bakehouse|pastry|pastries|donut|doughnut|bagel|coffee|espresso|roaster|dive bar|tavern|cantina|irish pub/i;
           const knownNoResNames = [
             'off track ice cream',
@@ -1972,11 +1978,7 @@ function openPlaceCard(item) {
           const matchesNoRes = noResRegex.test(fullPlaceText);
 
           if (!isKnownNoRes && !matchesNoRes) {
-            const hasResSignal = /reservation|reserve|resy|opentable|book well in advance|advance booking|fine dining|bistro|chophouse|steakhouse/i.test(fullPlaceText);
-            const isSitDownPartner = isKeys || categoryTag === 'dining' || (catDisplay && (catDisplay.toLowerCase().includes('dining') || catDisplay.toLowerCase().includes('partner')));
-            if (hasResSignal || isSitDownPartner) {
-              canReserve = true;
-            }
+            canReserve = true;
           }
         }
 
@@ -2129,7 +2131,7 @@ function openPlaceCard(item) {
       function hasTerm(txt, terms) {
         return terms.some(t => txt.includes(t));
       }
-      const isDining = !isService && hasTerm(combinedText, ['dining', 'seafood', 'bistro', 'bakery', 'coffee', 'pub', 'cocktail', 'ice cream', 'bbq', 'cantina', 'tavern', 'cafe', 'bar', 'foodie', 'restaurant', 'eatery', 'sip', 'savor', 'drink', 'wine']);
+      const isDining = !isService && !isBeach && !isLandmark && (/\b(dining|seafood|bistro|bakery|coffee|pub|cocktail|ice cream|bbq|cantina|tavern|cafe|bar|bars|foodie|restaurant|eatery|sip|savor|drink|wine)\b/i.test(combinedText));
       const isShop = !isService && hasTerm(combinedText, ['shopping', 'boutique', 'curated retail', 'jewelry', 'clothing', 'art gallery', 'antique shop', 'souvenir', 'gift shop', 'keepsake']);
 
       // Build Category Tags
@@ -2358,6 +2360,8 @@ function openPlaceCard(item) {
         isGuest: isGuest,
         isKeys: isKeys,
         isLandmark: isLandmark,
+        isBeach: isBeach,
+        isBeach: isBeach,
         isDining: isDining,
         menu: menu,
         reservation: reservation,
