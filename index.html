@@ -1110,6 +1110,367 @@
       text-transform: uppercase;
     }
 
+  
+    /* Floating List View Buttons */
+    .list-view-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 950;
+      background: #FFFFFF;
+      color: #2D3A2E;
+      border: 1.5px solid var(--palmetto-brass);
+      border-radius: 24px;
+      padding: 8px 16px;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .list-view-btn:hover {
+      background: var(--palmetto-green);
+      color: #FFFFFF;
+      border-color: var(--palmetto-green);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      transform: translateY(-1px);
+    }
+    .list-view-btn svg {
+      stroke: var(--palmetto-brass);
+      transition: stroke 0.2s ease;
+    }
+    .list-view-btn:hover svg {
+      stroke: #FFFFFF;
+    }
+
+    .list-bottom-btn {
+      position: absolute;
+      bottom: 24px;
+      left: 118px;
+      z-index: 900;
+      display: inline-flex;
+    }
+
+    /* Curated Category List Modal */
+    .list-modal-card {
+      background: #F7F5EE;
+      width: 94%;
+      max-width: 720px;
+      max-height: 86vh;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+      border: 1px solid var(--palmetto-brass);
+      overflow: hidden;
+      animation: listModalSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes listModalSlideUp {
+      from { transform: translateY(24px) scale(0.98); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .list-modal-header {
+      background: #FFFFFF;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid #E5DFD3;
+      flex-shrink: 0;
+    }
+    .list-modal-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #8C6B1B;
+      margin-bottom: 3px;
+    }
+    .list-modal-title {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 1.32rem;
+      font-weight: 700;
+      color: #2D3A2E;
+      line-height: 1.2;
+    }
+    .list-modal-subtitle {
+      font-size: 0.74rem;
+      color: #646A66;
+      margin-top: 3px;
+    }
+
+    .list-modal-search-wrap {
+      background: #FFFFFF;
+      padding: 10px 20px;
+      border-bottom: 1px solid #E5DFD3;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .list-modal-search-wrap svg {
+      stroke: #8C6B1B;
+      flex-shrink: 0;
+    }
+    .list-modal-search-wrap input {
+      flex: 1;
+      border: 1px solid #DDD9CE;
+      border-radius: 20px;
+      padding: 7px 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.80rem;
+      outline: none;
+      background: #FAF8F5;
+      color: #2D312E;
+      transition: border-color 0.2s ease;
+    }
+    .list-modal-search-wrap input:focus {
+      border-color: var(--palmetto-brass);
+      background: #FFFFFF;
+    }
+    .list-count-indicator {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #2D3A2E;
+      background: #EAE6DF;
+      padding: 4px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+    }
+
+    .list-modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Individual List Item Card */
+    .list-item-card {
+      background: #FFFFFF;
+      border: 1px solid #E5DFD3;
+      border-radius: 12px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .list-item-card:hover {
+      border-color: var(--palmetto-brass);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    }
+    .list-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .list-item-cat {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #708771;
+      background: #F2F5F2;
+      padding: 3px 8px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .list-item-cat.keys-cat {
+      color: #8C6B1B;
+      background: #FDF9EE;
+      border: 1px solid rgba(197, 160, 89, 0.35);
+    }
+    .list-item-dist {
+      font-size: 0.72rem;
+      color: #646A66;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .list-item-title {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #2D3A2E;
+      margin: 2px 0 4px 0;
+    }
+    .list-item-meta {
+      font-size: 0.76rem;
+      color: #646A66;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .list-item-meta span, .list-item-meta a {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: inherit;
+      text-decoration: none;
+    }
+    .list-item-meta a:hover {
+      color: var(--palmetto-brass);
+      text-decoration: underline;
+    }
+    .list-item-perk {
+      background: #FAF6EB;
+      border: 1px dashed var(--palmetto-brass);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      color: #8C6B1B;
+      line-height: 1.35;
+    }
+    .list-item-perk strong {
+      display: block;
+      font-size: 0.70rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+      color: #745A1E;
+    }
+    .list-item-tip {
+      font-size: 0.80rem;
+      color: #333D35;
+      line-height: 1.45;
+      font-style: italic;
+      background: #FAF8F5;
+      border-left: 3px solid #708771;
+      padding: 6px 12px;
+      border-radius: 0 6px 6px 0;
+    }
+    .list-item-submitter {
+      font-size: 0.70rem;
+      color: #7A847C;
+      font-style: normal;
+      margin-top: 2px;
+      font-weight: 600;
+    }
+    .list-item-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+      padding-top: 8px;
+      border-top: 1px solid #ECE7DE;
+    }
+    .list-item-btn {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      padding: 7px 12px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .list-btn-map {
+      background: #2D3A2E;
+      color: #FFFFFF;
+      border: 1px solid #2D3A2E;
+    }
+    .list-btn-map:hover {
+      background: #708771;
+      border-color: #708771;
+    }
+    .list-btn-directions {
+      background: #FAF8F5;
+      color: #2D3A2E;
+      border: 1px solid #DDD9CE;
+    }
+    .list-btn-directions:hover {
+      background: #EAE6DF;
+    }
+    .list-btn-reserve {
+      background: var(--palmetto-brass);
+      color: #FFFFFF;
+      border: 1px solid var(--palmetto-brass);
+    }
+    .list-btn-reserve:hover {
+      background: #B38E47;
+      border-color: #B38E47;
+    }
+    .list-btn-menu {
+      background: #F4EFE6;
+      color: #745A1E;
+      border: 1px solid #E5DFD3;
+    }
+    .list-btn-menu:hover {
+      background: #ECE4D6;
+    }
+    .list-btn-call, .list-btn-web {
+      background: #FFFFFF;
+      color: #646A66;
+      border: 1px solid #E2DDD3;
+    }
+    .list-btn-call:hover, .list-btn-web:hover {
+      color: #2D3A2E;
+      border-color: #C5A059;
+    }
+
+    @media (max-width: 600px) {
+      .list-view-btn {
+        top: 10px !important;
+        right: 10px !important;
+        padding: 7px 12px !important;
+        font-size: 0.70rem !important;
+        z-index: 950 !important;
+      }
+      .list-bottom-btn {
+        display: none !important;
+      }
+      .list-modal-card {
+        width: 100% !important;
+        max-width: none !important;
+        max-height: 88vh !important;
+        border-radius: 16px 16px 0 0 !important;
+        margin-top: auto !important;
+      }
+      .list-modal-header {
+        padding: 14px 16px !important;
+      }
+      .list-modal-title {
+        font-size: 1.15rem !important;
+      }
+      .list-modal-search-wrap {
+        padding: 8px 14px !important;
+      }
+      .list-modal-body {
+        padding: 12px 14px !important;
+        gap: 10px !important;
+      }
+      .list-item-card {
+        padding: 12px 14px !important;
+      }
+      .list-item-btn {
+        font-size: 0.67rem !important;
+        padding: 6px 9px !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1165,6 +1526,18 @@
     <!-- Floating Action Buttons -->
     <button class="recenter-btn" id="recenterBtn">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="#C5A059"/></svg>Fit Map
+    </button>
+    <!-- Floating List View Button (Bottom Dock next to Fit Map) -->
+    <button class="recenter-btn list-bottom-btn" id="openListViewBtnBottom" title="View spots as a list" onclick="openListModal()">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="8" y1="6" x2="21" y2="6"></line>
+        <line x1="8" y1="12" x2="21" y2="12"></line>
+        <line x1="8" y1="18" x2="21" y2="18"></line>
+        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+      </svg>
+      <span id="listViewBottomLabel">View List</span>
     </button>
     <button class="text-concierge-btn" id="textConciergeBtn" title="Text The Palmetto Concierge at (843) 994-2302">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text Concierge
@@ -2081,17 +2454,20 @@ function openPlaceCard(item) {
     function updateListViewButton() {
       const items = getVisibleCategoryItems();
       const count = items.length;
-      if (listViewBtnLabel) {
-        if (currentCategoryTag === 'dining') {
-          listViewBtnLabel.textContent = 'Dining List (' + count + ')';
-        } else if (currentCategoryTag === 'keys') {
-          listViewBtnLabel.textContent = 'Partner List (' + count + ')';
-        } else if (currentCategoryTag === 'all') {
-          listViewBtnLabel.textContent = 'View List (' + count + ')';
-        } else {
-          listViewBtnLabel.textContent = 'List View (' + count + ')';
-        }
+      let labelText = 'View List (' + count + ')';
+      if (currentCategoryTag === 'dining') {
+        labelText = 'Dining List (' + count + ')';
+      } else if (currentCategoryTag === 'keys') {
+        labelText = 'Partner List (' + count + ')';
+      } else if (currentCategoryTag === 'all') {
+        labelText = 'View List (' + count + ')';
+      } else {
+        labelText = 'List View (' + count + ')';
       }
+
+      if (listViewBtnLabel) listViewBtnLabel.textContent = labelText;
+      const bLabel = document.getElementById('listViewBottomLabel');
+      if (bLabel) bLabel.textContent = labelText;
     }
 
     function renderListCards(filterQuery) {
