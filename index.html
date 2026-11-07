@@ -1032,6 +1032,7 @@
       <button class="filter-btn" data-category="shopping">Boutiques & Shopping</button>
       <button class="filter-btn" data-category="staff">Staff Picks</button>
       <button class="filter-btn" data-category="guests">💜 Guest Discoveries</button>
+      <button class="filter-btn" data-category="services">🏥 Services &amp; Essentials</button>
       <a class="filter-btn" href="events.html" style="background:#FAF8F5; border-color:var(--palmetto-brass); color:var(--palmetto-dark); text-decoration:none;" title="View The Lowcountry Scene: Events + Culture">📅 Events Guide</a>
       <a class="filter-btn filter-btn-suggest" href="guest.html" target="_blank" rel="noopener noreferrer" id="openSuggestBtn" style="text-decoration:none;">+ Share a Suggestion</a>
     </div>
@@ -1182,7 +1183,44 @@
         </svg>`;
       }
             if (type === 'shopping') {
-        return `<svg viewBox="0 0 32 40" width="30" height="38" xmlns="http://www.w3.org/2000/svg">
+              if (type === 'service_hospital') {
+        return `<svg viewBox="0 0 34 42" width="32" height="40" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 40 C17 40 2 26 2 16 A15 15 0 1 1 32 16 C32 26 17 40 17 40 Z" fill="#C0392B" stroke="#FFFFFF" stroke-width="2.2"/>
+          <circle cx="17" cy="16" r="9.5" fill="#FFFFFF"/>
+          <path d="M15 10 H19 V14 H23 V18 H19 V22 H15 V18 H11 V14 H15 Z" fill="#C0392B"/>
+        </svg>`;
+      }
+      if (type === 'service_urgent_care') {
+        return `<svg viewBox="0 0 34 42" width="32" height="40" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 40 C17 40 2 26 2 16 A15 15 0 1 1 32 16 C32 26 17 40 17 40 Z" fill="#D35400" stroke="#FFFFFF" stroke-width="2.2"/>
+          <circle cx="17" cy="16" r="9.5" fill="#FFFFFF"/>
+          <path d="M15 10 H19 V14 H23 V18 H19 V22 H15 V18 H11 V14 H15 Z" fill="#D35400"/>
+        </svg>`;
+      }
+      if (type === 'service_pharmacy') {
+        return `<svg viewBox="0 0 34 42" width="32" height="40" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 40 C17 40 2 26 2 16 A15 15 0 1 1 32 16 C32 26 17 40 17 40 Z" fill="#2980B9" stroke="#F3E5AB" stroke-width="2.2"/>
+          <circle cx="17" cy="16" r="9.5" fill="#FFFFFF"/>
+          <path d="M13 12 H21 M17 12 V21 M14 21 H20" stroke="#2980B9" stroke-width="2" stroke-linecap="round"/>
+        </svg>`;
+      }
+      if (type === 'service_grocery') {
+        return `<svg viewBox="0 0 34 42" width="32" height="40" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 40 C17 40 2 26 2 16 A15 15 0 1 1 32 16 C32 26 17 40 17 40 Z" fill="#27AE60" stroke="#F3E5AB" stroke-width="2.2"/>
+          <circle cx="17" cy="16" r="9.5" fill="#FFFFFF"/>
+          <path d="M11 11 H13 L15 18 H21 L22 13 H14" stroke="#27AE60" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="15.5" cy="20" r="1.2" fill="#27AE60"/>
+          <circle cx="20" cy="20" r="1.2" fill="#27AE60"/>
+        </svg>`;
+      }
+      if (type === 'service_atm') {
+        return `<svg viewBox="0 0 34 42" width="32" height="40" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 40 C17 40 2 26 2 16 A15 15 0 1 1 32 16 C32 26 17 40 17 40 Z" fill="#1B365D" stroke="#C5A059" stroke-width="2.2"/>
+          <circle cx="17" cy="16" r="9.5" fill="#FAF8F5" stroke="#C5A059" stroke-width="1"/>
+          <text x="17" y="20" font-family="'Cinzel', Georgia, serif" font-size="12" font-weight="bold" fill="#1B365D" text-anchor="middle">$</text>
+        </svg>`;
+      }
+      return `<svg viewBox="0 0 32 40" width="30" height="38" xmlns="http://www.w3.org/2000/svg">
           <path d="M16 38 C16 38 2 24 2 15 A14 14 0 1 1 30 15 C30 24 16 38 16 38 Z" fill="#5A6D56" stroke="#F3E5AB" stroke-width="2"/>
           <circle cx="16" cy="15" r="8" fill="#F8F6F0"/>
           <path d="M12 14 V12 C12 9.8 13.8 8 16 8 C18.2 8 20 9.8 20 12 V14 M10 14 H22 L21 21 H11 Z" stroke="#5A6D56" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1469,6 +1507,18 @@ function openPlaceCard(item) {
         html += '  <span>' + address + '</span>';
         html += '</div>';
       }
+      if (item.hours) {
+        html += '<div class="card-proximity" style="color:#2D3A2E; font-weight:600; margin-bottom:4px;">';
+        html += '  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+        html += '  <span>' + item.hours + '</span>';
+        html += '</div>';
+      }
+      if (item.phone) {
+        html += '<div class="card-proximity" style="margin-bottom:8px;">';
+        html += '  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+        html += '  <a href="tel:' + item.phone.replace(/[^0-9+]/g, '') + '" style="color:inherit; text-decoration:none;">' + item.phone + '</a>';
+        html += '</div>';
+      }
       if (proximity) {
         html += '<div class="card-proximity">';
         html += '  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
@@ -1579,7 +1629,7 @@ function openPlaceCard(item) {
                        })) ||
                        (item.menu && item.menu.length > 5);
       
-      let menuUrl = item.menu;
+      let menuUrl = item.menu || item.website;
       if (!menuUrl && isDining) {
         menuUrl = 'https://www.google.com/search?q=' + encodeURIComponent(name + ' Charleston SC menu');
       }
@@ -1705,6 +1755,11 @@ function openPlaceCard(item) {
       const menu = data.menu || data['Menu Link'] || data['Menu URL'] || data['Menu'] || data['Website'] || data['Website / Menu'] || data['Website Link'] || '';
       const reservation = data.reservation || data['Reservation Link'] || data['Reservation URL'] || data['Resy Link'] || data['OpenTable Link'] || '';
       const isGuest = (data.isGuest === true) || (data.sheetType === 'guests');
+      const isService = (data.sheetType === 'services') || (category && category.toLowerCase().includes('service')) || (data.isService === true);
+      const serviceType = (data.serviceType || data['Service Sub-Type'] || data['Service Type'] || '').trim();
+      const hours = data.hours || data['Operating Hours / Availability'] || data['Operating Hours'] || data['Hours'] || '';
+      const phone = data.phone || data['Phone Number'] || data['Phone'] || '';
+      const website = data.url || data['Official Website / Portal URL'] || data['Website'] || data['URL'] || '';
 
       if (isNaN(lat) || isNaN(lng) || !name) return null;
 
@@ -1755,7 +1810,9 @@ function openPlaceCard(item) {
 
       // Build Category Tags
       const categoryTags = new Set();
-      if (isKeys) {
+      if (isService) {
+        categoryTags.add('services');
+      } else if (isKeys) {
         categoryTags.add('keys');
         if (isDining) categoryTags.add('dining');
         if (isShop) categoryTags.add('shopping');
@@ -1778,7 +1835,29 @@ function openPlaceCard(item) {
       let categoryTag = 'staff';
       let catDisplay = 'Staff Pick';
 
-      if (isKeys) {
+      if (isService) {
+        categoryTag = 'services';
+        const sTypeLower = serviceType.toLowerCase();
+        if (sTypeLower.includes('hospital')) {
+          pinType = 'service_hospital';
+          catDisplay = 'Hospital & Emergency (24/7)';
+        } else if (sTypeLower.includes('urgent')) {
+          pinType = 'service_urgent_care';
+          catDisplay = 'Urgent Care (Walk-In)';
+        } else if (sTypeLower.includes('pharmacy')) {
+          pinType = 'service_pharmacy';
+          catDisplay = 'Pharmacy & Sundries';
+        } else if (sTypeLower.includes('grocery')) {
+          pinType = 'service_grocery';
+          catDisplay = 'Supermarket & Grocery';
+        } else if (sTypeLower.includes('atm') || sTypeLower.includes('bank')) {
+          pinType = 'service_atm';
+          catDisplay = 'Bank & 24/7 ATM';
+        } else {
+          pinType = 'service_hospital';
+          catDisplay = 'Essential Services';
+        }
+      } else if (isKeys) {
         pinType = 'keys';
         categoryTag = 'keys';
         catDisplay = 'Keys to Charleston Partner';
@@ -1911,6 +1990,11 @@ function openPlaceCard(item) {
         menu: menu,
         reservation: reservation,
         isDefault: data.isDefault || false,
+        isService: isService,
+        serviceType: serviceType,
+        hours: hours,
+        phone: phone,
+        website: website,
         lat: lat,
         lng: lng,
         suggestions: suggestions
@@ -2049,7 +2133,7 @@ function openPlaceCard(item) {
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
     "tip": "30% off online purchases with exclusive guest code PALMETTO30, or ask the concierge desk for assistance. Signature equestrian Charleston bracelet designs.",
     "perk": "30% Off Exclusive Jewelry (Show Room Key)",
-    "lat": 32.77990,
+    "lat": 32.7799,
     "lng": -79.92715,
     "isGuest": false,
     "isKeys": true,
@@ -2464,6 +2548,246 @@ function openPlaceCard(item) {
     "isKeys": false,
     "isLandmark": true,
     "isDefault": true
+  },
+  {
+    "name": "Harris Teeter (East Bay)",
+    "serviceType": "Grocery",
+    "category": "Services",
+    "address": "290 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5 minutes)",
+    "tip": "Full-service supermarket just 3 blocks north of The Palmetto. Features a bakery, deli, fresh produce, floral department, and pharmacy. Most convenient spot for wine, snacks, and water.",
+    "phone": "(843) 722-6821",
+    "hours": "Daily 6:00 AM \u2013 11:00 PM",
+    "url": "https://www.harristeeter.com/stores/grocery/sc/charleston/east-bay-trading-station/097/00277",
+    "lat": 32.7836,
+    "lng": -79.9287,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Delta Pharmacy & Medical Supply",
+    "serviceType": "Pharmacy",
+    "category": "Services",
+    "address": "346 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u201310 minutes)",
+    "tip": "Independent local pharmacy located just 4 blocks north of the hotel. Offers quick prescription fills, over-the-counter remedies, vitamins, and medical sundries with personal service.",
+    "phone": "(843) 937-0960",
+    "hours": "Mon\u2013Fri 9:00 AM \u2013 6:00 PM, Sat 9:00 AM \u2013 1:00 PM",
+    "url": "http://www.delta-rx.com/",
+    "lat": 32.7852,
+    "lng": -79.9288,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "CVS Pharmacy (24/7 Store)",
+    "serviceType": "Pharmacy",
+    "category": "Services",
+    "address": "59 George St, Charleston, SC 29401",
+    "proximity": "Moderate Walk (10\u201315 minutes)",
+    "tip": "Convenient downtown drugstore near College of Charleston. The front convenience store is open 24/7 for late-night essentials, toiletries, and travel supplies. Pharmacy closes at 7:00 PM.",
+    "phone": "(843) 720-8523",
+    "hours": "Store Open 24/7 (Pharmacy closes 7:00 PM)",
+    "url": "https://www.cvs.com/store-locator/charleston-sc-pharmacies/59-george-st-charleston-sc-29401/storeid=1039",
+    "lat": 32.7843,
+    "lng": -79.9368,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Walgreens Pharmacy (King St)",
+    "serviceType": "Pharmacy",
+    "category": "Services",
+    "address": "380 King St, Charleston, SC 29401",
+    "proximity": "Moderate Walk (10\u201315 minutes)",
+    "tip": "Located on central King Street shopping corridor. Pharmacy counter with travel-sized health supplies, beauty products, and basic grab-and-go snacks.",
+    "phone": "(843) 714-6243",
+    "hours": "Mon\u2013Fri 10:00 AM \u2013 6:00 PM",
+    "url": "https://www.walgreens.com/locator/walgreens-380+king+st-charleston-sc-29401/id=15512",
+    "lat": 32.7868,
+    "lng": -79.9366,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Access Urgent Care (Downtown)",
+    "serviceType": "Urgent Care",
+    "category": "Services",
+    "address": "233 Calhoun St, Charleston, SC 29401",
+    "proximity": "Short Uber / Taxi (5 minutes)",
+    "tip": "Downtown walk-in urgent care open 7 days a week from 8:00 AM to 8:00 PM. Treats non-emergency illnesses, cuts, sprains, infections, and flu with dedicated parking behind the building.",
+    "phone": "(843) 853-8870",
+    "hours": "Daily 8:00 AM \u2013 8:00 PM",
+    "url": "http://www.accessurgent.com/",
+    "lat": 32.7845,
+    "lng": -79.9431,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Roper Hospital (24/7 Emergency Room)",
+    "serviceType": "Hospital",
+    "category": "Services",
+    "address": "316 Calhoun St, Charleston, SC 29401",
+    "proximity": "Short Uber / Taxi (5\u20137 minutes)",
+    "tip": "Flagship downtown hospital and full-service emergency department open 24/7. Level III trauma center, cardiac care, and acute medical emergency care on the peninsula.",
+    "phone": "(843) 724-2000",
+    "hours": "Open 24 Hours / 7 Days",
+    "url": "https://www.rsfh.com/roper-hospital/",
+    "lat": 32.78495,
+    "lng": -79.95352,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "MUSC Health University Medical Center (24/7 ER)",
+    "serviceType": "Hospital",
+    "category": "Services",
+    "address": "171 Ashley Ave, Charleston, SC 29425",
+    "proximity": "Short Uber / Taxi (5\u20138 minutes)",
+    "tip": "South Carolina's premier academic medical center and Level 1 Trauma Center. Adult Emergency Department located at 96 Jonathan Lucas Street open 24/7.",
+    "phone": "(843) 792-1414",
+    "hours": "Open 24 Hours / 7 Days",
+    "url": "https://muschealth.org/locations/university-medical-center",
+    "lat": 32.78368,
+    "lng": -79.95078,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "First Citizens Bank & 24/7 ATM",
+    "serviceType": "ATM",
+    "category": "Services",
+    "address": "152 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 2 minutes)",
+    "tip": "Closest exterior walk-up 24/7 ATM to The Palmetto Hotel, located directly down East Bay Street between Broad and Queen. Full branch services during weekday business hours.",
+    "phone": "(843) 722-5806",
+    "hours": "ATM Open 24/7 (Branch Mon\u2013Fri 9am\u20135pm)",
+    "url": "https://locations.firstcitizens.com/sc/charleston/152-east-bay-street",
+    "lat": 32.7788,
+    "lng": -79.9274,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Wells Fargo Bank & 24/7 ATM",
+    "serviceType": "ATM",
+    "category": "Services",
+    "address": "16 Broad St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5 minutes)",
+    "tip": "Located inside the historic banking corridor at the intersection of East Bay and Broad. Foyer walk-up ATM accessible 24/7 with cash deposit and withdrawal options.",
+    "phone": "(843) 937-4550",
+    "hours": "ATM Open 24/7 (Branch Mon\u2013Fri 9am\u20135pm)",
+    "url": "https://locations.wellsfargo.com/sc/charleston/16-broad-st",
+    "lat": 32.7769,
+    "lng": -79.9285,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Chase Bank & 24/7 ATM",
+    "serviceType": "ATM",
+    "category": "Services",
+    "address": "177 Meeting St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u20137 minutes)",
+    "tip": "Full-service branch with 24/7 walk-up ATM located on Meeting Street near the City Market and Gibbes Museum.",
+    "phone": "(800) 935-9935",
+    "hours": "ATM Open 24/7",
+    "url": "https://chase.com/",
+    "lat": 32.7798,
+    "lng": -79.9315,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Ted's Butcherblock (Gourmet Deli & Pantry)",
+    "serviceType": "Grocery",
+    "category": "Services",
+    "address": "334 E Bay St, Charleston, SC 29401",
+    "proximity": "Immediate Walk (< 5\u20138 minutes)",
+    "tip": "Artisanal neighborhood butcher counter and specialty grocery store. Great selection of gourmet cheeses, charcuterie items, prepared salads, and fine wines.",
+    "phone": "(843) 577-0094",
+    "hours": "Tue\u2013Fri 11:00 AM \u2013 7:00 PM, Sat 11:00 AM \u2013 5:00 PM",
+    "url": "http://www.tedsbutcherblock.com/",
+    "lat": 32.785,
+    "lng": -79.9287,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Queen Street Grocery",
+    "serviceType": "Grocery",
+    "category": "Services",
+    "address": "133 Queen St, Charleston, SC 29401",
+    "proximity": "Moderate Walk (10 minutes)",
+    "tip": "Charming historic corner store in French Quarter / South of Broad since 1922. Sells drinks, snacks, wine, craft beers, sweet/savory crepes, and fresh hot-pressed sandwiches.",
+    "phone": "(843) 723-4121",
+    "hours": "Mon\u2013Fri 9:00 AM \u2013 7:00 PM, Sat\u2013Sun 9:00 AM \u2013 3:00 PM",
+    "url": "http://www.queenstreetgrocerycafe.com/",
+    "lat": 32.7766,
+    "lng": -79.9378,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Publix Super Market at 10 Westedge",
+    "serviceType": "Grocery",
+    "category": "Services",
+    "address": "10 Westedge St Ste 100, Charleston, SC 29403",
+    "proximity": "Short Uber / Taxi (6\u20138 minutes)",
+    "tip": "Modern, spacious grocery store on the western peninsula with full deli, bakery, pharmacy, and 2-hour complimentary validated garage parking.",
+    "phone": "(843) 720-7000",
+    "hours": "Daily 7:00 AM \u2013 10:00 PM",
+    "url": "https://www.publix.com/",
+    "lat": 32.7932,
+    "lng": -79.9571,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Walgreens 24-Hour Pharmacy (James Island)",
+    "serviceType": "Pharmacy",
+    "category": "Services",
+    "address": "907 Folly Rd, Charleston, SC 29412",
+    "proximity": "Short Drive (10\u201312 minutes)",
+    "tip": "Closest true 24-hour drive-thru and walk-in pharmacy to downtown Charleston for late-night prescription emergencies and pediatric medication needs.",
+    "phone": "(843) 795-5452",
+    "hours": "Open 24 Hours / 7 Days",
+    "url": "https://www.walgreens.com/locator/walgreens-907+folly+rd-charleston-sc-29412/id=15630",
+    "lat": 32.7381,
+    "lng": -79.9678,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Mount Pleasant Hospital | Roper St. Francis Healthcare",
+    "serviceType": "Hospital",
+    "category": "Services",
+    "address": "3500 N Hwy 17, Mt Pleasant, SC 29466",
+    "proximity": "Drive (15 minutes from The Palmetto)",
+    "tip": "Modern full-service hospital and 24/7 emergency room located across the Arthur Ravenel Jr. Bridge in Mount Pleasant. Top-rated patient satisfaction and short ER wait times.",
+    "phone": "(843) 606-7000",
+    "hours": "Open 24 Hours / 7 Days",
+    "url": "http://www.rsfh.com/mount-pleasant-hospital",
+    "lat": 32.8687,
+    "lng": -79.7712,
+    "isService": true,
+    "isDefault": true
+  },
+  {
+    "name": "Roper St. Francis Express Care (James Island)",
+    "serviceType": "Urgent Care",
+    "category": "Services",
+    "address": "319 Folly Rd, Charleston, SC 29412",
+    "proximity": "Short Drive (8\u201310 minutes)",
+    "tip": "Prompt walk-in medical clinic open 7 days a week for minor injuries, illnesses, on-site digital X-rays, and lab testing just across the Ashley River.",
+    "phone": "(843) 203-2246",
+    "hours": "Daily 8:00 AM \u2013 8:00 PM",
+    "url": "https://www.rsfh.com/locations/express-care-folly-rd",
+    "lat": 32.7573,
+    "lng": -79.9702,
+    "isService": true,
+    "isDefault": true
   }
 ];
     DEFAULT_DATA.forEach(row => {
@@ -2573,10 +2897,11 @@ function openPlaceCard(item) {
       const landmarksCsv = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('Landmarks');
       const staffCsv = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('Staff Subs');
       const guestCsv = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('Guest Subs');
+      const servicesCsv = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('Services');
 
       if (typeof Papa !== 'undefined') {
         const liveValidKeys = new Set();
-        let pendingSheets = 4;
+        let pendingSheets = 5;
 
         function checkSyncCompletion() {
           pendingSheets--;
@@ -2695,6 +3020,7 @@ function openPlaceCard(item) {
         syncSheet(landmarksCsv, 'landmarks');
         syncSheet(staffCsv, 'staff');
         syncSheet(guestCsv, 'guests');
+        syncSheet(servicesCsv, 'services');
       }
     } catch (err) {
       console.log('Google Sheets sync idle.');
