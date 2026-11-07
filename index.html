@@ -1146,7 +1146,7 @@
     }
 
     // Pin SVG Generator
-    function getPinSvg(type) {
+        function getPinSvg(type) {
       if (type === 'hotel') {
         return `<svg viewBox="0 0 40 52" width="40" height="52" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -1182,45 +1182,56 @@
           </g>
         </svg>`;
       }
-            if (type === 'shopping') {
-              if (type === 'service_hospital') {
-        return `<svg viewBox="0 0 34 42" width="32" height="40" xmlns="http://www.w3.org/2000/svg">
-          <path d="M17 40 C17 40 2 26 2 16 A15 15 0 1 1 32 16 C32 26 17 40 17 40 Z" fill="#C0392B" stroke="#FFFFFF" stroke-width="2.2"/>
-          <circle cx="17" cy="16" r="9.5" fill="#FFFFFF"/>
-          <path d="M15 10 H19 V14 H23 V18 H19 V22 H15 V18 H11 V14 H15 Z" fill="#C0392B"/>
+      if (type === 'service_hospital') {
+        return `<svg viewBox="0 0 34 44" width="34" height="44" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="hospShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
+            </filter>
+          </defs>
+          <path d="M17 42 C17 42 2 27 2 17 A15 15 0 1 1 32 17 C32 27 17 42 17 42 Z" fill="#B02A30" stroke="#FFFFFF" stroke-width="2.5" filter="url(#hospShadow)"/>
+          <circle cx="17" cy="17" r="10" fill="#FFFFFF"/>
+          <path d="M14.5 9.5 H19.5 V14.5 H24.5 V19.5 H19.5 V24.5 H14.5 V19.5 H9.5 V14.5 H14.5 Z" fill="#B02A30"/>
         </svg>`;
       }
       if (type === 'service_urgent_care') {
-        return `<svg viewBox="0 0 34 42" width="32" height="40" xmlns="http://www.w3.org/2000/svg">
-          <path d="M17 40 C17 40 2 26 2 16 A15 15 0 1 1 32 16 C32 26 17 40 17 40 Z" fill="#D35400" stroke="#FFFFFF" stroke-width="2.2"/>
-          <circle cx="17" cy="16" r="9.5" fill="#FFFFFF"/>
-          <path d="M15 10 H19 V14 H23 V18 H19 V22 H15 V18 H11 V14 H15 Z" fill="#D35400"/>
+        return `<svg viewBox="0 0 34 44" width="34" height="44" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="urgShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
+            </filter>
+          </defs>
+          <path d="M17 42 C17 42 2 27 2 17 A15 15 0 1 1 32 17 C32 27 17 42 17 42 Z" fill="#D35400" stroke="#FFFFFF" stroke-width="2.5" filter="url(#urgShadow)"/>
+          <circle cx="17" cy="17" r="10" fill="#FFFFFF"/>
+          <path d="M15 11 H19 V14.5 H22.5 V18.5 H19 V22 H15 V18.5 H11.5 V14.5 H15 Z" fill="#D35400"/>
+          <path d="M11 16.5 L14 16.5 L15.5 13.5 L17.5 19.5 L19 16.5 L23 16.5" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         </svg>`;
       }
       if (type === 'service_pharmacy') {
-        return `<svg viewBox="0 0 34 42" width="32" height="40" xmlns="http://www.w3.org/2000/svg">
-          <path d="M17 40 C17 40 2 26 2 16 A15 15 0 1 1 32 16 C32 26 17 40 17 40 Z" fill="#2980B9" stroke="#F3E5AB" stroke-width="2.2"/>
-          <circle cx="17" cy="16" r="9.5" fill="#FFFFFF"/>
-          <path d="M13 12 H21 M17 12 V21 M14 21 H20" stroke="#2980B9" stroke-width="2" stroke-linecap="round"/>
+        return `<svg viewBox="0 0 34 44" width="34" height="44" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 42 C17 42 2 27 2 17 A15 15 0 1 1 32 17 C32 27 17 42 17 42 Z" fill="#2980B9" stroke="#F3E5AB" stroke-width="2.2"/>
+          <circle cx="17" cy="17" r="10" fill="#FFFFFF"/>
+          <path d="M12.5 12.5 H21.5 M17 12.5 V22.5 M13.5 22.5 H20.5" stroke="#2980B9" stroke-width="2.4" stroke-linecap="round"/>
         </svg>`;
       }
       if (type === 'service_grocery') {
-        return `<svg viewBox="0 0 34 42" width="32" height="40" xmlns="http://www.w3.org/2000/svg">
-          <path d="M17 40 C17 40 2 26 2 16 A15 15 0 1 1 32 16 C32 26 17 40 17 40 Z" fill="#27AE60" stroke="#F3E5AB" stroke-width="2.2"/>
-          <circle cx="17" cy="16" r="9.5" fill="#FFFFFF"/>
-          <path d="M11 11 H13 L15 18 H21 L22 13 H14" stroke="#27AE60" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="15.5" cy="20" r="1.2" fill="#27AE60"/>
-          <circle cx="20" cy="20" r="1.2" fill="#27AE60"/>
+        return `<svg viewBox="0 0 34 44" width="34" height="44" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 42 C17 42 2 27 2 17 A15 15 0 1 1 32 17 C32 27 17 42 17 42 Z" fill="#27AE60" stroke="#F3E5AB" stroke-width="2.2"/>
+          <circle cx="17" cy="17" r="10" fill="#FFFFFF"/>
+          <path d="M11 11 H13 L15 19 H21 L22.5 13 H13.5" stroke="#27AE60" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="15.5" cy="21" r="1.3" fill="#27AE60"/>
+          <circle cx="20.5" cy="21" r="1.3" fill="#27AE60"/>
         </svg>`;
       }
       if (type === 'service_atm') {
-        return `<svg viewBox="0 0 34 42" width="32" height="40" xmlns="http://www.w3.org/2000/svg">
-          <path d="M17 40 C17 40 2 26 2 16 A15 15 0 1 1 32 16 C32 26 17 40 17 40 Z" fill="#1B365D" stroke="#C5A059" stroke-width="2.2"/>
-          <circle cx="17" cy="16" r="9.5" fill="#FAF8F5" stroke="#C5A059" stroke-width="1"/>
-          <text x="17" y="20" font-family="'Cinzel', Georgia, serif" font-size="12" font-weight="bold" fill="#1B365D" text-anchor="middle">$</text>
+        return `<svg viewBox="0 0 34 44" width="34" height="44" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 42 C17 42 2 27 2 17 A15 15 0 1 1 32 17 C32 27 17 42 17 42 Z" fill="#1B365D" stroke="#C5A059" stroke-width="2.5"/>
+          <circle cx="17" cy="17" r="10" fill="#FAF8F5" stroke="#C5A059" stroke-width="1.2"/>
+          <text x="17" y="21.5" font-family="'Cinzel', Georgia, serif" font-size="13" font-weight="bold" fill="#1B365D" text-anchor="middle">$</text>
         </svg>`;
       }
-      return `<svg viewBox="0 0 32 40" width="30" height="38" xmlns="http://www.w3.org/2000/svg">
+      if (type === 'shopping') {
+        return `<svg viewBox="0 0 32 40" width="30" height="38" xmlns="http://www.w3.org/2000/svg">
           <path d="M16 38 C16 38 2 24 2 15 A14 14 0 1 1 30 15 C30 24 16 38 16 38 Z" fill="#5A6D56" stroke="#F3E5AB" stroke-width="2"/>
           <circle cx="16" cy="15" r="8" fill="#F8F6F0"/>
           <path d="M12 14 V12 C12 9.8 13.8 8 16 8 C18.2 8 20 9.8 20 12 V14 M10 14 H22 L21 21 H11 Z" stroke="#5A6D56" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1262,7 +1273,7 @@
       </svg>`;
     }
 
-        // Palmetto Base Anchor Marker (No popup attached per user requirement)
+    // Palmetto Base Anchor Marker (No popup attached per user requirement)
     const hotelEl = document.createElement('div');
     hotelEl.className = 'marker-pin marker-pin-hotel';
     hotelEl.id = 'palmettoHotelPin';
@@ -1618,86 +1629,24 @@ function openPlaceCard(item) {
         }
       }
 
-      // Action Buttons (Menu + Dining Reservation + Directions)
-      const isDining = item.isDining || 
-                       (categoryTag === 'dining') || 
-                       (item.categoryTags && item.categoryTags.includes('dining')) || 
-                       (catDisplay && (catDisplay.toLowerCase().includes('sip') || catDisplay.toLowerCase().includes('dining') || catDisplay.toLowerCase().includes('restaurant') || catDisplay.toLowerCase().includes('bar') || catDisplay.toLowerCase().includes('lounge'))) ||
-                       (item.suggestions && item.suggestions.some(s => {
-                         const txt = ((s.tip || '') + ' ' + (s.perk || '') + ' ' + (s.category || '')).toLowerCase();
-                         return /food|beverage|cocktail|lounge|wine|beer|dining|restaurant|bistro|eatery|menu|cuisine|dish|chef|seafood|bourbon|drinks|bar|oyster/.test(txt);
-                       })) ||
-                       (item.menu && item.menu.length > 5);
-      
-      let menuUrl = item.menu || item.website;
-      if (!menuUrl && isDining) {
-        menuUrl = 'https://www.google.com/search?q=' + encodeURIComponent(name + ' Charleston SC menu');
-      }
-
+      // Action Buttons (Services vs Dining / Retail / Landmarks)
+      const isServiceItem = item.isService === true || categoryTag === 'services' || (item.categoryTags && item.categoryTags.includes('services'));
+      const safePlaceName = (name || '').replace(/'/g, "\\'");
       const query = encodeURIComponent(name + ' ' + (address || 'Charleston SC'));
 
-      const safePlaceName = (name || '').replace(/'/g, "\\'");
-      const rawRes = (item.reservation || '').trim();
-      const rawResLower = rawRes.toLowerCase();
-      const hasSpecificRes = rawRes.startsWith('http') || rawRes.includes('opentable') || rawRes.includes('resy') || rawRes.includes('sevenrooms') || rawRes.includes('tock');
-      const isExplicitNoRes = ['no', 'none', 'n/a', 'na', 'false', 'walk-up', 'walk up', 'walk-in', 'walk in'].includes(rawResLower);
-
-      let canReserve = false;
-      if (hasSpecificRes) {
-        canReserve = true;
-      } else if (!isExplicitNoRes && isDining) {
-        // Gather full descriptive context to identify venue service model
-        let fullPlaceText = (name + ' ' + (catDisplay || '') + ' ' + (categoryTag || '') + ' ' + (item.booking || '')).toLowerCase();
-        if (item.suggestions && item.suggestions.length > 0) {
-          item.suggestions.forEach(s => {
-            fullPlaceText += ' ' + (s.tip || '') + ' ' + (s.perk || '') + ' ' + (s.category || '') + ' ' + (s.booking || '');
-          });
-        }
-
-        // Strict exclusions: casual walk-ups, ice cream, coffee shops, bakeries, dessert bars, taverns/dive bars, or places explicitly stating no reservations
-        const noResRegex = /no reservation|walk-in only|walk in only|walk-up only|walk up only|first-come|first come|counter service|counter-service|put your name in at the door|ice cream|creamery|gelato|sorbet|dessert bar|bakery|bakehouse|pastry|pastries|donut|doughnut|bagel|coffee|espresso|roaster|dive bar|tavern|cantina|irish pub/i;
-        
-        const knownNoResNames = [
-          'off track ice cream',
-          'sightsee coffee',
-          'carmella',
-          '167 raw',
-          'the griffon',
-          'the brick',
-          'tommy condon',
-          'el jefe',
-          'maris de hart',
-          'snaffle bit',
-          'lowcountry artists gallery'
-        ];
-
-        const isKnownNoRes = knownNoResNames.some(kn => name.toLowerCase().includes(kn));
-        const matchesNoRes = noResRegex.test(fullPlaceText);
-
-        if (!isKnownNoRes && !matchesNoRes) {
-          const hasResSignal = /reservation|reserve|resy|opentable|book well in advance|advance booking|fine dining|bistro|chophouse|steakhouse/i.test(fullPlaceText);
-          const isSitDownPartner = isKeys || categoryTag === 'dining' || (catDisplay && (catDisplay.toLowerCase().includes('dining') || catDisplay.toLowerCase().includes('partner')));
-          if (hasResSignal || isSitDownPartner) {
-            canReserve = true;
-          }
-        }
-      }
-
-      const resLink = hasSpecificRes ? item.reservation : '#';
-      const resOnClick = hasSpecificRes ? '' : 'onclick="alert(\'Online dining reservations for ' + safePlaceName + ' are coming soon! Please call or text our concierge desk at (843) 994-2302 for table assistance.\'); return false;"';
-
-      if (canReserve || menuUrl) {
+      if (isServiceItem) {
         html += '<div class="card-actions-row">';
-        if (menuUrl) {
-          html += '  <a class="card-action-btn card-menu-btn" href="' + menuUrl + '" target="_blank" rel="noopener" title="View official menu">';
-          html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a4 4 0 0 0-4 4v14a4 4 0 0 0 4 4h3V2z"/><path d="M6 2h3a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H6V2z"/></svg>';
-          html += '    <span>' + (canReserve ? 'Menu' : 'View Menu') + '</span>';
+        const serviceWeb = item.website || item.url || (item.menu && item.menu.startsWith('http') ? item.menu : '');
+        if (serviceWeb && serviceWeb.startsWith('http')) {
+          html += '  <a class="card-action-btn card-menu-btn" href="' + serviceWeb + '" target="_blank" rel="noopener" title="Visit official medical portal or website" style="background:#2D3A2E; color:#FFFFFF; border:none;">';
+          html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/></svg>';
+          html += '    <span>Official Website</span>';
           html += '  </a>';
         }
-        if (canReserve) {
-          html += '  <a class="card-action-btn card-reserve-btn" href="' + resLink + '" ' + (hasSpecificRes ? 'target="_blank" rel="noopener"' : '') + ' ' + resOnClick + ' title="Book a table or request reservation assistance">';
-          html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
-          html += '    <span>Reserve</span>';
+        if (item.phone) {
+          html += '  <a class="card-action-btn" href="tel:' + item.phone.replace(/[^0-9+]/g, '') + '" title="Call direct" style="background:#FAF8F5; color:#2D3A2E; border:1px solid #C5A059; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:0.75rem; font-weight:600; padding:8px 12px; border-radius:6px;">';
+          html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+          html += '    <span>Call Direct</span>';
           html += '  </a>';
         }
         html += '  <a class="card-action-btn card-directions-btn" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener" title="Get directions in Google Maps">';
@@ -1706,13 +1655,94 @@ function openPlaceCard(item) {
         html += '  </a>';
         html += '</div>';
       } else {
-        html += '<a class="card-directions-btn" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener" style="margin-top:4px;">';
-        html += '  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>';
-        html += '  <span>Get Google Directions</span>';
-        html += '</a>';
+        const isDining = item.isDining || 
+                         (categoryTag === 'dining') || 
+                         (item.categoryTags && item.categoryTags.includes('dining')) || 
+                         (catDisplay && (catDisplay.toLowerCase().includes('sip') || catDisplay.toLowerCase().includes('dining') || catDisplay.toLowerCase().includes('restaurant') || catDisplay.toLowerCase().includes('bar') || catDisplay.toLowerCase().includes('lounge'))) ||
+                         (item.suggestions && item.suggestions.some(s => {
+                           const txt = ((s.tip || '') + ' ' + (s.perk || '') + ' ' + (s.category || '')).toLowerCase();
+                           return /food|beverage|cocktail|lounge|wine|beer|dining|restaurant|bistro|eatery|menu|cuisine|dish|chef|seafood|bourbon|drinks|bar|oyster/.test(txt);
+                         })) ||
+                         (item.menu && item.menu.length > 5);
+        
+        let menuUrl = item.menu;
+        if (!menuUrl && isDining) {
+          menuUrl = 'https://www.google.com/search?q=' + encodeURIComponent(name + ' Charleston SC menu');
+        }
+
+        const rawRes = (item.reservation || '').trim();
+        const rawResLower = rawRes.toLowerCase();
+        const hasSpecificRes = rawRes.startsWith('http') || rawRes.includes('opentable') || rawRes.includes('resy') || rawRes.includes('sevenrooms') || rawRes.includes('tock');
+        const isExplicitNoRes = ['no', 'none', 'n/a', 'na', 'false', 'walk-up', 'walk up', 'walk-in', 'walk in'].includes(rawResLower);
+
+        let canReserve = false;
+        if (hasSpecificRes) {
+          canReserve = true;
+        } else if (!isExplicitNoRes && isDining) {
+          let fullPlaceText = (name + ' ' + (catDisplay || '') + ' ' + (categoryTag || '') + ' ' + (item.booking || '')).toLowerCase();
+          if (item.suggestions && item.suggestions.length > 0) {
+            item.suggestions.forEach(s => {
+              fullPlaceText += ' ' + (s.tip || '') + ' ' + (s.perk || '') + ' ' + (s.category || '') + ' ' + (s.booking || '');
+            });
+          }
+
+          const noResRegex = /no reservation|walk-in only|walk in only|walk-up only|walk up only|first-come|first come|counter service|counter-service|put your name in at the door|ice cream|creamery|gelato|sorbet|dessert bar|bakery|bakehouse|pastry|pastries|donut|doughnut|bagel|coffee|espresso|roaster|dive bar|tavern|cantina|irish pub/i;
+          const knownNoResNames = [
+            'off track ice cream',
+            'sightsee coffee',
+            'carmella',
+            '167 raw',
+            'the griffon',
+            'the brick',
+            'tommy condon',
+            'el jefe',
+            'maris de hart',
+            'snaffle bit',
+            'lowcountry artists gallery'
+          ];
+
+          const isKnownNoRes = knownNoResNames.some(kn => name.toLowerCase().includes(kn));
+          const matchesNoRes = noResRegex.test(fullPlaceText);
+
+          if (!isKnownNoRes && !matchesNoRes) {
+            const hasResSignal = /reservation|reserve|resy|opentable|book well in advance|advance booking|fine dining|bistro|chophouse|steakhouse/i.test(fullPlaceText);
+            const isSitDownPartner = isKeys || categoryTag === 'dining' || (catDisplay && (catDisplay.toLowerCase().includes('dining') || catDisplay.toLowerCase().includes('partner')));
+            if (hasResSignal || isSitDownPartner) {
+              canReserve = true;
+            }
+          }
+        }
+
+        const resLink = hasSpecificRes ? item.reservation : '#';
+        const resOnClick = hasSpecificRes ? '' : 'onclick="alert(\'Online dining reservations for ' + safePlaceName + ' are coming soon! Please call or text our concierge desk at (843) 994-2302 for table assistance.\'); return false;"';
+
+        if (canReserve || menuUrl) {
+          html += '<div class="card-actions-row">';
+          if (menuUrl) {
+            html += '  <a class="card-action-btn card-menu-btn" href="' + menuUrl + '" target="_blank" rel="noopener" title="View official menu">';
+            html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a4 4 0 0 0-4 4v14a4 4 0 0 0 4 4h3V2z"/><path d="M6 2h3a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H6V2z"/></svg>';
+            html += '    <span>' + (canReserve ? 'Menu' : 'View Menu') + '</span>';
+            html += '  </a>';
+          }
+          if (canReserve) {
+            html += '  <a class="card-action-btn card-reserve-btn" href="' + resLink + '" ' + (hasSpecificRes ? 'target="_blank" rel="noopener"' : '') + ' ' + resOnClick + ' title="Book a table or request reservation assistance">';
+            html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+            html += '    <span>Reserve</span>';
+            html += '  </a>';
+          }
+          html += '  <a class="card-action-btn card-directions-btn" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener" title="Get directions in Google Maps">';
+          html += '    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>';
+          html += '    <span>Directions</span>';
+          html += '  </a>';
+          html += '</div>';
+        } else {
+          html += '<a class="card-directions-btn" href="https://www.google.com/maps/search/?api=1&query=' + query + '" target="_blank" rel="noopener" style="margin-top:4px;">';
+          html += '  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>';
+          html += '  <span>Get Google Directions</span>';
+          html += '</a>';
+        }
       }
 
-      
       // Text Concierge Quick Link for this place
       // safePlaceName already defined = (name || '').replace(/'/g, "\\'");
       html += '<button class="card-text-concierge-btn" onclick="openConciergeText(\'' + safePlaceName + '\')" title="Text concierge about ' + (name.replace(/"/g, '&quot;')) + '">';
@@ -1752,14 +1782,13 @@ function openPlaceCard(item) {
       const rawPerk = data.perk || data['Exclusive Perk / Booking Requirements'] || data['Exclusive Perk'] || '';
       const submitter = data.submitter || data['Your Name & Hometown / City'] || data['Staff Member Name / Initials'] || data['Recommended By'] || data['Guest Name & Hometown'] || data['Staff Name'] || '';
       const photo = data.photo || data['Photo URL'] || data['Photo / Media Link'] || data['Photo / Video Link or Social Handle (Optional)'] || data['Photo'] || '';
-      const menu = data.menu || data['Menu Link'] || data['Menu URL'] || data['Menu'] || data['Website'] || data['Website / Menu'] || data['Website Link'] || '';
+      const menu = data.menu || data['Menu Link'] || data['Menu URL'] || data['Menu'] || '';
       const reservation = data.reservation || data['Reservation Link'] || data['Reservation URL'] || data['Resy Link'] || data['OpenTable Link'] || '';
       const isGuest = (data.isGuest === true) || (data.sheetType === 'guests');
-      const isService = (data.sheetType === 'services') || (category && category.toLowerCase().includes('service')) || (data.isService === true);
-      const serviceType = (data.serviceType || data['Service Sub-Type'] || data['Service Type'] || '').trim();
+      const serviceType = (data.serviceType || data['Service Sub-Type'] || data['Service Type'] || data['Sub-Type'] || '').trim();
       const hours = data.hours || data['Operating Hours / Availability'] || data['Operating Hours'] || data['Hours'] || '';
       const phone = data.phone || data['Phone Number'] || data['Phone'] || '';
-      const website = data.url || data['Official Website / Portal URL'] || data['Website'] || data['URL'] || '';
+      const website = data.url || data['Official Website / Portal URL'] || data['Website'] || data['URL'] || data.website || '';
 
       if (isNaN(lat) || isNaN(lng) || !name) return null;
 
@@ -1768,15 +1797,32 @@ function openPlaceCard(item) {
       const bestSuited = (data.bestSuited || data['Best Suited For'] || data['Vibe / Best For'] || '').toLowerCase();
       const combinedText = catLower + ' ' + bestSuited + ' ' + cleanName + ' ' + (rawTip || '').toLowerCase() + ' ' + (rawPerk || '').toLowerCase();
 
+      // Strict determination of Service / Essential
+      const isService = (data.sheetType === 'services') || 
+                        (data.isService === true) || 
+                        catLower.includes('service') ||
+                        cleanName.includes('roper st. francis') ||
+                        cleanName.includes('express care') ||
+                        cleanName.includes('hospital') ||
+                        cleanName.includes('urgent care') ||
+                        cleanName.includes('walgreens') ||
+                        cleanName.includes('cvs pharmacy') ||
+                        cleanName.includes('harris teeter') ||
+                        cleanName.includes('publix') ||
+                        cleanName.includes('first citizens bank') ||
+                        cleanName.includes('bank of america') ||
+                        cleanName.includes('synovus') ||
+                        cleanName.includes('wells fargo');
+
       // Strict determination of Keys Partner
-      const isKeys = (data.isKeys === true) || 
+      const isKeys = !isService && ((data.isKeys === true) || 
                      (data.sheetType === 'keys') || 
                      catLower.includes('keys to charleston') || 
                      (rawPerk && rawPerk.toLowerCase().includes('room key')) ||
-                     (rawBooking && rawBooking.toLowerCase().includes('room key'));
+                     (rawBooking && rawBooking.toLowerCase().includes('room key')));
 
       // Strict determination of Beach & Coastal: Only true barrier island beaches, coastal parks, and piers
-      const isBeach = !isKeys && ((data.isBeach === true) || 
+      const isBeach = !isKeys && !isService && ((data.isBeach === true) || 
                       catLower.includes('beach') || 
                       (catLower.includes('coastal') && (cleanName.includes('beach') || cleanName.includes('island') || cleanName.includes('pier') || cleanName.includes('park'))) || 
                       cleanName.includes('beach') || 
@@ -1788,9 +1834,21 @@ function openPlaceCard(item) {
                       !cleanName.includes('museum') &&
                       !cleanName.includes('house') &&
                       !cleanName.includes('dungeon') &&
-                      !cleanName.includes('plantation');
+                      !cleanName.includes('plantation') &&
+                      !cleanName.includes('hospital') &&
+                      !cleanName.includes('care') &&
+                      !cleanName.includes('clinic') &&
+                      !cleanName.includes('health') &&
+                      !cleanName.includes('pharmacy') &&
+                      !cleanName.includes('walgreens') &&
+                      !cleanName.includes('cvs') &&
+                      !cleanName.includes('grocery') &&
+                      !cleanName.includes('teeter') &&
+                      !cleanName.includes('publix') &&
+                      !cleanName.includes('atm') &&
+                      !cleanName.includes('bank');
 
-      const isLandmark = !isKeys && !isBeach && ((data.isLandmark === true) || 
+      const isLandmark = !isKeys && !isBeach && !isService && ((data.isLandmark === true) || 
                          (data.sheetType === 'landmarks') || 
                          catLower.includes('points of interest') || 
                          catLower.includes('landmark') || 
@@ -1805,8 +1863,8 @@ function openPlaceCard(item) {
       function hasTerm(txt, terms) {
         return terms.some(t => txt.includes(t));
       }
-      const isDining = hasTerm(combinedText, ['dining', 'seafood', 'bistro', 'bakery', 'coffee', 'pub', 'cocktail', 'ice cream', 'bbq', 'cantina', 'tavern', 'cafe', 'bar', 'foodie', 'restaurant', 'eatery', 'sip', 'savor', 'drink', 'wine']);
-      const isShop = hasTerm(combinedText, ['shopping', 'boutique', 'curated retail', 'jewelry', 'clothing', 'art gallery', 'antique shop', 'souvenir', 'gift shop', 'keepsake']);
+      const isDining = !isService && hasTerm(combinedText, ['dining', 'seafood', 'bistro', 'bakery', 'coffee', 'pub', 'cocktail', 'ice cream', 'bbq', 'cantina', 'tavern', 'cafe', 'bar', 'foodie', 'restaurant', 'eatery', 'sip', 'savor', 'drink', 'wine']);
+      const isShop = !isService && hasTerm(combinedText, ['shopping', 'boutique', 'curated retail', 'jewelry', 'clothing', 'art gallery', 'antique shop', 'souvenir', 'gift shop', 'keepsake']);
 
       // Build Category Tags
       const categoryTags = new Set();
@@ -1837,25 +1895,33 @@ function openPlaceCard(item) {
 
       if (isService) {
         categoryTag = 'services';
-        const sTypeLower = serviceType.toLowerCase();
-        if (sTypeLower.includes('hospital')) {
+        let sTypeLower = (serviceType || '').toLowerCase();
+        if (!sTypeLower) {
+          if (cleanName.includes('hospital') || cleanName.includes('emergency')) sTypeLower = 'hospital';
+          else if (cleanName.includes('urgent') || cleanName.includes('express care') || cleanName.includes('care') || cleanName.includes('clinic')) sTypeLower = 'urgent care';
+          else if (cleanName.includes('pharmacy') || cleanName.includes('walgreens') || cleanName.includes('cvs')) sTypeLower = 'pharmacy';
+          else if (cleanName.includes('grocery') || cleanName.includes('market') || cleanName.includes('publix') || cleanName.includes('teeter')) sTypeLower = 'grocery';
+          else if (cleanName.includes('atm') || cleanName.includes('bank')) sTypeLower = 'atm';
+        }
+
+        if (sTypeLower.includes('hospital') || sTypeLower.includes('emergency')) {
           pinType = 'service_hospital';
-          catDisplay = 'Hospital & Emergency (24/7)';
-        } else if (sTypeLower.includes('urgent')) {
+          catDisplay = 'Hospital & 24/7 Emergency';
+        } else if (sTypeLower.includes('urgent') || sTypeLower.includes('care') || sTypeLower.includes('clinic') || sTypeLower.includes('medical')) {
           pinType = 'service_urgent_care';
           catDisplay = 'Urgent Care (Walk-In)';
-        } else if (sTypeLower.includes('pharmacy')) {
+        } else if (sTypeLower.includes('pharmacy') || sTypeLower.includes('drug') || sTypeLower.includes('rx')) {
           pinType = 'service_pharmacy';
           catDisplay = 'Pharmacy & Sundries';
-        } else if (sTypeLower.includes('grocery')) {
+        } else if (sTypeLower.includes('grocery') || sTypeLower.includes('market') || sTypeLower.includes('butcher')) {
           pinType = 'service_grocery';
           catDisplay = 'Supermarket & Grocery';
         } else if (sTypeLower.includes('atm') || sTypeLower.includes('bank')) {
           pinType = 'service_atm';
           catDisplay = 'Bank & 24/7 ATM';
         } else {
-          pinType = 'service_hospital';
-          catDisplay = 'Essential Services';
+          pinType = 'service_urgent_care';
+          catDisplay = 'Medical & Essential Services';
         }
       } else if (isKeys) {
         pinType = 'keys';
@@ -1898,7 +1964,7 @@ function openPlaceCard(item) {
       }
       let tip = rawTip;
 
-      // Smart Place Matching: Match by normalized name OR exact street address (NEVER by loose proximity)
+      // Smart Place Matching
       const normKey = normalizePlaceName(name);
       let existing = markersByName.get(normKey) || markersByName.get(cleanName);
       
@@ -1915,7 +1981,48 @@ function openPlaceCard(item) {
       const newSuggestion = { submitter, tip, perk, category, photo };
 
       if (existing) {
-        if (isKeys) {
+        if (isService) {
+          existing.categoryTag = 'services';
+          existing.isService = true;
+          existing.isBeach = false;
+          existing.isLandmark = false;
+          existing.serviceType = serviceType || existing.serviceType || '';
+          existing.hours = hours || existing.hours || '';
+          existing.phone = phone || existing.phone || '';
+          existing.website = website || existing.website || '';
+
+          let sTypeLower = (existing.serviceType || '').toLowerCase();
+          if (!sTypeLower) {
+            const cn = existing.name.toLowerCase();
+            if (cn.includes('hospital') || cn.includes('emergency')) sTypeLower = 'hospital';
+            else if (cn.includes('urgent') || cn.includes('express care') || cn.includes('care') || cn.includes('clinic')) sTypeLower = 'urgent care';
+            else if (cn.includes('pharmacy') || cn.includes('walgreens') || cn.includes('cvs')) sTypeLower = 'pharmacy';
+            else if (cn.includes('grocery') || cn.includes('market') || cn.includes('publix') || cn.includes('teeter')) sTypeLower = 'grocery';
+            else if (cn.includes('atm') || cn.includes('bank')) sTypeLower = 'atm';
+          }
+
+          if (sTypeLower.includes('hospital') || sTypeLower.includes('emergency')) {
+            existing.catDisplay = 'Hospital & 24/7 Emergency';
+            existing.element.innerHTML = `<div class="marker-pin-inner">${getPinSvg('service_hospital')}</div>`;
+          } else if (sTypeLower.includes('urgent') || sTypeLower.includes('care') || sTypeLower.includes('clinic') || sTypeLower.includes('medical')) {
+            existing.catDisplay = 'Urgent Care (Walk-In)';
+            existing.element.innerHTML = `<div class="marker-pin-inner">${getPinSvg('service_urgent_care')}</div>`;
+          } else if (sTypeLower.includes('pharmacy') || sTypeLower.includes('drug') || sTypeLower.includes('rx')) {
+            existing.catDisplay = 'Pharmacy & Sundries';
+            existing.element.innerHTML = `<div class="marker-pin-inner">${getPinSvg('service_pharmacy')}</div>`;
+          } else if (sTypeLower.includes('grocery') || sTypeLower.includes('market') || sTypeLower.includes('butcher')) {
+            existing.catDisplay = 'Supermarket & Grocery';
+            existing.element.innerHTML = `<div class="marker-pin-inner">${getPinSvg('service_grocery')}</div>`;
+          } else if (sTypeLower.includes('atm') || sTypeLower.includes('bank')) {
+            existing.catDisplay = 'Bank & 24/7 ATM';
+            existing.element.innerHTML = `<div class="marker-pin-inner">${getPinSvg('service_atm')}</div>`;
+          } else {
+            existing.catDisplay = 'Medical & Essential Services';
+            existing.element.innerHTML = `<div class="marker-pin-inner">${getPinSvg('service_urgent_care')}</div>`;
+          }
+          existing.categoryTags = existing.categoryTags.filter(t => t !== 'beaches' && t !== 'landmarks' && t !== 'dining' && t !== 'shopping');
+          if (!existing.categoryTags.includes('services')) existing.categoryTags.push('services');
+        } else if (isKeys) {
           existing.categoryTag = 'keys';
           existing.catDisplay = 'Keys to Charleston Partner';
           existing.element.innerHTML = `<div class="marker-pin-inner">${getPinSvg('keys')}</div>`;
@@ -1941,7 +2048,6 @@ function openPlaceCard(item) {
           existing.suggestions = [newSuggestion];
           existing.isDefault = false;
         } else if (tip || perk) {
-          // Check for duplicate tip
           const isDupe = existing.suggestions.some(s => 
             (tip && s.tip && s.tip.trim().toLowerCase() === tip.trim().toLowerCase()) ||
             (perk && s.perk && s.perk.trim().toLowerCase() === perk.trim().toLowerCase()) ||
@@ -3003,6 +3109,7 @@ function openPlaceCard(item) {
                         if (sheetType === 'landmarks') row.isLandmark = true;
                         if (sheetType === 'staff') row.isStaff = true;
                         if (sheetType === 'guests') row.isGuest = true;
+                        if (sheetType === 'services') row.isService = true;
                         createMarker(row);
                       }
                     })
