@@ -4294,6 +4294,15 @@ function openPlaceCard(item) {
 
       if (typeof Papa !== 'undefined') {
         const liveValidKeys = new Set();
+        // Protect all permanent curated catalog items from being pruned
+        if (typeof DEFAULT_DATA !== 'undefined' && Array.isArray(DEFAULT_DATA)) {
+          DEFAULT_DATA.forEach(row => {
+            if (row && row.name) {
+              liveValidKeys.add(row.name.toLowerCase().trim());
+              liveValidKeys.add(normalizePlaceName(row.name));
+            }
+          });
+        }
         let pendingSheets = 5;
 
         function checkSyncCompletion() {
@@ -4303,6 +4312,10 @@ function openPlaceCard(item) {
             if (liveValidKeys.size > 0) {
               const toRemove = [];
               allMarkers.forEach(m => {
+                // Never prune permanent default items, shopping centers, landmarks, or essential services
+                if (m.isDefault || m.isShop || m.categoryTag === 'shopping' || m.categoryTag === 'services') {
+                  return;
+                }
                 const norm = normalizePlaceName(m.name);
                 const rawName = m.name.toLowerCase().trim();
                 if (!liveValidKeys.has(norm) && !liveValidKeys.has(rawName)) {
