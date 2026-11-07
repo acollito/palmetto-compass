@@ -3728,6 +3728,7 @@ function openPlaceCard(item) {
     DEFAULT_DATA.forEach(row => {
       createMarker(row);
     });
+    updateListViewButton();
 
     function fitMap(filteredList) {
       const bounds = new mapboxgl.LngLatBounds();
@@ -3883,6 +3884,7 @@ function openPlaceCard(item) {
             }
 
             fitMap();
+            updateListViewButton();
             console.log('Automated Sync: Complete. Active verified locations:', allMarkers.length);
           }
         }
