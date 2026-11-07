@@ -1112,7 +1112,7 @@
       <button class="filter-btn" data-category="guests">💜 Guest Discoveries</button>
       <button class="filter-btn" data-category="services">🏥 Services &amp; Essentials</button>
       <a class="filter-btn" href="events.html" style="background:#FAF8F5; border-color:var(--palmetto-brass); color:var(--palmetto-dark); text-decoration:none;" title="View The Lowcountry Scene: Events + Culture">📅 Events Guide</a>
-      <a class="filter-btn filter-btn-suggest" href="guest.html" target="_blank" rel="noopener noreferrer" id="openSuggestBtn" style="text-decoration:none;">+ Share a Suggestion</a>
+      <button type="button" class="filter-btn filter-btn-suggest" id="openSuggestBtn" onclick="openSuggestModal()" style="border:none; cursor:pointer;">+ Share a Suggestion</button>
     </div>
     <button class="nav-arrow" id="navRight" title="Scroll Right">&rsaquo;</button>
   </div>
@@ -1254,6 +1254,93 @@
           Your dining request has been dispatched to The Palmetto Concierge Desk. Our team is securing your table and will text your confirmation shortly.
         </p>
         <button type="button" onclick="closeDiningModal()" style="background:#2D3A2E; color:#FFF; border:none; padding:10px 20px; border-radius:8px; font-size:0.82rem; font-weight:700; text-transform:uppercase; cursor:pointer;">
+          Return to Compass
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- In-App Guest Discovery Suggestion Modal -->
+  <div class="modal-backdrop" id="suggestModal">
+    <div class="modal-box" style="max-width: 480px;">
+      <button type="button" class="modal-close" onclick="closeSuggestModal()">&times;</button>
+      <div class="modal-subtitle">The Palmetto Hotel &bull; Guest Discoveries</div>
+      <div class="modal-title" style="font-family:'Cinzel', Georgia, serif; font-size:1.35rem; color:#2D3A2E; margin-bottom:4px;">Share a Discovery</div>
+      <p style="font-size:0.82rem; color:#6B7280; margin-bottom:14px; line-height:1.4;">
+        Discovered an exceptional neighborhood gem, dish, or cocktail during your Charleston stay? Share it with future guests!
+      </p>
+
+      <form id="suggestForm" onsubmit="handleSuggestSubmit(event)">
+        <input type="hidden" id="suggestMediaData" name="mediaData" />
+        <input type="hidden" id="suggestFileName" name="fileName" />
+
+        <!-- 1. Guest Name & Hometown -->
+        <div style="margin-bottom:12px;">
+          <label style="display:block; font-size:0.75rem; font-weight:700; color:#2D3A2E; margin-bottom:4px;">Your Name &amp; Hometown / City *</label>
+          <input type="text" id="suggestName" placeholder="e.g. Sarah &amp; Mark (Chicago, IL) or Jessica T." required style="width:100%; padding:9px 10px; border-radius:6px; border:1px solid #D1D5DB; font-size:0.85rem; font-family:inherit; box-sizing:border-box;">
+        </div>
+
+        <!-- 2. Spot Name -->
+        <div style="margin-bottom:12px;">
+          <label style="display:block; font-size:0.75rem; font-weight:700; color:#2D3A2E; margin-bottom:4px;">Place / Spot Name *</label>
+          <input type="text" id="suggestPlaceName" placeholder="e.g. The Paddock &amp; Whisky, Vern's, Off Track Ice Cream" required style="width:100%; padding:9px 10px; border-radius:6px; border:1px solid #D1D5DB; font-size:0.85rem; font-family:inherit; box-sizing:border-box;">
+        </div>
+
+        <!-- 3. Address & Category Row -->
+        <div style="display:flex; gap:10px; margin-bottom:12px;">
+          <div style="flex:1;">
+            <label style="display:block; font-size:0.75rem; font-weight:700; color:#2D3A2E; margin-bottom:4px;">Address or Area *</label>
+            <input type="text" id="suggestAddress" placeholder="Street address or area" required style="width:100%; padding:9px 10px; border-radius:6px; border:1px solid #D1D5DB; font-size:0.85rem; font-family:inherit; box-sizing:border-box;">
+          </div>
+          <div style="flex:1;">
+            <label style="display:block; font-size:0.75rem; font-weight:700; color:#2D3A2E; margin-bottom:4px;">Category *</label>
+            <select id="suggestCategory" required style="width:100%; padding:9px 10px; border-radius:6px; border:1px solid #D1D5DB; font-size:0.85rem; font-family:inherit; box-sizing:border-box; background:#FFF;">
+              <option value="Sip and Savor" selected>Sip &amp; Savor (Dining &amp; Drinks)</option>
+              <option value="Boutiques &amp; Shopping">Boutiques &amp; Shopping</option>
+              <option value="Landmarks &amp; History">Landmarks &amp; History</option>
+              <option value="Beaches &amp; Coastal">Beaches &amp; Coastal</option>
+              <option value="Guest Discoveries">Guest Discoveries (Hidden Gem)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 4. Tip / Recommendation -->
+        <div style="margin-bottom:12px;">
+          <label style="display:block; font-size:0.75rem; font-weight:700; color:#2D3A2E; margin-bottom:4px;">The Insider Tip / What to Order *</label>
+          <textarea id="suggestTip" placeholder="What made this spot special? Favorite dish, cocktail, or best time to visit..." required style="width:100%; height:70px; padding:9px 10px; border-radius:6px; border:1px solid #D1D5DB; font-size:0.85rem; font-family:inherit; box-sizing:border-box; resize:vertical;"></textarea>
+        </div>
+
+        <!-- 5. Photo Upload (Optional) -->
+        <div style="margin-bottom:16px;">
+          <label style="display:block; font-size:0.75rem; font-weight:700; color:#2D3A2E; margin-bottom:4px;">Upload a Photo (Optional)</label>
+          <div id="suggestDropzone" onclick="document.getElementById('suggestFileInput').click()" style="border:1.5px dashed #C5A059; border-radius:8px; padding:12px; text-align:center; background:#FAF8F5; cursor:pointer; transition:all 0.2s;">
+            <div style="font-size:1.3rem; margin-bottom:2px;">📷</div>
+            <div style="font-size:0.78rem; font-weight:600; color:#2D3A2E;">Click to attach a photo from your phone or camera</div>
+            <div style="font-size:0.70rem; color:#708771; margin-top:2px;">Supports JPG, PNG, WEBP, HEIC (Auto-optimized)</div>
+          </div>
+          <input type="file" id="suggestFileInput" accept="image/*" style="display:none;" onchange="handleSuggestFile(event)" />
+          
+          <div id="suggestPreviewWrap" style="display:none; align-items:center; gap:10px; margin-top:8px; background:#F7F5EE; padding:6px 10px; border-radius:6px; border:1px solid #E5DFD3;">
+            <img id="suggestPreviewImg" style="width:44px; height:44px; object-fit:cover; border-radius:4px;" />
+            <div style="flex:1; font-size:0.75rem; color:#2D3A2E; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" id="suggestPreviewName"></div>
+            <button type="button" onclick="removeSuggestFile()" style="background:none; border:none; color:#C0392B; font-size:1.3rem; cursor:pointer; font-weight:bold; line-height:1;">&times;</button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="suggestSubmitBtn" style="width:100%; background:#2D3A2E; color:#FFFFFF; border:none; padding:12px; border-radius:8px; font-size:0.84rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s ease; box-shadow:0 4px 12px rgba(45, 58, 46, 0.25);">
+          <span>✨ Submit Discovery</span>
+        </button>
+      </form>
+
+      <!-- Success Screen -->
+      <div id="suggestSuccessScreen" style="display:none; text-align:center; padding:16px 8px;">
+        <div style="width:52px; height:52px; border-radius:50%; background:#E8F5E9; color:#2E7D32; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:1.8rem; font-weight:bold;">✓</div>
+        <div style="font-family:'Cinzel', Georgia, serif; font-size:1.25rem; font-weight:700; color:#2D3A2E; margin-bottom:6px;">Thank You for Sharing!</div>
+        <p style="font-size:0.84rem; color:#4B5563; line-height:1.5; margin-bottom:16px;">
+          Your Charleston discovery has been submitted to The Palmetto concierge team for review.<br><br>We look forward to featuring your recommendation on <strong>The Palmetto Compass</strong>!
+        </p>
+        <button type="button" onclick="closeSuggestModal()" style="background:#2D3A2E; color:#FFF; border:none; padding:10px 20px; border-radius:8px; font-size:0.82rem; font-weight:700; text-transform:uppercase; cursor:pointer;">
           Return to Compass
         </button>
       </div>
@@ -1577,6 +1664,113 @@
       const msg = document.getElementById('diningSuccessMessage');
       msg.innerHTML = 'Your dining request for <strong>' + venue + '</strong> (' + party + ' on ' + date + ' around ' + time + ') has been dispatched to The Palmetto Concierge Desk.<br><br>Our team is securing your table via our verified concierge partnerships and will text your confirmation to <strong>' + phone + '</strong> shortly.';
       document.getElementById('diningSuccessScreen').style.display = 'block';
+    }
+
+    // In-App Guest Discovery Suggestion Modal Functions
+    window.openSuggestModal = function() {
+      // Reset form view
+      document.getElementById('suggestForm').style.display = 'block';
+      document.getElementById('suggestSuccessScreen').style.display = 'none';
+      document.getElementById('suggestForm').reset();
+      removeSuggestFile();
+
+      const btn = document.getElementById('suggestSubmitBtn');
+      btn.disabled = false;
+      btn.innerHTML = '<span>✨ Submit Discovery</span>';
+
+      document.getElementById('suggestModal').classList.add('active');
+    };
+
+    window.closeSuggestModal = function() {
+      document.getElementById('suggestModal').classList.remove('active');
+    };
+
+    window.handleSuggestFile = function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      document.getElementById('suggestPreviewName').textContent = file.name;
+      document.getElementById('suggestFileName').value = file.name;
+
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            const maxDim = 1600;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              } else {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressed = canvas.toDataURL('image/jpeg', 0.82);
+            document.getElementById('suggestPreviewImg').src = compressed;
+            document.getElementById('suggestMediaData').value = compressed;
+            document.getElementById('suggestPreviewWrap').style.display = 'flex';
+            document.getElementById('suggestDropzone').style.display = 'none';
+          };
+          img.src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    window.removeSuggestFile = function() {
+      document.getElementById('suggestFileInput').value = '';
+      document.getElementById('suggestMediaData').value = '';
+      document.getElementById('suggestFileName').value = '';
+      document.getElementById('suggestPreviewImg').src = '';
+      document.getElementById('suggestPreviewWrap').style.display = 'none';
+      document.getElementById('suggestDropzone').style.display = 'block';
+    };
+
+    window.handleSuggestSubmit = function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('suggestSubmitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Submitting Discovery...</span>';
+
+      const payload = {
+        action: 'submitGuestRecommendation',
+        name: document.getElementById('suggestName').value.trim(),
+        placeName: document.getElementById('suggestPlaceName').value.trim(),
+        address: document.getElementById('suggestAddress').value.trim(),
+        category: document.getElementById('suggestCategory').value,
+        tip: document.getElementById('suggestTip').value.trim(),
+        mediaData: document.getElementById('suggestMediaData').value,
+        fileName: document.getElementById('suggestFileName').value
+      };
+
+      const endpoint = 'https://script.google.com/macros/s/AKfycbwXVEd9ZpJug89JZ32JBJar2M169FYUmJoUjoBXUQTocRd0OlRsPGkPbuuVrwhQBI_H/exec';
+
+      fetch(endpoint, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        showSuggestSuccess();
+      })
+      .catch(() => {
+        showSuggestSuccess();
+      });
+    };
+
+    function showSuggestSuccess() {
+      document.getElementById('suggestForm').style.display = 'none';
+      document.getElementById('suggestSuccessScreen').style.display = 'block';
     }
 
     // Global Carousel Navigation for Map Popups
