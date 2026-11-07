@@ -1573,8 +1573,10 @@
       const slides = container.querySelectorAll('.carousel-slide');
       if (!slides || slides.length === 0) return;
       let idx = parseInt(container.getAttribute('data-index') || '0', 10);
+      slides[idx].classList.remove('active');
       slides[idx].style.display = 'none';
       idx = (idx + dir + slides.length) % slides.length;
+      slides[idx].classList.add('active');
       slides[idx].style.display = 'block';
       container.setAttribute('data-index', idx);
       const ind = container.querySelector('.carousel-indicator');

@@ -559,8 +559,18 @@ function submitConciergeRequest(data) {
       sendLowcountryStrollsActionEmail(data, confNum);
     }
 
-    const recipients = `${CONFIG.NOTIFICATION_EMAIL}, Concierge@palmettohotelcharleston.com`;
-    const subject = `[Concierge Request] ${serviceName} | ${guestName} | Conf: ${confNum}`;
+    // Route dining reservation requests EXCLUSIVELY to anthony.collito@palmettohotelcharleston.com per Anthony's explicit request
+    const isDining = (data.action === 'submitDiningRequest') || 
+                     (serviceName && serviceName.toLowerCase().includes('dining')) || 
+                     (data.restaurantName && data.restaurantName.length > 0);
+
+    const recipients = isDining 
+      ? CONFIG.NOTIFICATION_EMAIL 
+      : `${CONFIG.NOTIFICATION_EMAIL}, Concierge@palmettohotelcharleston.com`;
+
+    const subject = isDining
+      ? `[VIP Dining Request] ${data.restaurantName || serviceName} | ${guestName} | ${requestedTiming} (${preferences})`
+      : `[Concierge Request] ${serviceName} | ${guestName} | Conf: ${confNum}`;
     
     const htmlBody = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 640px; margin: 0 auto; border: 1px solid #DDD8CE; border-radius: 8px; overflow: hidden; background-color: #FFFFFF;">
