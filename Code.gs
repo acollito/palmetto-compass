@@ -565,6 +565,69 @@ function submitConciergeRequest(data) {
                      (serviceName && serviceName.toLowerCase().includes('dining')) || 
                      (data.restaurantName && data.restaurantName.length > 0);
 
+    const restaurantName = data.restaurantName || (serviceName.replace(/VIP Dining Reservation:\s*/i, '').trim());
+
+    // Extract party size number (e.g. '2 Guests' -> '2')
+    const partyMatch = (preferences || '').match(/\d+/);
+    const partySeats = partyMatch ? partyMatch[0] : '2';
+
+    // Format date string YYYY-MM-DD
+    let dateStr = (checkin && checkin !== 'Not provided') ? checkin : Utilities.formatDate(new Date(), "America/New_York", "yyyy-MM-dd");
+
+    // Build intelligent Pre-filled Resy and OpenTable booking URLs
+    const resySlugMap = {
+      'verns': 'verns',
+      "vern's": 'verns',
+      'citrus club': 'the-citrus-club-at-the-dewberry',
+      'the citrus club': 'the-citrus-club-at-the-dewberry',
+      'chez nous': 'chez-nous',
+      'the ordinary': 'the-ordinary',
+      'fig': 'fig',
+      'melfis': 'melfis',
+      "melfi's": 'melfis',
+      'post house': 'post-house',
+      'sorelle': 'sorelle',
+      'wild common': 'wild-common',
+      'vintage lounge': 'vintage-lounge',
+      'the peacock': 'the-peacock',
+      'chubby fish': 'chubby-fish'
+    };
+
+    const rNameClean = restaurantName.toLowerCase().replace(/['’]/g, '').trim();
+    let resyDirectUrl = '';
+    for (const [key, slug] of Object.entries(resySlugMap)) {
+      if (rNameClean.includes(key)) {
+        resyDirectUrl = `https://resy.com/cities/charleston-sc/venues/${slug}?date=${dateStr}&seats=${partySeats}`;
+        break;
+      }
+    }
+    if (!resyDirectUrl) {
+      resyDirectUrl = `https://resy.com/cities/charleston-sc?query=${encodeURIComponent(restaurantName)}&date=${dateStr}&seats=${partySeats}`;
+    }
+
+    // OpenTable pre-filled search / direct URL
+    const opentableSlugMap = {
+      'snob': 'slightly-north-of-broad-reservations-charleston',
+      'slightly north of broad': 'slightly-north-of-broad-reservations-charleston',
+      'high cotton': 'high-cotton-charleston-reservations-charleston',
+      'amen street': 'amen-street-fish-and-raw-bar',
+      'halls chophouse': 'halls-chophouse',
+      'poogan': 'poogans-porch',
+      'charleston grill': 'charleston-grill',
+      'oak steakhouse': 'oak-steakhouse-charleston'
+    };
+
+    let opentableDirectUrl = '';
+    for (const [key, slug] of Object.entries(opentableSlugMap)) {
+      if (rNameClean.includes(key)) {
+        opentableDirectUrl = `https://www.opentable.com/${slug}?dateTime=${dateStr}T19:00:00&covers=${partySeats}`;
+        break;
+      }
+    }
+    if (!opentableDirectUrl) {
+      opentableDirectUrl = `https://www.opentable.com/s?term=${encodeURIComponent(restaurantName)}&dateTime=${dateStr}T19:00:00&covers=${partySeats}`;
+    }
+
     const recipients = isDining 
       ? CONFIG.NOTIFICATION_EMAIL 
       : `${CONFIG.NOTIFICATION_EMAIL}, Concierge@palmettohotelcharleston.com`;
@@ -641,9 +704,13 @@ function submitConciergeRequest(data) {
             </a>
             ` : ''}
             ${isDining ? `
-            <a href="https://resy.com/cities/charleston-sc" target="_blank" 
+            <a href="${resyDirectUrl}" target="_blank" 
                style="background-color: #B02A30; color: #FFFFFF; text-decoration: none; padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin: 4px;">
-              🛎️ Open Resy Concierge
+              🛎️ Book on Resy (Pre-Filled)
+            </a>
+            <a href="${opentableDirectUrl}" target="_blank" 
+               style="background-color: #DA3743; color: #FFFFFF; text-decoration: none; padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin: 4px;">
+              🍽️ Book on OpenTable
             </a>
             ` : ''}
             ${guestEmail ? `
