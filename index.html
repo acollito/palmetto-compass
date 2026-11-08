@@ -2974,8 +2974,8 @@ function openPlaceCard(item) {
     }
 
     function createMarker(data) {
-      const lat = parseFloat(data.lat !== undefined ? data.lat : data['Latitude']);
-      const lng = parseFloat(data.lng !== undefined ? data.lng : data['Longitude']);
+      let lat = parseFloat(data.lat !== undefined ? data.lat : data['Latitude']);
+      let lng = parseFloat(data.lng !== undefined ? data.lng : data['Longitude']);
       const name = data.name || data['Place / Landmark / Tour Name'] || data['Place / Landmark / Spot Name'] || data['Place Name'] || data['Establishment Name'] || '';
       const category = data.category || data['Category'] || '';
       const address = data.address || data['Full Street Address or Location Point'] || data['Address'] || data['Street Address'] || '';
@@ -2994,6 +2994,12 @@ function openPlaceCard(item) {
       const website = data.url || data['Official Website / Portal URL'] || data['Website'] || data['URL'] || data.website || '';
 
       if (isNaN(lat) || isNaN(lng) || !name) return null;
+
+      // Exact building alignment: SNOB is at 192 East Bay St on the EAST side across the street
+      if (name.toLowerCase().includes('slightly north of broad') || name.toLowerCase().includes('snob')) {
+        lat = 32.77967;
+        lng = -79.92679;
+      }
 
       const cleanName = name.toLowerCase().trim();
       const catLower = category.toLowerCase().trim();
@@ -3330,10 +3336,10 @@ function openPlaceCard(item) {
     "category": "Keys to Charleston Partners",
     "address": "192 E Bay St, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
-    "tip": "Free Dessert with Entr\u00e9e Purchase when showing your Palmetto room key. Located next door to the hotel. An iconic culinary institution celebrating Lowcountry cuisine.",
+    "tip": "Free Dessert with Entr\u00e9e Purchase when showing your Palmetto room key. Located across the street on the east side of East Bay St. An iconic culinary institution celebrating Lowcountry cuisine.",
     "perk": "Free Dessert with Entr\u00e9e Purchase (Show Room Key)",
-    "lat": 32.77948,
-    "lng": -79.92728,
+    "lat": 32.77967,
+    "lng": -79.92679,
     "isGuest": false,
     "isKeys": true,
     "isLandmark": false,
