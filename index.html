@@ -2537,10 +2537,11 @@ function openPlaceCard(item) {
         }
         htmlCards += '  </div>';
 
-        if (isKeys && suggestions.length > 0 && suggestions[0].perk) {
+        const listPerk = item.perk || (suggestions.find(s => s.perk && s.perk.length > 3) ? suggestions.find(s => s.perk && s.perk.length > 3).perk : '');
+        if (isKeys && listPerk) {
           htmlCards += '  <div class="list-item-perk">';
           htmlCards += '    <strong>🗝️ Palmetto Room Key Perk</strong>';
-          htmlCards += '    <div>' + escapeHtml(suggestions[0].perk) + '</div>';
+          htmlCards += '    <div>' + escapeHtml(listPerk) + '</div>';
           htmlCards += '  </div>';
         }
 
@@ -2692,9 +2693,9 @@ function openPlaceCard(item) {
     });
 
     function buildCardContent(item) {
-      const name = item.name;
-      const address = item.address;
-      const proximity = item.proximity;
+      const name = item.name || '';
+      const address = item.address || '';
+      const proximity = item.proximity || '';
       const catDisplay = item.catDisplay;
       const categoryTag = item.categoryTag;
       const suggestions = item.suggestions || [];
@@ -2707,11 +2708,12 @@ function openPlaceCard(item) {
       if (isKeys) {
         html += '<span style="font-size:0.92rem;">🗝️</span> ';
       }
-      html += (catDisplay || 'Curated Spot');
+      html += (catDisplay || (isKeys ? 'Keys to Charleston Partner' : 'Curated Spot'));
       html += '</div>';
 
-      // Title
-      html += '<h2 class="card-title">' + name + '</h2>';
+      // Title: Clean, elegant title without redundant '(Keys Partner)' suffixes
+      const cleanTitle = (name || '').replace(/\s*\((?:Keys Partner|Keys to Charleston Partner)\)/gi, '').trim();
+      html += '<h2 class="card-title">' + cleanTitle + '</h2>';
 
       // Address & Proximity
       if (address) {
@@ -2741,100 +2743,103 @@ function openPlaceCard(item) {
 
       html += '<div class="card-divider"></div>';
 
-      // Suggestions / Tips / Perks
-      if (suggestions && suggestions.length > 1) {
+      // -------------------------------------------------------------
+      // 1. DEDICATED KEYS TO CHARLESTON PERK (Always fixed prominently)
+      // -------------------------------------------------------------
+      let perkText = item.perk || '';
+      if (!perkText && suggestions && suggestions.length > 0) {
+        const foundWithPerk = suggestions.find(s => s.perk && s.perk.trim().length > 3);
+        if (foundWithPerk) perkText = foundWithPerk.perk;
+      }
+      if (isKeys) {
+        if (!perkText || perkText.includes('Exclusive Guest Perk (Show Palmetto Room Key)')) {
+          perkText = 'Exclusive guest discount or perk when presenting your Palmetto room key';
+        }
+        html += '<div class="card-perk-box">';
+        html += '  <div class="card-box-header">🗝️ Exclusive Guest Perk</div>';
+        html += '  <div class="card-box-body">' + escapeHtml(perkText) + '</div>';
+        html += '  <div style="font-size:0.75rem; color:#847248; margin-top:5px; font-weight:500;">Show your physical Palmetto Hotel room key to redeem.</div>';
+        html += '</div>';
+      }
+
+      // -------------------------------------------------------------
+      // 2. LOCAL INSIDER TIPS & RECOMMENDATIONS (Staff / Guests / Concierge)
+      // -------------------------------------------------------------
+      const cleanTips = [];
+      const seenTipTexts = new Set();
+      if (perkText) {
+        seenTipTexts.add(perkText.trim().toLowerCase());
+      }
+
+      suggestions.forEach(s => {
+        if (!s || !s.tip) return;
+        const rawT = s.tip.trim();
+        const lowerT = rawT.toLowerCase();
+        
+        // Skip if it simply duplicates the perk text
+        if (perkText && (lowerT === perkText.trim().toLowerCase() || perkText.toLowerCase().includes(lowerT))) return;
+        if (seenTipTexts.has(lowerT)) return;
+        seenTipTexts.add(lowerT);
+
+        // Submitter formatting
+        let sub = (s.submitter || '').trim();
+        if (sub.toLowerCase() === 'palmetto team' || sub.toLowerCase() === 'palmetto hotel') {
+          sub = 'Palmetto Concierge Team';
+        }
+
+        cleanTips.push({
+          submitter: sub,
+          tip: rawT,
+          photo: s.photo || ''
+        });
+      });
+
+      if (cleanTips.length > 1) {
         html += '<div class="popup-carousel card-carousel" data-index="0">';
         html += '  <div class="carousel-track">';
-        suggestions.forEach((s, idx) => {
+        cleanTips.forEach((s, idx) => {
           html += '    <div class="carousel-slide' + (idx === 0 ? ' active' : '') + '">';
-          if (s.submitter && !isKeys) {
-            html += '      <div class="card-submitter">Recommended by <strong>' + s.submitter + '</strong></div>';
+          if (s.submitter) {
+            html += '      <div class="card-submitter">Recommended by <strong>' + escapeHtml(s.submitter) + '</strong></div>';
           }
-
-          if (isKeys) {
-            if (idx === 0) {
-              const perkText = s.perk || s.tip || 'Exclusive Guest Perk available with Palmetto Room Key';
-              html += '      <div class="card-perk-box">';
-              html += '        <div class="card-box-header">🗝️ Exclusive Guest Perk</div>';
-              html += '        <div class="card-box-body">' + perkText + '</div>';
-              html += '      </div>';
-              if (s.tip && s.perk && s.tip.trim().toLowerCase() !== s.perk.trim().toLowerCase()) {
-                html += '      <div class="card-tip-box">';
-                html += '        <div class="card-box-header">✨ Insider Concierge Tip</div>';
-                html += '        <div class="card-box-body">' + s.tip + '</div>';
-                html += '      </div>';
-              }
-            } else {
-              if (s.submitter) {
-                html += '      <div class="card-submitter">Recommended by <strong>' + s.submitter + '</strong></div>';
-              }
-              const tipContent = s.tip || s.perk;
-              if (tipContent) {
-                html += '      <div class="card-tip-box">';
-                html += '        <div class="card-box-header">✨ Local Tip</div>';
-                html += '        <div class="card-box-body">' + tipContent + '</div>';
-                html += '      </div>';
-              }
-            }
-          } else {
-            if (s.tip) {
-              html += '      <div class="card-tip-box">';
-              html += '        <div class="card-box-header">✨ Insider Concierge Tip</div>';
-              html += '        <div class="card-box-body">' + s.tip + '</div>';
-              html += '      </div>';
-            }
-          }
-
+          html += '      <div class="card-tip-box">';
+          html += '        <div class="card-box-header">✨ Local Insider Tip</div>';
+          html += '        <div class="card-box-body">' + escapeHtml(s.tip) + '</div>';
+          html += '      </div>';
           if (s.photo) {
             const imgSrc = getDriveImgUrl(s.photo);
-            html += '      <div class="card-photo-wrap"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" class="card-photo" alt="' + name.replace(/"/g, '&quot;') + ' photo" /></a></div>';
+            html += '      <div class="card-photo-wrap"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" class="card-photo" alt="' + cleanTitle.replace(/"/g, '&quot;') + ' photo" /></a></div>';
           }
           html += '    </div>';
         });
         html += '  </div>';
         html += '  <div class="carousel-controls">';
         html += '    <button type="button" class="carousel-btn" onclick="window.carouselNav(this, -1)" title="Previous tip">&lsaquo;</button>';
-        html += '    <span class="carousel-indicator">1 of ' + suggestions.length + ' tips</span>';
+        html += '    <span class="carousel-indicator">1 of ' + cleanTips.length + ' tips</span>';
         html += '    <button type="button" class="carousel-btn" onclick="window.carouselNav(this, 1)" title="Next tip">&rsaquo;</button>';
         html += '  </div>';
         html += '</div>';
-      } else if (suggestions && suggestions.length === 1) {
-        const s = suggestions[0];
-        if (s.submitter && !isKeys) {
-          html += '<div class="card-submitter">Recommended by <strong>' + s.submitter + '</strong></div>';
+      } else if (cleanTips.length === 1) {
+        const s = cleanTips[0];
+        if (s.submitter) {
+          html += '<div class="card-submitter">Recommended by <strong>' + escapeHtml(s.submitter) + '</strong></div>';
         }
-
-        if (isKeys) {
-          const perkText = s.perk || s.tip || 'Exclusive Guest Perk available with Palmetto Room Key';
-          html += '<div class="card-perk-box">';
-          html += '  <div class="card-box-header">🗝️ Exclusive Guest Perk</div>';
-          html += '  <div class="card-box-body">' + perkText + '</div>';
-          html += '</div>';
-          if (s.tip && s.perk && s.tip.trim().toLowerCase() !== s.perk.trim().toLowerCase()) {
-            html += '<div class="card-tip-box">';
-            html += '  <div class="card-box-header">✨ Insider Concierge Tip</div>';
-            html += '  <div class="card-box-body">' + s.tip + '</div>';
-            html += '</div>';
-          }
-        } else {
-          if (s.tip) {
-            html += '<div class="card-tip-box">';
-            html += '  <div class="card-box-header">✨ Insider Concierge Tip</div>';
-            html += '  <div class="card-box-body">' + s.tip + '</div>';
-            html += '</div>';
-          }
-        }
-
+        html += '<div class="card-tip-box">';
+        html += '  <div class="card-box-header">✨ Local Insider Tip</div>';
+        html += '  <div class="card-box-body">' + escapeHtml(s.tip) + '</div>';
+        html += '</div>';
         if (s.photo) {
           const imgSrc = getDriveImgUrl(s.photo);
-          html += '<div class="card-photo-wrap"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" class="card-photo" alt="' + name.replace(/"/g, '&quot;') + ' photo" /></a></div>';
+          html += '<div class="card-photo-wrap"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" class="card-photo" alt="' + cleanTitle.replace(/"/g, '&quot;') + ' photo" /></a></div>';
         }
       }
 
-      // Action Buttons (Services vs Dining / Retail / Landmarks)
+      // -------------------------------------------------------------
+      // 3. ACTION BUTTONS (Services vs Dining / Retail / Landmarks)
+      // -------------------------------------------------------------
       const isServiceItem = item.isService === true || categoryTag === 'services' || (item.categoryTags && item.categoryTags.includes('services'));
-      const safePlaceName = (name || '').replace(/'/g, "\\'");
-      const query = encodeURIComponent(name + ' ' + (address || 'Charleston SC'));
+      const safePlaceName = cleanTitle.replace(/'/g, "\\'");
+      const query = encodeURIComponent(cleanTitle + ' ' + (address || 'Charleston SC'));
 
       if (isServiceItem) {
         html += '<div class="card-actions-row">';
@@ -2874,7 +2879,7 @@ function openPlaceCard(item) {
         
         let menuUrl = item.menu;
         if (!menuUrl && isDining) {
-          menuUrl = 'https://www.google.com/search?q=' + encodeURIComponent(name + ' Charleston SC menu');
+          menuUrl = 'https://www.google.com/search?q=' + encodeURIComponent(cleanTitle + ' Charleston SC menu');
         }
 
         const rawRes = (item.reservation || '').trim();
@@ -2886,7 +2891,7 @@ function openPlaceCard(item) {
         if (hasSpecificRes) {
           canReserve = true;
         } else if (!isExplicitNoRes && isDining) {
-          let fullPlaceText = (name + ' ' + (catDisplay || '') + ' ' + (categoryTag || '') + ' ' + (item.booking || '')).toLowerCase();
+          let fullPlaceText = (cleanTitle + ' ' + (catDisplay || '') + ' ' + (categoryTag || '') + ' ' + (item.booking || '')).toLowerCase();
           if (item.suggestions && item.suggestions.length > 0) {
             item.suggestions.forEach(s => {
               fullPlaceText += ' ' + (s.tip || '') + ' ' + (s.perk || '') + ' ' + (s.category || '') + ' ' + (s.booking || '');
@@ -2909,7 +2914,7 @@ function openPlaceCard(item) {
             'lowcountry artists gallery'
           ];
 
-          const isKnownNoRes = knownNoResNames.some(kn => name.toLowerCase().includes(kn));
+          const isKnownNoRes = knownNoResNames.some(kn => cleanTitle.toLowerCase().includes(kn));
           const matchesNoRes = noResRegex.test(fullPlaceText);
 
           if (!isKnownNoRes && !matchesNoRes) {
@@ -2926,7 +2931,7 @@ function openPlaceCard(item) {
             html += '  </a>';
           }
           if (canReserve) {
-            const perkStr = (item.suggestions && item.suggestions[0] && item.suggestions[0].perk ? item.suggestions[0].perk : '').replace(/'/g, "\\'");
+            const perkStr = (perkText || '').replace(/'/g, "\\'");
             const addrStr = (item.address || '').replace(/'/g, "\\'");
             html += '  <a class="card-action-btn card-reserve-btn" href="javascript:void(0)" onclick="openDiningModal(\'' + safePlaceName + '\', \'' + addrStr + '\', \'' + perkStr + '\')" title="Request table via Palmetto Concierge Desk">';
             html += '    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
@@ -2947,8 +2952,7 @@ function openPlaceCard(item) {
       }
 
       // Text Concierge Quick Link for this place
-      // safePlaceName already defined = (name || '').replace(/'/g, "\\'");
-      html += '<button class="card-text-concierge-btn" onclick="openConciergeText(\'' + safePlaceName + '\')" title="Text concierge about ' + (name.replace(/"/g, '&quot;')) + '">';
+      html += '<button class="card-text-concierge-btn" onclick="openConciergeText(\'' + safePlaceName + '\')" title="Text concierge about ' + (cleanTitle.replace(/"/g, '&quot;')) + '">';
       html += '  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
       html += '  <span>Have questions? Text our concierge</span>';
       html += '</button>';
@@ -2956,7 +2960,6 @@ function openPlaceCard(item) {
       return html;
     }
 
-    // Compatibility shim
     function buildPopupContent(name, address, proximity, categoryTag, catDisplay, suggestions) {
       return buildCardContent({ name, address, proximity, categoryTag, catDisplay, suggestions });
     }
@@ -3252,20 +3255,22 @@ function openPlaceCard(item) {
           if (!existing.categoryTags.includes(t)) existing.categoryTags.push(t);
         });
 
-        // If existing marker was created from DEFAULT_DATA, live sheet data takes precedence
-        if (existing.isDefault) {
-          existing.suggestions = [newSuggestion];
-          existing.isDefault = false;
-        } else if (tip || perk) {
+        // Store verified perk on existing place
+        if (perk) {
+          existing.perk = perk;
+          existing.isKeys = true;
+        }
+
+        // Intelligently merge suggestions without wiping existing valid tips
+        const cleanTipText = (tip || '').trim();
+        if (cleanTipText && (!perk || cleanTipText.toLowerCase() !== perk.toLowerCase())) {
           const isDupe = existing.suggestions.some(s => 
-            (tip && s.tip && s.tip.trim().toLowerCase() === tip.trim().toLowerCase()) ||
-            (perk && s.perk && s.perk.trim().toLowerCase() === perk.trim().toLowerCase()) ||
-            (submitter && s.submitter && s.submitter.trim().toLowerCase() === submitter.trim().toLowerCase() && s.tip.slice(0, 20).toLowerCase() === tip.slice(0, 20).toLowerCase())
+            s.tip && (s.tip.trim().toLowerCase() === cleanTipText.toLowerCase() ||
+                      s.tip.toLowerCase().includes(cleanTipText.toLowerCase()) ||
+                      cleanTipText.toLowerCase().includes(s.tip.toLowerCase()))
           );
           if (!isDupe) {
             existing.suggestions.push(newSuggestion);
-          } else if (perk && !existing.suggestions.some(s => s.perk)) {
-            existing.suggestions[0].perk = perk;
           }
         }
         if (menu && !existing.menu) {
@@ -3346,17 +3351,20 @@ function openPlaceCard(item) {
     "isDefault": true
   },
   {
-    "name": "High Cotton (Keys Partner)",
+    "name": "High Cotton",
+    "menu": "https://highcottoncharleston.com/menus/",
     "category": "Keys to Charleston Partners",
     "address": "199 E Bay St, Charleston, SC 29401",
     "proximity": "Immediate Walk (< 5\u201310 minutes)",
-    "tip": "Free Dessert with Entr\u00e9e Purchase when showing your Palmetto room key. Directly across the street from The Palmetto. Live jazz music nightly and refined dining.",
+    "tip": "Directly across the street from The Palmetto. Live jazz music nightly, refined Lowcountry classics (shrimp & grits, steaks), and an exceptional bar team. Great fallback for hotel guests.",
     "perk": "Free Dessert with Entr\u00e9e Purchase (Show Room Key)",
+    "submitter": "Brandi (Front Desk)",
     "lat": 32.779883,
     "lng": -79.927623,
     "isGuest": false,
     "isKeys": true,
     "isLandmark": false,
+    "booking": "Advance Booking Recommended",
     "isDefault": true
   },
   {
@@ -3556,21 +3564,7 @@ function openPlaceCard(item) {
     "booking": "Walk-Up Friendly / Same-Day Booking OK",
     "isDefault": true
   },
-  {
-    "name": "High Cotton",
-    "menu": "https://highcottoncharleston.com/menus/",
-    "category": "Sip and Savor",
-    "address": "199 E Bay St, Charleston, SC 29401",
-    "proximity": "Immediate Walk (< 5\u201310 minutes)",
-    "tip": "Directly across the street from The Palmetto. Live jazz music nightly, refined Lowcountry classics (shrimp & grits, steaks), and an exceptional bar team. Great fallback for hotel guests.",
-    "lat": 32.7798408,
-    "lng": -79.9272191,
-    "isGuest": false,
-    "isKeys": false,
-    "isLandmark": false,
-    "booking": "Advance Booking Recommended",
-    "isDefault": true
-  },
+
   {
     "name": "Vern's",
     "menu": "https://vernscharleston.com/menu/",
