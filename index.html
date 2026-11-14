@@ -692,6 +692,16 @@
       display: block;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
+    .card-video,
+    .card-video-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 8px;
+      border: 1px solid #E5E0D5;
+      display: block;
+      background: #1B221C;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
 
         .card-actions-row {
       display: flex;
@@ -2247,6 +2257,30 @@
       return url;
     }
 
+    function getDriveFileId(url) {
+      if (!url) return '';
+      const m1 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (m1 && m1[1]) return m1[1];
+      const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (m2 && m2[1]) return m2[1];
+      return '';
+    }
+
+    function buildCardMediaHtml(url, cleanTitle, isBeach) {
+      if (!url) return '';
+      const safeTitle = cleanTitle.replace(/"/g, '&quot;');
+      const lower = url.toLowerCase();
+      if (/\.(mp4|webm|mov|m4v)(\?|$)/i.test(lower)) {
+        return '<div class="card-photo-wrap"><video class="card-video" src="' + url + '" controls playsinline muted loop preload="metadata"></video></div>';
+      }
+      const driveId = getDriveFileId(url);
+      if (driveId && isBeach) {
+        return '<div class="card-photo-wrap"><iframe class="card-video-frame" src="https://drive.google.com/file/d/' + driveId + '/preview" allow="autoplay; fullscreen" allowfullscreen loading="lazy" title="' + safeTitle + ' video"></iframe></div>';
+      }
+      const imgSrc = getDriveImgUrl(url);
+      return '<div class="card-photo-wrap"><a href="' + url + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" class="card-photo" alt="' + safeTitle + ' photo" /></a></div>';
+    }
+
     let activePlaceItem = null;
     const placeCard = document.getElementById('placeCard');
     const placeCardClose = document.getElementById('placeCardClose');
@@ -2807,8 +2841,8 @@ function openPlaceCard(item) {
           html += '        <div class="card-box-body">' + escapeHtml(s.tip) + '</div>';
           html += '      </div>';
           if (s.photo) {
-            const imgSrc = getDriveImgUrl(s.photo);
-            html += '      <div class="card-photo-wrap"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" class="card-photo" alt="' + cleanTitle.replace(/"/g, '&quot;') + ' photo" /></a></div>';
+            const isBeachCard = item.isBeach || (categoryTag === 'beaches') || (item.categoryTags && item.categoryTags.includes('beaches'));
+            html += '      ' + buildCardMediaHtml(s.photo, cleanTitle, isBeachCard);
           }
           html += '    </div>';
         });
@@ -2829,8 +2863,8 @@ function openPlaceCard(item) {
         html += '  <div class="card-box-body">' + escapeHtml(s.tip) + '</div>';
         html += '</div>';
         if (s.photo) {
-          const imgSrc = getDriveImgUrl(s.photo);
-          html += '<div class="card-photo-wrap"><a href="' + s.photo + '" target="_blank" rel="noopener"><img src="' + imgSrc + '" class="card-photo" alt="' + cleanTitle.replace(/"/g, '&quot;') + ' photo" /></a></div>';
+          const isBeachCard = item.isBeach || (categoryTag === 'beaches') || (item.categoryTags && item.categoryTags.includes('beaches'));
+          html += buildCardMediaHtml(s.photo, cleanTitle, isBeachCard);
         }
       }
 
@@ -2987,7 +3021,7 @@ function openPlaceCard(item) {
       const rawBooking = data.booking || data['Ticket & Booking Requirements'] || '';
       const rawPerk = data.perk || data['Exclusive Perk / Booking Requirements'] || data['Exclusive Perk'] || '';
       const submitter = data.submitter || data['Your Name & Hometown / City'] || data['Staff Member Name / Initials'] || data['Recommended By'] || data['Guest Name & Hometown'] || data['Staff Name'] || '';
-      const photo = data.photo || data['Photo URL'] || data['Photo / Media Link'] || data['Photo / Video Link or Social Handle (Optional)'] || data['Photo'] || '';
+      const photo = data.photo || data['Photo URL'] || data['Share Photos'] || data['Photo / Media Link'] || data['Photo / Video Link or Social Handle (Optional)'] || data['Photo'] || '';
       const menu = data.menu || data['Menu Link'] || data['Menu URL'] || data['Menu'] || '';
       const reservation = data.reservation || data['Reservation Link'] || data['Reservation URL'] || data['Resy Link'] || data['OpenTable Link'] || '';
       const isGuest = (data.isGuest === true) || (data.sheetType === 'guests');
@@ -3271,7 +3305,11 @@ function openPlaceCard(item) {
           );
           if (!isDupe) {
             existing.suggestions.push(newSuggestion);
+          } else if (photo && existing.suggestions.length > 0 && !existing.suggestions[0].photo) {
+            existing.suggestions[0].photo = photo;
           }
+        } else if (photo && existing.suggestions.length > 0 && !existing.suggestions[0].photo) {
+          existing.suggestions[0].photo = photo;
         }
         if (menu && !existing.menu) {
           existing.menu = menu;
