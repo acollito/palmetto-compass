@@ -2271,7 +2271,7 @@
       const safeTitle = cleanTitle.replace(/"/g, '&quot;');
       const lower = url.toLowerCase();
       if (/\.(mp4|webm|mov|m4v)(\?|$)/i.test(lower)) {
-        return '<div class="card-photo-wrap"><video class="card-video" src="' + url + '" controls playsinline muted loop preload="metadata"></video></div>';
+        return '<div class="card-photo-wrap"><video class="card-video" src="' + url + '" autoplay muted loop playsinline controls controlslist="nodownload" preload="auto"></video></div>';
       }
       const driveId = getDriveFileId(url);
       if (driveId && isBeach) {
@@ -2405,6 +2405,10 @@ function openPlaceCard(item) {
 
       // Populate card HTML
       placeCardBody.innerHTML = buildCardContent(item);
+      placeCardBody.querySelectorAll('video.card-video').forEach(v => {
+        v.muted = true;
+        v.play().catch(() => {});
+      });
       placeCard.classList.add('active');
       placeCard.setAttribute('aria-hidden', 'false');
 
